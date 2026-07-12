@@ -133,6 +133,8 @@
     min-width:18px;text-align:center;
   }
   .dnav.active .dnav-count{background:var(--teal);}
+  .dnav-count.pulse{animation:alertPulse 1.2s infinite;}
+  @keyframes alertPulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,0.5);}50%{box-shadow:0 0 0 6px rgba(231,76,60,0);}}
 
   /* MAIN */
   .dash-main{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:1.5rem 1.2rem 3rem;}
@@ -211,6 +213,17 @@
   /* Submissions table columns */
   .sub-grid{grid-template-columns:1.8fr 1fr 1fr 0.8fr 0.8fr 0.7fr;}
   @media(max-width:700px){.sub-grid{grid-template-columns:1.5fr 1fr 0.8fr 0.7fr;}}
+  /* Status cell can stack up to 4 badges (Completed/Aborted + IRT + No-Gas +
+     Approved) — the shared .td ellipsis truncation was silently hiding the
+     later ones, including the No-Gas compliance flag. Let this cell wrap. */
+  .sub-grid .td[data-label="Status"]{
+    white-space:normal;overflow:visible;text-overflow:clip;
+    display:flex;flex-wrap:wrap;gap:0.3rem;align-items:center;
+  }
+  .nm-severity-cell{
+    white-space:normal;overflow:visible;text-overflow:clip;
+    display:flex;flex-wrap:wrap;gap:0.3rem;align-items:center;
+  }
 
   /* Near miss table columns */
   .nm-grid{grid-template-columns:1fr 1.2fr 0.8fr 0.7fr 1fr;}
@@ -241,6 +254,7 @@
   .badge.medium{background:#FFF4E0;color:var(--amber);}
   .badge.high{background:#FEF0EE;color:var(--red);}
   .badge.sent{background:#FEF0EE;color:var(--red);}
+  .badge.sent.badge-pulse, .badge.ground-active.badge-pulse{animation:alertPulse 1.2s infinite;}
 
   /* DETAIL MODAL */
   .detail-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:flex-end;justify-content:center;}
@@ -1083,6 +1097,12 @@ async function verifyAndLaunch(user){
   startDashSessionWatch();
   setInterval(loadLiveTracking, 30000);
   loadLiveTracking();
+
+  // SOS and ground alerts are the most urgent signals in the dashboard —
+  // poll them like live tracking instead of only loading once at login.
+  requestAlertNotificationPermission();
+  setInterval(loadSOS, 30000);
+  setInterval(loadGroundAlerts, 30000);
 }
 
 function showLoginErr(msg){
@@ -1104,6 +1124,36 @@ async function dashSignOut(){
 // from "nothing to report" — important for SOS/ground-alert panels specifically,
 // where an empty-looking screen could actually be hiding a real active alert.
 let loadFailed = { stats:false, submissions:false, nearMiss:false, sos:false, ground:false, handovers:false };
+
+// ── Live-alert cues (SOS / Ground) ──────────────────────────────────────
+// Short beep via Web Audio API — no external audio file, no dependency.
+function playAlertBeep(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    osc.start(); osc.stop(ctx.currentTime + 0.5);
+  }catch(e){ console.warn('Alert beep failed:', e); }
+}
+function notifyNewAlert(title, body){
+  playAlertBeep();
+  try{
+    if(window.Notification && Notification.permission === 'granted'){
+      new Notification(title, { body, icon: undefined });
+    }
+  }catch(e){ console.warn('Notification failed:', e); }
+}
+function requestAlertNotificationPermission(){
+  try{ if(window.Notification && Notification.permission === 'default') Notification.requestPermission(); }
+  catch(e){}
+}
+
+let previousActiveSOSIds = new Set();
+let previousActiveGroundIds = new Set();
 
 async function loadStats(){
   const today = new Date().toISOString().split('T')[0];
@@ -1225,6 +1275,25 @@ async function loadSOS(){
   loadFailed.sos = !!error;
   if(error) console.error('SOS load error:', error.message);
   allSOS = scrub(data || []);
+
+  const active = allSOS.filter(s => s.status !== 'resolved');
+  const activeIds = new Set(active.map(s => s.id));
+  const isFirstLoad = !window._sosLoadedOnce;
+  window._sosLoadedOnce = true;
+  if(!isFirstLoad){
+    const newOnes = active.filter(s => !previousActiveSOSIds.has(s.id));
+    if(newOnes.length > 0){
+      notifyNewAlert('🆘 New SOS Alert', newOnes.map(s => (s.officer_name||'Unknown') + ' — ' + (s.zone||s.section||'')).join(', '));
+    }
+  }
+  previousActiveSOSIds = activeIds;
+
+  const cntEl = document.getElementById('cnt-sos');
+  if(cntEl){
+    cntEl.textContent = loadFailed.sos ? '!' : active.length;
+    cntEl.classList.toggle('pulse', active.length > 0);
+  }
+
   renderSOSTable();
 }
 
@@ -1343,7 +1412,7 @@ function nmTableHtml(rows){
     <div class="tbl-row nm-grid" onclick="openNMDetail('${r.id}')">
       <div class="td bold">${r.officer_name||'—'}</div>
       <div class="td">${r.incident_type||'—'}</div>
-      <div class="td">${sevBadge(r.severity)}</div>
+      <div class="td nm-severity-cell">${sevBadge(r.severity)}${r.reviewed_by ? ' <span class="badge completed">✓ Reviewed</span>' : ''}</div>
       <div class="td">${r.zone||'—'}</div>
       <div class="td">${fmtDate(r.created_at)}</div>
     </div>
@@ -1424,7 +1493,7 @@ function renderSOSTable(){
       <div class="td">
         ${r.status === 'resolved'
           ? '<span class="badge completed">Resolved</span>'
-          : '<span class="badge sent">Active</span>'}
+          : '<span class="badge sent badge-pulse">Active</span>'}
         &nbsp;${fmtDate(r.created_at)}
       </div>
     </div>
@@ -1711,10 +1780,50 @@ async function openNMDetail(id){
         <div class="detail-k">Reported At</div>
         <div class="detail-v" style="font-weight:500;">${fmtDate(nm.created_at)}</div>
       </div>
+      ${nm.reviewed_by ? `
+      <div class="detail-item detail-full">
+        <div class="detail-k">Review Notes</div>
+        <div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">${nm.review_notes||'—'}</div>
+      </div>` : ''}
     </div>
+
+    ${nm.reviewed_by ? `
+    <div class="resolved-badge">✓ Reviewed by ${nm.reviewed_by} — ${fmtDate(nm.reviewed_at)}</div>` : `
+    <div class="resolve-section">
+      <div class="slbl" style="margin-top:1rem;">Mark as Reviewed</div>
+      <div class="lg" style="margin-bottom:0.6rem;">
+        <label style="font-size:0.58rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;display:block;">Review Notes (optional)</label>
+        <textarea id="nm-review-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.8rem;border-radius:3px;outline:none;min-height:70px;resize:vertical;" placeholder="Follow-up actions, coaching given, anything closing this out..."></textarea>
+      </div>
+      <button class="btn-resolve" onclick="reviewNearMiss('${nm.id}')">
+        ✓ Mark Reviewed
+      </button>
+    </div>`}
   `;
 
   document.getElementById('detail-ov').classList.add('show');
+}
+
+async function reviewNearMiss(id){
+  const notes = document.getElementById('nm-review-notes')?.value?.trim() || null;
+  const btn = document.querySelector('.btn-resolve');
+  if(btn){ btn.disabled = true; btn.textContent = 'Saving...'; }
+
+  const nowIso = new Date().toISOString();
+  const { error } = await db.from('near_misses')
+    .update({ reviewed_by: currentUser.full_name || 'Unknown', reviewed_at: nowIso, review_notes: notes })
+    .eq('id', id);
+
+  if(error){
+    alert('Could not save review — ' + error.message);
+    if(btn){ btn.disabled = false; btn.textContent = '✓ Mark Reviewed'; }
+    return;
+  }
+
+  const nm = allNearMisses.find(x => x.id === id);
+  if(nm){ nm.reviewed_by = esc(currentUser.full_name || 'Unknown'); nm.reviewed_at = nowIso; nm.review_notes = notes ? esc(notes) : null; }
+  renderNearMissTable();
+  openNMDetail(id);
 }
 
 async function openSOSDetail(id){
@@ -2138,8 +2247,23 @@ async function loadGroundAlerts(){
   allGroundAlerts = scrub(data || []);
   renderGroundTable();
   const active = allGroundAlerts.filter(g => g.status === 'active');
+
+  const activeIds = new Set(active.map(g => g.id));
+  const isFirstLoad = !window._groundLoadedOnce;
+  window._groundLoadedOnce = true;
+  if(!isFirstLoad){
+    const newOnes = active.filter(g => !previousActiveGroundIds.has(g.id));
+    if(newOnes.length > 0){
+      notifyNewAlert('🪨 New Ground Condition Alert', newOnes.map(g => (g.officer_name||'Unknown') + ' — ' + (g.zone||g.section||'')).join(', '));
+    }
+  }
+  previousActiveGroundIds = activeIds;
+
   const el = document.getElementById('cnt-ground');
-  if(el) el.textContent = active.length || '0';
+  if(el){
+    el.textContent = active.length || '0';
+    el.classList.toggle('pulse', active.length > 0);
+  }
 }
 
 function renderGroundTable(){
@@ -2162,7 +2286,7 @@ function renderGroundTable(){
       <div class="td">${r.zone||'—'} · ${r.section||'—'}</div>
       <div class="td" style="color:var(--red);font-weight:700;">🔴 RED — Unsafe</div>
       <div class="td">${r.status==='active'
-        ? '<span class="badge ground-active">ACTIVE</span>'
+        ? '<span class="badge ground-active badge-pulse">ACTIVE</span>'
         : '<span class="badge ground-resolved">Resolved</span>'}</div>
       <div class="td">${fmtDate(r.created_at)}</div>
     </div>`).join('');
@@ -2498,7 +2622,8 @@ function renderHandovers(){
   el.innerHTML = allHandovers.map(h => `
     <div class="handover-item" onclick="openHandoverDetail('${h.id}')">
       <div class="handover-item-head">
-        <div class="handover-item-name">${h.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${h.officer_id||''} · ${h.section||'—'} · ${(h.shift_type||'').toUpperCase()} SHIFT</span></div>
+        <div class="handover-item-name">${h.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${h.officer_id||''} · ${h.section||'—'} · ${(h.shift_type||'').toUpperCase()} SHIFT</span>
+        ${h.acknowledged_by ? ' <span class="badge completed">✓ Acknowledged</span>' : ''}</div>
         <div class="handover-item-time">${fmtDate(h.created_at)}</div>
       </div>
       <div class="handover-item-body">
@@ -2529,8 +2654,41 @@ function openHandoverDetail(id){
       ${h.equipment_status    ? '<div class="detail-item detail-full"><div class="detail-k">Equipment Status</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.equipment_status+'</div></div>' : ''}
       ${h.general_notes       ? '<div class="detail-item detail-full"><div class="detail-k">General Notes</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.general_notes+'</div></div>' : ''}
     </div>
+
+    ${h.acknowledged_by ? `
+    <div class="resolved-badge">✓ Acknowledged by ${h.acknowledged_by} — ${fmtDate(h.acknowledged_at)}</div>` : `
+    <div class="resolve-section">
+      <div class="slbl" style="margin-top:1rem;">Acknowledge This Handover</div>
+      <div class="lg" style="margin-bottom:0.6rem;font-size:0.7rem;color:var(--muted);">
+        Confirms you've read and understood the hazards/notes above before entering the section.
+      </div>
+      <button class="btn-resolve" onclick="acknowledgeHandover('${h.id}')">
+        ✓ Acknowledge Handover
+      </button>
+    </div>`}
   `;
   document.getElementById('detail-ov').classList.add('show');
+}
+
+async function acknowledgeHandover(id){
+  const btn = document.querySelector('.btn-resolve');
+  if(btn){ btn.disabled = true; btn.textContent = 'Saving...'; }
+
+  const nowIso = new Date().toISOString();
+  const { error } = await db.from('shift_handovers')
+    .update({ acknowledged_by: currentUser.full_name || 'Unknown', acknowledged_at: nowIso })
+    .eq('id', id);
+
+  if(error){
+    alert('Could not acknowledge — ' + error.message);
+    if(btn){ btn.disabled = false; btn.textContent = '✓ Acknowledge Handover'; }
+    return;
+  }
+
+  const h = allHandovers.find(x => x.id === id);
+  if(h){ h.acknowledged_by = esc(currentUser.full_name || 'Unknown'); h.acknowledged_at = nowIso; }
+  renderHandovers();
+  openHandoverDetail(id);
 }
 
 // ══════════════════════════════════════════

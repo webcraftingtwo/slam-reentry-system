@@ -317,6 +317,17 @@
   .ci.checked .ctxt{text-decoration:line-through;color:var(--muted);}
   .crit-tag{display:inline-block;background:rgba(231,76,60,0.1);color:var(--red);font-size:0.52rem;font-weight:700;letter-spacing:0.12em;padding:0.12rem 0.38rem;border-radius:2px;margin-left:0.4rem;text-transform:uppercase;vertical-align:middle;}
 
+  /* PHASE ACCORDION — groups a dense phase into collapsible sub-sections */
+  .ph-accordion-section{border:1.5px solid var(--border);border-radius:6px;margin-bottom:0.85rem;overflow:hidden;background:var(--white);}
+  .ph-accordion-head{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;cursor:pointer;user-select:none;background:var(--offwhite);gap:0.6rem;}
+  .ph-accordion-title{font-size:0.78rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:0.55rem;}
+  .ph-accordion-num{width:20px;height:20px;border-radius:50%;background:var(--teal);color:#fff;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ph-accordion-progress{font-size:0.6rem;font-weight:700;color:var(--muted);white-space:nowrap;}
+  .ph-accordion-chevron{font-size:0.7rem;color:var(--muted);transition:transform 0.2s;margin-left:0.3rem;}
+  .ph-accordion-section.open .ph-accordion-chevron{transform:rotate(180deg);}
+  .ph-accordion-body{display:none;padding:1rem;border-top:1px solid var(--border);}
+  .ph-accordion-section.open .ph-accordion-body{display:block;}
+
   /* SAFETY TALK */
   .stalk-card{background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:1rem;margin-top:0.4rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
   .stalk-hdr{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.9rem;}
@@ -1675,114 +1686,139 @@
           🚨 <strong>IRT Mode Active</strong> — 2-hour blast lapse is bypassed for this re-entry. All other critical steps and gas validations remain fully enforced. This selection is recorded on the submission record.
         </div>
 
-        <div class="slbl">Checklist</div>
-        <div class="cklist">
-          <div class="ci crit" id="p1c0" onclick="tick('p1c0')"><div class="cbox"></div><div class="ctxt">Safety Talk conducted — hazards and risks of all underground tasks reviewed <span class="crit-tag">Critical</span></div></div>
-          <div class="ci crit" id="p1c1" onclick="tick('p1c1')"><div class="cbox"></div><div class="ctxt">Each individual signed in the Toolbox Talk Book <span class="crit-tag">Critical</span></div></div>
-          <div class="ci" id="p1c2" onclick="tick('p1c2')"><div class="cbox"></div><div class="ctxt">Team Talk conducted — mine production performance and work plan discussed</div></div>
-          <div class="ci crit" id="p1c3" onclick="tick('p1c3')"><div class="cbox"></div><div class="ctxt">Team registered in Attendance Record Book — clocking cards handed in to Overseer Miner / Team Leader <span class="crit-tag">Critical</span></div></div>
-          <div class="ci crit" id="p1c4" onclick="tick('p1c4')"><div class="cbox"></div><div class="ctxt">PPE and Tools inspected <span class="crit-tag">Critical</span></div></div>
-          <div class="ci crit" id="p1c5" onclick="tick('p1c5')"><div class="cbox"></div><div class="ctxt">All personnel checked and confirmed fit for duty <span class="crit-tag">Critical</span></div></div>
-          <div class="ci" id="p1c6" onclick="tick('p1c6')"><div class="cbox"></div><div class="ctxt">Overseer Miner assigned a competent person to oversee the team whilst proceeding for re-entry</div></div>
-        </div>
-
-        <div class="slbl">Safety Talk Record</div>
-        <div class="stalk-card">
-          <div class="stalk-hdr">
-            <div class="stalk-ico">🗣</div>
-            <div><div class="stalk-ht">Safety Talk Topic</div><div class="stalk-hs">Select all topics covered. Add specific notes below.</div></div>
+        <div class="ph-accordion-section open" id="acc-p1-safety">
+          <div class="ph-accordion-head" onclick="toggleAccordionSection('p1-safety')">
+            <div class="ph-accordion-title"><span class="ph-accordion-num">1</span>Safety Talk &amp; Checklist</div>
+            <div class="ph-accordion-progress" id="acc-p1-safety-progress">0 of 7 done</div>
+            <div class="ph-accordion-chevron">▾</div>
           </div>
-          <div class="topic-chips">
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Bad Hangings</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Gas Exposure</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Misfire Handling</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">PPE Compliance</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Barring Down</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Explosives Safety</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Ventilation</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Ground Stability</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Dust & Fumes</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Re-Entry Procedure</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Emergency Evacuation</div>
-            <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">FOG Lights</div>
-          </div>
-          <div class="stalk-nl">Additional Notes / Specific Topic Details</div>
-          <textarea id="stalk-notes" placeholder="Describe any specific details, incidents referenced, or additional topics discussed..." oninput="saveDraft()"></textarea>
-        </div>
+          <div class="ph-accordion-body">
+            <div class="slbl">Checklist</div>
+            <div class="cklist">
+              <div class="ci crit" id="p1c0" onclick="tick('p1c0')"><div class="cbox"></div><div class="ctxt">Safety Talk conducted — hazards and risks of all underground tasks reviewed <span class="crit-tag">Critical</span></div></div>
+              <div class="ci crit" id="p1c1" onclick="tick('p1c1')"><div class="cbox"></div><div class="ctxt">Each individual signed in the Toolbox Talk Book <span class="crit-tag">Critical</span></div></div>
+              <div class="ci" id="p1c2" onclick="tick('p1c2')"><div class="cbox"></div><div class="ctxt">Team Talk conducted — mine production performance and work plan discussed</div></div>
+              <div class="ci crit" id="p1c3" onclick="tick('p1c3')"><div class="cbox"></div><div class="ctxt">Team registered in Attendance Record Book — clocking cards handed in to Overseer Miner / Team Leader <span class="crit-tag">Critical</span></div></div>
+              <div class="ci crit" id="p1c4" onclick="tick('p1c4')"><div class="cbox"></div><div class="ctxt">PPE and Tools inspected <span class="crit-tag">Critical</span></div></div>
+              <div class="ci crit" id="p1c5" onclick="tick('p1c5')"><div class="cbox"></div><div class="ctxt">All personnel checked and confirmed fit for duty <span class="crit-tag">Critical</span></div></div>
+              <div class="ci" id="p1c6" onclick="tick('p1c6')"><div class="cbox"></div><div class="ctxt">Overseer Miner assigned a competent person to oversee the team whilst proceeding for re-entry</div></div>
+            </div>
 
-        <div class="slbl">Crew Members Present</div>
-        <div class="crew-section">
-
-          <!-- TICK ALL -->
-          <div class="crew-all-row" id="crew-all-row" onclick="toggleAllCrew()">
-            <div class="crew-all-check" id="crew-all-check">✓</div>
-            <div>
-              <div class="crew-all-label">All Crew Members Present</div>
-              <div class="crew-all-sub">Tap to add entire section crew to this re-entry</div>
+            <div class="slbl">Safety Talk Record</div>
+            <div class="stalk-card">
+              <div class="stalk-hdr">
+                <div class="stalk-ico">🗣</div>
+                <div><div class="stalk-ht">Safety Talk Topic</div><div class="stalk-hs">Select all topics covered. Add specific notes below.</div></div>
+              </div>
+              <div class="topic-chips">
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Bad Hangings</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Gas Exposure</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Misfire Handling</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">PPE Compliance</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Barring Down</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Explosives Safety</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Ventilation</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Ground Stability</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Dust & Fumes</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Re-Entry Procedure</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">Emergency Evacuation</div>
+                <div class="chip" onclick="this.classList.toggle('sel');saveDraft()">FOG Lights</div>
+              </div>
+              <div class="stalk-nl">Additional Notes / Specific Topic Details</div>
+              <textarea id="stalk-notes" placeholder="Describe any specific details, incidents referenced, or additional topics discussed..." oninput="saveDraft()"></textarea>
             </div>
           </div>
-
-          <!-- PRELOADED NAMES — tap to select/deselect -->
-          <div class="crew-names-grid" id="crew-names-grid"></div>
-
-          <!-- ADDED CREW LIST -->
-          <div class="crew-added-list" id="crew-list"></div>
-
-          <!-- DIVIDER -->
-          <div class="crew-divider">
-            <div class="crew-divider-line"></div>
-            <div class="crew-divider-txt">Add someone not on the list</div>
-            <div class="crew-divider-line"></div>
-          </div>
-
-          <!-- MANUAL ADD BLOCK -->
-          <div class="crew-manual-block">
-            <div class="fg">
-              <label>Full Name</label>
-              <input type="text" id="crew-name-inp" placeholder="Enter full name" maxlength="60"/>
-            </div>
-            <div class="fg">
-              <label>Role</label>
-              <select id="crew-role-inp">
-                <option value="Competent Assistant">Competent Assistant</option>
-                <option value="Geo-Technician">Geo-Technician</option>
-                <option value="Safety Officer">Safety Officer</option>
-                <option value="Shift Boss">Shift Boss</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <button class="btn-add-crew" onclick="addCrewMember()">+ Add to Crew</button>
-          </div>
-
         </div>
 
-        <div class="slbl">Identify Hazards</div>
-        <div class="haz-grid">
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Fall of Ground</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Underground Fire</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Lifting and Rigging</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Confined Spaces</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Mechanical Energy</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Proximity to Water Bodies</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Underground Explosion</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">UG Mobile Equipment</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Working at Heights</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Vehicles / Mobile Equipment</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Hazardous Material</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Diesel, Dust & Air Emissions</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Explosives Handling</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">UG Ventilation</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Electrical Safety & Integrity</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Surface Structural Integrity</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Biological Agents</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Environmental Pollution</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Machinery Rotating Parts</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Pressure Equipment</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Tailings</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Molten Materials</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Open Pit Slopes</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Surface Fire</div>
-            <div class="hchip" onclick="this.classList.toggle('sel');saveDraft()">Security</div>
+        <div class="ph-accordion-section" id="acc-p1-crew">
+          <div class="ph-accordion-head" onclick="toggleAccordionSection('p1-crew')">
+            <div class="ph-accordion-title"><span class="ph-accordion-num">2</span>Crew Members Present</div>
+            <div class="ph-accordion-progress" id="acc-p1-crew-progress">0 added</div>
+            <div class="ph-accordion-chevron">▾</div>
+          </div>
+          <div class="ph-accordion-body">
+            <div class="crew-section">
+
+              <!-- TICK ALL -->
+              <div class="crew-all-row" id="crew-all-row" onclick="toggleAllCrew()">
+                <div class="crew-all-check" id="crew-all-check">✓</div>
+                <div>
+                  <div class="crew-all-label">All Crew Members Present</div>
+                  <div class="crew-all-sub">Tap to add entire section crew to this re-entry</div>
+                </div>
+              </div>
+
+              <!-- PRELOADED NAMES — tap to select/deselect -->
+              <div class="crew-names-grid" id="crew-names-grid"></div>
+
+              <!-- ADDED CREW LIST -->
+              <div class="crew-added-list" id="crew-list"></div>
+
+              <!-- DIVIDER -->
+              <div class="crew-divider">
+                <div class="crew-divider-line"></div>
+                <div class="crew-divider-txt">Add someone not on the list</div>
+                <div class="crew-divider-line"></div>
+              </div>
+
+              <!-- MANUAL ADD BLOCK -->
+              <div class="crew-manual-block">
+                <div class="fg">
+                  <label>Full Name</label>
+                  <input type="text" id="crew-name-inp" placeholder="Enter full name" maxlength="60"/>
+                </div>
+                <div class="fg">
+                  <label>Role</label>
+                  <select id="crew-role-inp">
+                    <option value="Competent Assistant">Competent Assistant</option>
+                    <option value="Geo-Technician">Geo-Technician</option>
+                    <option value="Safety Officer">Safety Officer</option>
+                    <option value="Shift Boss">Shift Boss</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <button class="btn-add-crew" onclick="addCrewMember()">+ Add to Crew</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="ph-accordion-section" id="acc-p1-hazards">
+          <div class="ph-accordion-head" onclick="toggleAccordionSection('p1-hazards')">
+            <div class="ph-accordion-title"><span class="ph-accordion-num">3</span>Identify Hazards</div>
+            <div class="ph-accordion-progress" id="acc-p1-hazards-progress">0 selected</div>
+            <div class="ph-accordion-chevron">▾</div>
+          </div>
+          <div class="ph-accordion-body">
+            <div class="haz-grid">
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Fall of Ground</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Underground Fire</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Lifting and Rigging</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Confined Spaces</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Mechanical Energy</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Proximity to Water Bodies</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Underground Explosion</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">UG Mobile Equipment</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Working at Heights</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Vehicles / Mobile Equipment</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Hazardous Material</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Diesel, Dust & Air Emissions</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Explosives Handling</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">UG Ventilation</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Electrical Safety & Integrity</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Surface Structural Integrity</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Biological Agents</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Environmental Pollution</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Machinery Rotating Parts</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Pressure Equipment</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Tailings</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Molten Materials</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Open Pit Slopes</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Surface Fire</div>
+                <div class="hchip" onclick="this.classList.toggle('sel');saveDraft();updateAccordionProgress()">Security</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2741,6 +2777,7 @@ function launchApp(){
     if(Array.isArray(draft.hazardChips)){
       const hchips = document.querySelectorAll('.hchip');
       draft.hazardChips.forEach(i=>{ if(hchips[i]) hchips[i].classList.add('sel'); });
+      updateAccordionProgress();
     }
 
     // Topic chips
@@ -3250,6 +3287,31 @@ function tick(id){
   el.classList.remove('highlight-err');
   saveDraft();
   updateFooter();
+  updateAccordionProgress();
+}
+
+// ── PHASE ACCORDION (Phase 2 "Waiting Place" — grouped into sub-sections
+// so the miner isn't looking at checklist + safety talk + crew + 24 hazard
+// chips all at once). Purely visual — doesn't touch nextPhase()/CRITS gating.
+function toggleAccordionSection(id){
+  const section = document.getElementById('acc-'+id);
+  if(section) section.classList.toggle('open');
+}
+function updateAccordionProgress(){
+  const safetyEl = document.getElementById('acc-p1-safety-progress');
+  if(safetyEl){
+    const total   = document.querySelectorAll('#pp1 .cklist .ci').length;
+    const checked = document.querySelectorAll('#pp1 .cklist .ci.checked').length;
+    safetyEl.textContent = checked + ' of ' + total + ' done';
+  }
+  const crewEl = document.getElementById('acc-p1-crew-progress');
+  if(crewEl) crewEl.textContent = crewMembers.length + ' added';
+
+  const hazEl = document.getElementById('acc-p1-hazards-progress');
+  if(hazEl){
+    const sel = document.querySelectorAll('#pp1 .haz-grid .hchip.sel').length;
+    hazEl.textContent = sel + ' selected';
+  }
 }
 
 // ══════════════════════════════════════════
@@ -3344,6 +3406,7 @@ function showPhase(n){
   currentPhase=n;
   updateFooter();
   if(n===5)updateNmSummary();
+  if(n===1)updateAccordionProgress();
   // Always land at the top of the page when switching phases —
   // whether via Next or by tapping a phase tab directly.
   window.scrollTo({top:0,behavior:'smooth'});
@@ -3477,6 +3540,7 @@ function doSign(boxId,txtId,isSelf){
   if(box.classList.contains('signed'))return;
   const name=isSelf?userData.name:(document.getElementById('sup-name').value.trim()||'Supervisor');
   if(!isSelf&&!document.getElementById('sup-name').value.trim()){alert('Please enter the supervisor name first.');return;}
+  if(!confirm('Confirm this is your signature — '+name+'?'))return;
   box.classList.add('signed');
   document.getElementById(txtId).textContent='✓ Signed — '+name+' · '+new Date().toLocaleTimeString();
 }
@@ -4460,6 +4524,7 @@ function removeCrewMember(idx){
 
 function renderCrewList(){
   renderCrewNamesGrid();
+  updateAccordionProgress();
   const list  = document.getElementById('crew-list');
   const empty = document.getElementById('crew-empty');
   if(!list) return;
