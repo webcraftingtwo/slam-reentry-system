@@ -5671,16 +5671,25 @@ let recheckActive    = false;
 let periodicInterval = null;
 
 function startRecheckTimer(secs, subText){
-  recheckSecs    = secs;
-  recheckEndTime = Date.now() + secs * 1000;   // fixed target time — remaining is derived from the clock, not counted down
-  recheckActive  = true;
+  // Don't restart a recheck that's already counting down toward a still-future
+  // target. A page refresh re-runs validateGas() (to rebuild the failure UI),
+  // which calls this again — without this guard the 15-minute countdown would
+  // reset to full every reload instead of continuing where it left off.
+  const alreadyRunning = recheckActive && recheckEndTime > Date.now();
+  if(!alreadyRunning){
+    recheckSecs    = secs;
+    recheckEndTime = Date.now() + secs * 1000;   // fixed target time — remaining is derived from the clock, not counted down
+    recheckActive  = true;
+    // Suspend the 30-min re-entry timer while miner waits for gas to clear.
+    // Only on a genuinely new recheck — on a reload the paused state was already
+    // restored from localStorage and must not be overwritten.
+    pauseTimerForRecheck();
+  }
   const card = document.getElementById('recheck-card');
   const sub  = document.getElementById('recheck-sub');
   if(card) card.classList.add('show');
   if(sub && subText) sub.textContent = subText;
 
-  // Suspend the 30-min re-entry timer while miner waits for gas to clear
-  pauseTimerForRecheck();
   persistTimerMeta();   // record recheckActive/recheckEndTime so a reload can restore this recheck
 
   if(recheckInterval) clearInterval(recheckInterval);
