@@ -2469,7 +2469,8 @@ window.addEventListener('error', (e) => {
 // ══ CREW PRELOAD CONFIG ══
 // Replace these dummy names with real crew before deployment
 // Future: load from CSV or database query
-const CREW_PRELOAD = [
+// Default fallback crew shown when a logged-in miner has no roster of their own.
+let CREW_PRELOAD = [
   { name: 'John Moyo',      role: 'Competent Assistant' },
   { name: 'Tinashe Dube',   role: 'Competent Assistant' },
   { name: 'Blessing Ncube', role: 'Competent Assistant' },
@@ -2481,6 +2482,68 @@ const CREW_PRELOAD = [
   { name: 'Knowledge Dewa', role: 'Geo-Technician' },
   { name: 'Fortune Choto',  role: 'Safety Officer' },
 ];
+
+// ══ PRELOADED SHIFT CREWS ══
+// Keyed by the CREW LEADER's badge id (the first-row miner on each roster).
+// When that leader logs in, applyCrewRoster() swaps CREW_PRELOAD to their team
+// and auto-fills the crew list so their members already show.
+// NOTE: 14 South roles are intentionally left blank — to be filled in later.
+// FLAG: In 16 North, "Valentine Ndawana" shares badge 80092718 with
+// "Aibod Kamwaya" in the source photo — likely a capture error; verify/correct.
+const CREW_ROSTERS = {
+  // ── 14 South · Shift B — Leader: Michael Mugabe ──
+  '80077007': {
+    section: '14 South',
+    shift:   'B',
+    leader:  { name: 'Michael Mugabe', role: '', badge: '80077007' },
+    members: [
+      { name: 'Tatenda Chimbadzwa', role: '', badge: '80097167' },
+      { name: 'Pearson Makusha',    role: '', badge: '80098015' },
+      { name: 'Babbage Machimbira', role: '', badge: '80123004' },
+      { name: 'Ronald Rajah',       role: '', badge: '80082003' },
+      { name: 'Canaan Ncube',       role: '', badge: '80104385' },
+      { name: 'Benson Chilwa',      role: '', badge: '80111976' },
+      { name: 'Brian Shumba',       role: '', badge: '80113900' },
+      { name: 'Denford Munyai',     role: '', badge: '80116589' },
+      { name: 'Panashe Gwangwava',  role: '', badge: '80121919' },
+      { name: 'Alidi Assani',       role: '', badge: '80077331' },
+      { name: 'Markmore Nyevera',   role: '', badge: '80076820' },
+    ],
+  },
+  // ── 16 North · Shift B — Leader: Brighton Mapika (Overseer Miner) ──
+  '80085622': {
+    section: '16 North',
+    shift:   'B',
+    leader:  { name: 'Brighton Mapika', role: 'Overseer Miner', badge: '80085622' },
+    members: [
+      { name: 'David Gova',         role: 'Team Leader Lashing',  badge: '80111084' },
+      { name: 'Aibod Kamwaya',      role: 'Team Leader Support',  badge: '80092718' },
+      { name: 'Valentine Ndawana',  role: 'Bolter Operator',      badge: '80092718' }, // FLAG: duplicate badge
+      { name: 'Lot Mutungamiri',    role: 'Drill Rig Operator',   badge: '80076975' },
+      { name: 'John Moyo',          role: 'Rock Breaker Operator',badge: '80076798' },
+      { name: 'Boy A. Makanganise', role: 'Assistant',            badge: '80076960' },
+      { name: 'Viginia Rice',       role: 'Assistant',            badge: '80108693' },
+      { name: 'Robert Sithole',     role: 'Lasher',               badge: '80113892' },
+      { name: 'Munyaradzi Manyera', role: 'Lasher',               badge: '80121346' },
+      { name: 'Sam Siziba',         role: 'LHD Operator',         badge: '80101927' },
+      { name: 'Agreement Shumba',   role: 'LHD Operator',         badge: '80123006' },
+    ],
+  },
+};
+
+// Preload the logged-in leader's crew (matched on their badge id). Swaps the
+// selectable CREW_PRELOAD grid to their team, and — only when this run has no
+// crew yet — auto-populates the crew list so their members already show.
+function applyCrewRoster(){
+  const roster = userData && userData.id ? CREW_ROSTERS[userData.id] : null;
+  if(!roster) return;  // unknown/non-leader badge — keep the default preload
+  CREW_PRELOAD = roster.members.map(m => ({ name: m.name, role: m.role || '', badge: m.badge || '' }));
+  if(!Array.isArray(crewMembers) || crewMembers.length === 0){
+    crewMembers = roster.members.map(m => ({ name: m.name, role: m.role || '', badge: m.badge || '' }));
+    renderCrewList();
+    saveDraft();
+  }
+}
 
 function initDB() {
   try {
@@ -2972,6 +3035,9 @@ function launchApp(){
     const savedType = draft?.reentryType || localStorage.getItem('valterra_reentry_type');
     if(savedType === 'irt') setReentryType('irt');
   }catch(e){}
+  // Preload this leader's shift crew (if their badge maps to a roster), then
+  // render the selectable grid so the right team shows.
+  applyCrewRoster();
   renderCrewNamesGrid();
 
   // Check for incoming shift handover
@@ -4658,7 +4724,7 @@ function renderCrewList(){
   list.innerHTML = crewMembers.map((c,i) => `
     <div class="crew-item">
       <div>
-        <div class="crew-item-name">${esc(c.name)}</div>
+        <div class="crew-item-name">${esc(c.name)}${c.badge ? ' <span style="font-weight:500;color:var(--muted);font-size:0.62rem;">#'+esc(c.badge)+'</span>' : ''}</div>
         <div class="crew-item-role">${esc(c.role)}</div>
       </div>
       <button class="crew-remove" onclick="removeCrewMember(${i})" title="Remove">✕</button>
@@ -5620,7 +5686,7 @@ function togglePreloadCrew(idx){
   if(crewMembers.some(c => c.name === p.name)){
     crewMembers = crewMembers.filter(c => c.name !== p.name);
   } else {
-    crewMembers.push({ name: p.name, role: p.role });
+    crewMembers.push({ name: p.name, role: p.role, ...(p.badge ? { badge: p.badge } : {}) });
   }
   renderCrewNamesGrid();
   renderCrewList();
@@ -5636,7 +5702,7 @@ function toggleAllCrew(){
     // Add all preloaded not already in list
     CREW_PRELOAD.forEach(p => {
       if(!crewMembers.some(c => c.name === p.name)){
-        crewMembers.push({ name: p.name, role: p.role });
+        crewMembers.push({ name: p.name, role: p.role, ...(p.badge ? { badge: p.badge } : {}) });
       }
     });
   }

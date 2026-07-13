@@ -634,6 +634,9 @@
     <div class="dnav" id="dnav-handovers" onclick="switchPanel('handovers')">
       📋 Handovers
     </div>
+    <div class="dnav" id="dnav-notes" onclick="switchPanel('notes')">
+      📝 Shift Notes <span class="dnav-count" id="cnt-notes">0</span>
+    </div>
     <div class="dnav" id="dnav-bord" onclick="switchPanel('bord')">
       ⛏ Bord Tracker <span class="dnav-count" id="cnt-bord" style="background:var(--teal);">0</span>
     </div>
@@ -833,6 +836,8 @@
           <option value="afternoon">Afternoon Shift</option>
           <option value="night">Night Shift</option>
         </select>
+        <input type="date" class="f-input" id="f-ho-date" onchange="loadHandovers()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+        <button class="btn-filter" onclick="clearDateFilter('f-ho-date', loadHandovers)">Clear date</button>
       </div>
       <div id="handovers-list">
         <div class="loading">Loading handovers...</div>
@@ -852,6 +857,8 @@
             <option>South Strike (SS)</option>
             <option>North Strike (NS)</option>
           </select>
+          <input type="date" class="f-input" id="f-bord-date" onchange="loadBordTracker()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+          <button class="btn-filter" onclick="clearDateFilter('f-bord-date', loadBordTracker)">Clear date</button>
           <button class="btn-filter" onclick="loadBordTracker()">↺ Refresh</button>
           <button class="btn-export" onclick="exportBordCSV()">Export CSV</button>
         </div>
@@ -869,6 +876,25 @@
 
       <div id="bord-table">
         <div class="loading">Loading bord status...</div>
+      </div>
+    </div>
+
+    <!-- SHIFT NOTES PANEL -->
+    <div class="dash-panel" id="panel-notes">
+      <div class="filters">
+        <span class="filter-label">Filter:</span>
+        <select class="f-select" id="f-sn-section" onchange="loadShiftNotes()">
+          <option value="">All Sections</option>
+          <option>North Section</option>
+          <option>South Section</option>
+          <option>Development Section</option>
+        </select>
+        <input type="date" class="f-input" id="f-sn-date" onchange="loadShiftNotes()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+        <button class="btn-filter" onclick="clearDateFilter('f-sn-date', loadShiftNotes)">Clear date</button>
+        <button class="btn-filter" onclick="loadShiftNotes()">↺ Refresh</button>
+      </div>
+      <div id="notes-list">
+        <div class="loading">Loading shift notes...</div>
       </div>
     </div>
 
@@ -1123,7 +1149,7 @@ async function dashSignOut(){
 // the UI can show an explicit "failed to load" state instead of one indistinguishable
 // from "nothing to report" — important for SOS/ground-alert panels specifically,
 // where an empty-looking screen could actually be hiding a real active alert.
-let loadFailed = { stats:false, submissions:false, nearMiss:false, sos:false, ground:false, handovers:false };
+let loadFailed = { stats:false, submissions:false, nearMiss:false, sos:false, ground:false, handovers:false, notes:false };
 
 // ── Live-alert cues (SOS / Ground) ──────────────────────────────────────
 // Short beep via Web Audio API — no external audio file, no dependency.
@@ -1689,7 +1715,7 @@ async function openSubDetail(id){
         try{ crew = sub.crew_members ? JSON.parse(sub.crew_members) : []; }catch(e){}
         if(crew.length === 0) return '';
         return '<div class="detail-item detail-full"><div class="detail-k">Crew Members Present</div><div class="crew-tags">'
-          + crew.map(c => '<span class="crew-tag">'+esc(c.name)+' ('+esc(c.role)+')</span>').join('')
+          + crew.map(c => '<span class="crew-tag">'+esc(c.name)+(c.badge?' #'+esc(c.badge):'')+' ('+esc(c.role)+')</span>').join('')
           + '</div></div>';
       })()}
       <div class="detail-item">
@@ -1938,7 +1964,7 @@ function closeDetail(){
 //  PANEL SWITCHING
 // ══════════════════════════════════════════
 function switchPanel(name){
-  ['overview','submissions','nearmiss','sos','live','ground','analytics','handovers','bord'].forEach(p => {
+  ['overview','submissions','nearmiss','sos','live','ground','analytics','handovers','notes','bord'].forEach(p => {
     document.getElementById('panel-'+p)?.classList.toggle('active', p===name);
     document.getElementById('dnav-'+p)?.classList.toggle('active', p===name);
   });
@@ -1946,7 +1972,27 @@ function switchPanel(name){
   if(name === 'ground')    loadGroundAlerts();
   if(name === 'analytics') loadAnalytics();
   if(name === 'handovers') loadHandovers();
+  if(name === 'notes')     loadShiftNotes();
   if(name === 'bord')      loadBordTracker();
+}
+
+// ── Date filtering helpers ──────────────────────────────────────────────
+// Clears a date <input> and re-runs its loader. Passed the loader fn so the
+// same helper works for handovers, bord tracker and shift notes.
+function clearDateFilter(inputId, loader){
+  const el = document.getElementById(inputId);
+  if(el) el.value = '';
+  loader();
+}
+// Turn a 'YYYY-MM-DD' value from a date input into the local-day [start,end)
+// range as ISO strings, for Supabase .gte/.lt on a timestamptz column.
+// Returns null when no date is selected.
+function dayRange(dateStr){
+  if(!dateStr) return null;
+  const start = new Date(dateStr + 'T00:00:00');
+  if(isNaN(start.getTime())) return null;
+  const end = new Date(start.getTime() + 24*60*60*1000);
+  return { startIso: start.toISOString(), endIso: end.toISOString() };
 }
 
 // ══════════════════════════════════════════
@@ -2114,7 +2160,7 @@ async function exportSubPDF(id){
 <h2>Safety Talk Topics</h2><p style="font-size:0.85rem;">${sub.safety_topics||'Not recorded'}</p>
 <h2>Gas Readings (MGDI)</h2>${gasHtml}
 <h2>Crew Present (${crew.length})</h2>
-<ul>${crew.length > 0 ? crew.map(c => '<li>'+esc(c.name)+' — '+esc(c.role)+'</li>').join('') : '<li>Not recorded</li>'}</ul>
+<ul>${crew.length > 0 ? crew.map(c => '<li>'+esc(c.name)+(c.badge?' (#'+esc(c.badge)+')':'')+' — '+esc(c.role)+'</li>').join('') : '<li>Not recorded</li>'}</ul>
 <h2>Near Misses (${(nms||[]).length})</h2>
 ${(nms||[]).length > 0 ? (nms||[]).map(n => '<div class="nm"><strong>'+n.incident_type+'</strong> ['+((n.severity||'').toUpperCase())+'] — '+(n.description||'—')+'</div>').join('') : '<p>None reported</p>'}
 <div class="foot"><span>Valterra Platinum · Unki Mine · Mining Department</span><span>Retained 5 years per Record Control Policy</span></div>
@@ -2593,12 +2639,14 @@ let allHandovers = [];
 async function loadHandovers(){
   const section = document.getElementById('f-ho-section')?.value || '';
   const shift   = document.getElementById('f-ho-shift')?.value   || '';
+  const range   = dayRange(document.getElementById('f-ho-date')?.value || '');
 
   let query = db.from('shift_handovers').select('*')
     .order('created_at',{ascending:false}).limit(100);
 
   if(section) query = query.eq('section', section);
   if(shift)   query = query.eq('shift_type', shift);
+  if(range)   query = query.gte('created_at', range.startIso).lt('created_at', range.endIso);
 
   const { data, error } = await query;
   loadFailed.handovers = !!error;
@@ -2693,6 +2741,57 @@ async function acknowledgeHandover(id){
 }
 
 // ══════════════════════════════════════════
+//  SHIFT NOTES
+// ══════════════════════════════════════════
+let allShiftNotes = [];
+
+async function loadShiftNotes(){
+  const section = document.getElementById('f-sn-section')?.value || '';
+  const range   = dayRange(document.getElementById('f-sn-date')?.value || '');
+
+  let query = db.from('shift_notes').select('*')
+    .order('created_at',{ascending:false}).limit(200);
+
+  if(section) query = query.eq('section', section);
+  if(range)   query = query.gte('created_at', range.startIso).lt('created_at', range.endIso);
+
+  const { data, error } = await query;
+  loadFailed.notes = !!error;
+  if(error){ console.error('Shift notes error:', error.message); renderShiftNotes(); return; }
+  allShiftNotes = scrub(data || []);
+
+  const cntEl = document.getElementById('cnt-notes');
+  if(cntEl) cntEl.textContent = allShiftNotes.length;
+
+  renderShiftNotes();
+}
+
+function renderShiftNotes(){
+  const el = document.getElementById('notes-list');
+  if(!el) return;
+
+  if(loadFailed.notes){
+    el.innerHTML = '<div class="empty">⚠ Failed to load shift notes — check your connection and retry</div>';
+    return;
+  }
+  if(allShiftNotes.length === 0){
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📝</div>No shift notes recorded</div>';
+    return;
+  }
+
+  // Fields are already escaped by scrub(); note_text kept as pre-wrap free text.
+  el.innerHTML = allShiftNotes.map(n => `
+    <div class="handover-item" style="cursor:default;">
+      <div class="handover-item-head">
+        <div class="handover-item-name">${n.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${n.officer_id||''} · ${n.section||'—'}</span></div>
+        <div class="handover-item-time">${fmtDate(n.created_at)}</div>
+      </div>
+      <div class="handover-item-body" style="white-space:pre-wrap;">${n.note_text||'—'}</div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════
 //  BORD CYCLE TRACKER
 // ══════════════════════════════════════════
 const BORD_STAGE_LABELS = {
@@ -2714,17 +2813,25 @@ async function loadBordTracker(){
   el.innerHTML = '<div class="loading">Loading bord status...</div>';
 
   const sectionFilter = document.getElementById('f-bord-section')?.value || '';
+  const range         = dayRange(document.getElementById('f-bord-date')?.value || '');
 
   try {
-    // Pull the most recent update per bord — last 30 days
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - 30);
-
-    const { data, error } = await db.from('bord_cycle_updates')
+    // Pull updates for the selected day, or the most recent 30 days when no
+    // date is chosen. Either way we dedupe to the latest update per bord below.
+    let query = db.from('bord_cycle_updates')
       .select('*')
-      .gte('recorded_at', cutoff.toISOString())
       .order('recorded_at', { ascending: false })
       .limit(500);
+
+    if(range){
+      query = query.gte('recorded_at', range.startIso).lt('recorded_at', range.endIso);
+    } else {
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - 30);
+      query = query.gte('recorded_at', cutoff.toISOString());
+    }
+
+    const { data, error } = await query;
 
     if(error) throw error;
     allBordUpdates = scrub(data || []);
@@ -2750,7 +2857,8 @@ async function loadBordTracker(){
     if(cntEl) cntEl.textContent = filteredBords.length;
 
     if(filteredBords.length === 0){
-      el.innerHTML = '<div class="empty"><div class="empty-icon">⛏</div>No bord updates in the last 30 days</div>';
+      const when = range ? 'on the selected date' : 'in the last 30 days';
+      el.innerHTML = '<div class="empty"><div class="empty-icon">⛏</div>No bord updates ' + when + '</div>';
       return;
     }
 
