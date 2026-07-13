@@ -397,6 +397,20 @@
   }
   .btn-retake:hover { background:var(--teal-dark); }
 
+  .btn-confirm-gas {
+    width:100%; margin-top:0.85rem; background:var(--teal); color:#fff; border:none;
+    padding:0.82rem; font-family:'Montserrat',sans-serif; font-size:0.72rem;
+    font-weight:800; letter-spacing:0.14em; text-transform:uppercase;
+    border-radius:3px; cursor:pointer; transition:background 0.15s;
+  }
+  .btn-confirm-gas:hover { background:var(--teal-dark); }
+  .btn-confirm-gas.confirmed { background:var(--green); }
+  .gas-confirmed-msg {
+    display:none; margin-top:0.5rem; font-size:0.68rem; font-weight:700;
+    color:var(--green); text-align:center; letter-spacing:0.04em;
+  }
+  .gas-confirmed-msg.show { display:block; }
+
   .btn-abort {
     flex:1; background:#fff; color:var(--red);
     border:1.5px solid var(--red); padding:0.7rem;
@@ -579,6 +593,13 @@
     cursor:pointer;padding:0.2rem 0.5rem;transition:color 0.15s;
   }
   .signout-btn:hover{color:#fff;}
+  .tb-home-btn{
+    background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);
+    font-family:'Montserrat',sans-serif;font-size:0.62rem;font-weight:700;
+    letter-spacing:0.08em;text-transform:uppercase;color:#fff;
+    cursor:pointer;padding:0.3rem 0.6rem;border-radius:3px;transition:background 0.15s;
+  }
+  .tb-home-btn:hover{background:rgba(255,255,255,0.22);}
 
 
   /* ══════ OFFLINE BAR ══════ */
@@ -1409,9 +1430,9 @@
 
   <div class="topbar">
     <div class="tb-l">
-      <span class="tb-name">Valterra</span>
+      <button class="tb-home-btn" onclick="navHome()" title="Back to main menu — your progress is saved">⌂ Home</button>
       <div class="tb-sep"></div>
-      <span class="tb-proc">SLAM Re-Entry</span>
+      <span class="tb-name">Valterra</span>
     </div>
     <div class="tb-r">
       <div class="tb-av" id="tb-av">VM</div>
@@ -1456,6 +1477,11 @@
     </div>
     <select class="zone-sel" id="zone-sel" onchange="checkInZone(this.value)">
       <option value="">Check in to zone</option>
+      <!-- Re-entry locations: bare options (outside any optgroup) so they appear
+           for zone check-in but are excluded from the Bord Cycle Tracker, which
+           only parses <optgroup> bords. -->
+      <option value="Lamp and Crush">Lamp and Crush</option>
+      <option value="Waiting Place">Waiting Place</option>
       <optgroup label="South Strike (SS)">
         <option value="1SS B1">1 South Strike — Bord 1</option>
         <option value="1SS B2">1 South Strike — Bord 2</option>
@@ -1904,6 +1930,12 @@
           </div>
         </div>
 
+        <!-- Explicit confirm — readings must be committed before proceeding -->
+        <button class="btn-confirm-gas" id="btn-confirm-gas" onclick="confirmGasReadings()">
+          Confirm Readings →
+        </button>
+        <div class="gas-confirmed-msg" id="gas-confirmed-msg">✓ Gas readings confirmed</div>
+
         <!-- FOG LIGHT GROUND CONDITION -->
         <div class="fog-section">
           <label class="fog-lbl">Ground Condition — FOG Light Status</label>
@@ -2122,7 +2154,7 @@
       <div class="sos-s">Tap the button above to activate, then press SEND ALERT to notify surface control immediately.</div>
     </div>
     <div class="sos-detail">
-      <div class="sos-drow"><span class="sos-dk">Officer</span><span class="sos-dv" id="sos-officer">—</span></div>
+      <div class="sos-drow"><span class="sos-dk">Miner</span><span class="sos-dv" id="sos-officer">—</span></div>
       <div class="sos-drow"><span class="sos-dk">Badge</span><span class="sos-dv" id="sos-badge">—</span></div>
       <div class="sos-drow"><span class="sos-dk">Zone</span><span class="sos-dv" id="sos-zone">Not set</span></div>
       <div class="sos-drow"><span class="sos-dk">Section</span><span class="sos-dv" id="sos-section">—</span></div>
@@ -2269,30 +2301,25 @@
         <input type="text" id="ho-incoming" placeholder="Name of the incoming Overseer Miner"/>
       </div>
 
-      <button class="btn-submit-handover" id="btn-submit-handover" onclick="submitHandover()">
-        Submit Handover Record →
-      </button>
-
-      <!-- ── BORD CYCLE TRACKER ── -->
+      <!-- ── BORD CYCLE TRACKER (part of the same handover form) ── -->
       <div class="bct-wrap" id="bct-wrap">
         <div class="bct-head">
           <div class="bct-icon">⛏</div>
           <div>
             <div class="bct-title">Bord Status Update</div>
-            <div class="bct-sub">Select bords worked this shift and set their current cycle stage</div>
+            <div class="bct-sub">Select bords worked this shift and set their current stage (optional)</div>
           </div>
         </div>
 
         <!-- Bord list rendered by JS into this container -->
         <div id="bct-bord-list"></div>
-
-        <div class="bct-saved-msg" id="bct-saved-msg">✓ Bord status saved — incoming shift will see this on the dashboard</div>
-
-        <button class="btn-bct-submit" id="btn-bct-submit" onclick="submitBordUpdate()" style="margin-top:0.85rem;">
-          Save Bord Status →
-        </button>
-        <div class="bct-skip" onclick="skipBordUpdate()">Skip — no bord update needed</div>
       </div>
+
+      <div class="bct-saved-msg" id="bct-saved-msg">✓ Saved — incoming shift will see this on the dashboard</div>
+
+      <button class="btn-submit-handover" id="btn-submit-handover" onclick="submitHandoverAndBord()">
+        Submit Handover →
+      </button>
     </div>
   </div>
 </div>
@@ -2324,7 +2351,7 @@
       <div class="ground-title">UNSAFE GROUND CONDITIONS</div>
       <div class="ground-desc">FOG light is RED. Ground conditions are unsafe. Re-entry must be suspended immediately. Rock Engineering and the S-team will be notified automatically.</div>
       <div class="ground-detail" id="ground-detail">
-        <div class="ground-row"><span class="ground-k">Officer</span><span class="ground-v" id="ga-officer">—</span></div>
+        <div class="ground-row"><span class="ground-k">Miner</span><span class="ground-v" id="ga-officer">—</span></div>
         <div class="ground-row"><span class="ground-k">Zone</span><span class="ground-v" id="ga-zone">—</span></div>
         <div class="ground-row"><span class="ground-k">Section</span><span class="ground-v" id="ga-section">—</span></div>
         <div class="ground-row"><span class="ground-k">Time</span><span class="ground-v" id="ga-time">—</span></div>
@@ -2978,6 +3005,40 @@ function openReentry(){
   showPhase(currentPhase);
 }
 
+// Return to the Home menu mid-procedure. The re-entry lives in the still-rendered
+// #app (just hidden), and the draft is saved, so tapping "Resume Re-Entry" picks
+// up exactly where the miner left off — all ticks, gas fields and timer intact.
+function navHome(){
+  try{ saveDraft(); }catch(e){}
+  // Mark the session in-progress so the Home card offers Resume, not Start.
+  const underway = currentPhase > 0 || timerStarted ||
+    !!document.querySelector('#app .ci.checked');
+  if(underway) homeReentryResume = { phase: currentPhase };
+  showHome();
+}
+
+// Mark this session as ended in phase_progress so a miner who logs in but never
+// starts a re-entry stops showing as "live" on the dashboard. Uses the exact same
+// upsert path the heartbeat already uses (no new RLS surface). Must run BEFORE
+// db.auth.signOut(), while the miner's token still authorises the write.
+async function endSessionForLiveList(){
+  if(!db || !userData.uid || !sessionId) return;
+  try{
+    await db.from('phase_progress').upsert({
+      session_id:   sessionId,
+      user_id:      userData.uid,
+      officer_name: userData.name,
+      officer_id:   userData.id,
+      section:      userData.section,
+      zone:         currentZone || null,
+      phase_number: currentPhase,
+      phase_name:   'ENDED',
+      status:       'ended',
+      completed_at: new Date().toISOString(),
+    }, { onConflict: 'session_id,phase_number' });
+  }catch(e){ /* non-fatal — worst case they age out of the live window */ }
+}
+
 // ── SIGN OUT ──
 async function signOut(){
   const hasDraft = loadDraft();
@@ -2987,6 +3048,9 @@ async function signOut(){
   if(!confirm(msg)) return;
   if(typeof sessionCheckInterval !== 'undefined' && sessionCheckInterval) clearInterval(sessionCheckInterval);
   stopHeartbeat();
+  // If they never actually started a procedure, drop them from the live list.
+  const started = currentPhase > 0 || timerStarted || !!document.querySelector('#app .ci.checked');
+  if(!started){ await endSessionForLiveList(); }
   await db.auth.signOut();
   location.reload();
 }
@@ -3845,6 +3909,7 @@ const GAS_LIMITS = [
 let gasRetakeCount = 0;
 let gasReadingsLocked = false; // true once all readings pass
 let gasHasFailed = false;
+let gasConfirmed = false; // true once the miner taps "Confirm Readings"
 
 function validateGas() {
   if(gasReadingsLocked) return;
@@ -3924,10 +3989,52 @@ function validateGas() {
   saveDraft();
 }
 
+// Explicit commit of the gas readings. Kept separate from the live per-keystroke
+// validation (which still drives inline hints and the immediate CH4 withdraw) so
+// the miner has to deliberately confirm before the procedure can advance.
+function confirmGasReadings(){
+  validateGas(); // make sure the verdict matches the current values
+
+  const allFilled = GAS_LIMITS.every(g => {
+    const v = document.getElementById(g.inputId).value;
+    return v !== '' && !isNaN(parseFloat(v));
+  });
+  if(!allFilled){
+    alert('Enter all four gas readings before confirming.');
+    return;
+  }
+
+  // Never let unsafe readings be "confirmed" — the fail banner / recheck / CH4
+  // block already own that path.
+  if(gasHasFailed && !gasReadingsLocked){
+    const banner = document.getElementById('gas-fail-banner');
+    if(banner){ banner.classList.add('show'); banner.scrollIntoView({behavior:'smooth',block:'center'}); }
+    return;
+  }
+
+  gasConfirmed = true;
+  saveGasReadingsLive(false); // commit the confirmed readings
+  saveDraft();
+
+  const btn = document.getElementById('btn-confirm-gas');
+  if(btn){ btn.classList.add('confirmed'); btn.textContent = '✓ Readings Confirmed'; }
+  document.getElementById('gas-confirmed-msg')?.classList.add('show');
+}
+
+// Clear the confirmed state whenever a reading is edited — they must re-confirm.
+function resetGasConfirmed(){
+  if(!gasConfirmed) return;
+  gasConfirmed = false;
+  const btn = document.getElementById('btn-confirm-gas');
+  if(btn){ btn.classList.remove('confirmed'); btn.textContent = 'Confirm Readings →'; }
+  document.getElementById('gas-confirmed-msg')?.classList.remove('show');
+}
+
 function retakeGas() {
   gasRetakeCount++;
   gasReadingsLocked = false;
   gasHasFailed = false;
+  resetGasConfirmed();
 
   // Clear all gas fields
   ['gas-co','gas-no2','gas-o2','gas-ch4'].forEach(id => {
@@ -3970,7 +4077,7 @@ function openAbort() {
       <span class="abort-v">${gasRetakeCount}</span>
     </div>
     <div class="abort-row">
-      <span class="abort-k">Officer</span>
+      <span class="abort-k">Miner</span>
       <span class="abort-v">${esc(userData.name) || '—'}</span>
     </div>
     <div class="abort-row">
@@ -4072,7 +4179,7 @@ async function confirmAbort() {
     }
 
     // Definitive server rejection — the record reached the server and was refused.
-    // Keep the draft so nothing is lost and tell the officer plainly.
+    // Keep the draft so nothing is lost and tell the miner plainly.
     if(ecode && !/fetch|network|timeout/i.test(emsg)) {
       saveDraft();
       alert('Could not save the abort record — the server rejected it (' + ecode + ').\n\n'
@@ -4082,7 +4189,7 @@ async function confirmAbort() {
     }
 
     // No signal / dropped connection — an abort-due-to-unsafe-gas record must NEVER
-    // be lost: queue it exactly like an offline submission and confirm to the officer.
+    // be lost: queue it exactly like an offline submission and confirm to the miner.
     isOnline = false; updateConnBar();
     addToOfflineQueue({ submission: abortSubmissionPayload, gas_readings: abortGasPayload, near_misses: [] });
     showAbortedScreen(true);
@@ -4180,6 +4287,18 @@ function gasReadingsValid() {
     return false;
   }
 
+  // Readings must be explicitly confirmed before proceeding.
+  if(!gasConfirmed) {
+    const errBan  = document.getElementById('err2');
+    const errList = document.getElementById('err2-list');
+    if(errBan && errList) {
+      errList.innerHTML = (errList.innerHTML || '') + '<br>• Tap "Confirm Readings" to commit your gas readings before proceeding';
+      errBan.classList.add('show');
+    }
+    document.getElementById('btn-confirm-gas')?.scrollIntoView({ behavior:'smooth', block:'center' });
+    return false;
+  }
+
   return true;
 }
 
@@ -4267,7 +4386,7 @@ function showFailedQueueDetail(){
   try{ fq = JSON.parse(localStorage.getItem('valterra_failed_queue')||'[]'); }catch(e){ fq = []; }
   if(!fq.length){ updateFailedQueueBar(); return; }
   const lines = fq.slice(0,10).map((f,i) => {
-    const who  = (f.submission && f.submission.officer_name) || 'Unknown officer';
+    const who  = (f.submission && f.submission.officer_name) || 'Unknown miner';
     const when = f.failed_at || f.queued_at || 'unknown time';
     const why  = f.reason || 'Unknown error';
     return (i+1) + '. ' + who + ' — ' + when + '\n   Reason: ' + why;
@@ -4811,6 +4930,7 @@ async function syncGasQueue(){
 // Called on every keystroke — debounces 2s then saves once all 4 values are present
 let gasLiveTimer = null;
 function validateGasAndSaveLive(){
+  resetGasConfirmed(); // editing a reading invalidates a prior confirm
   validateGas();
   clearTimeout(gasLiveTimer);
   gasLiveTimer = setTimeout(() => {
@@ -4994,7 +5114,11 @@ async function syncHandoverQueue(){
   } finally { handoverSyncing = false; }
 }
 
-async function submitHandover(){
+// Single submit for the combined handover + bord-status form. Saves both the
+// shift_handovers record and any bord_cycle_updates in one action, each keeping
+// its own never-drop offline queue. At least one of the two must have content.
+async function submitHandoverAndBord(){
+  // --- Handover fields ---
   const hazards   = document.getElementById('ho-hazards')?.value?.trim();
   const gas       = document.getElementById('ho-gas')?.value?.trim();
   const panels    = document.getElementById('ho-panels')?.value?.trim();
@@ -5002,86 +5126,134 @@ async function submitHandover(){
   const notes     = document.getElementById('ho-notes')?.value?.trim();
   const incoming  = document.getElementById('ho-incoming')?.value?.trim();
   const shift     = document.getElementById('ho-shift')?.value;
+  const hasHandover = !!(hazards || gas || panels || notes || equipment);
 
-  // Require at least one field filled
-  if(!hazards && !gas && !panels && !notes){
-    alert('Please fill in at least one handover field before submitting.');
+  // --- Selected bords ---
+  const selectedBords = Object.entries(bctState).filter(([,v]) => v.selected);
+  const hasBords = selectedBords.length > 0;
+
+  if(!hasHandover && !hasBords){
+    alert('Add handover details or select at least one bord before submitting.');
     return;
+  }
+
+  // Bord stage is required for any selected bord
+  if(hasBords){
+    const noStage = selectedBords.filter(([,v]) => !v.stage).map(([k]) => k);
+    if(noStage.length > 0){
+      const names = noStage.slice(0,3).join(', ') + (noStage.length > 3 ? '…' : '');
+      alert(`Please set the stage for: ${names}`);
+      return;
+    }
   }
 
   const btn = document.getElementById('btn-submit-handover');
   btn.disabled = true;
-  btn.textContent = 'Submitting...';
+  btn.textContent = 'Submitting…';
 
-  const payload = {
-    user_id:              userData.uid    || null,
-    officer_name:         userData.name   || null,
-    officer_id:           userData.id     || null,
-    section:              userData.section|| null,
-    shift_type:           shift           || 'day',
-    outstanding_hazards:  hazards         || null,
-    gas_concerns:         gas             || null,
-    panels_avoid:         panels          || null,
-    equipment_status:     equipment       || null,
-    general_notes:        notes           || null,
-    incoming_officer:     incoming        || null,
-    shift_date:           new Date().toISOString().split('T')[0],
-  };
+  let anyOffline = false;
+  let hardError = null;
 
-  // Shows the "saved, will sync" state and resets the form.
-  const finishQueued = () => {
-    btn.textContent = '✓ Saved offline — will sync';
-    btn.style.background = 'var(--amber, #b8860b)';
-    setTimeout(() => {
-      closeHandover();
-      btn.disabled = false;
-      btn.textContent = 'Submit Handover Record →';
-      btn.style.background = '';
-    }, 1800);
-  };
+  // --- Save handover (never dropped: queues on any network failure) ---
+  if(hasHandover){
+    const payload = {
+      user_id:              userData.uid    || null,
+      officer_name:         userData.name   || null,
+      officer_id:           userData.id     || null,
+      section:              userData.section|| null,
+      shift_type:           shift           || 'day',
+      outstanding_hazards:  hazards         || null,
+      gas_concerns:         gas             || null,
+      panels_avoid:         panels          || null,
+      equipment_status:     equipment       || null,
+      general_notes:        notes           || null,
+      incoming_officer:     incoming        || null,
+      shift_date:           new Date().toISOString().split('T')[0],
+    };
+    if(!isOnline || !db || !navigator.onLine){
+      queueHandover(payload); anyOffline = true;
+    } else {
+      try{
+        const { error } = await db.from('shift_handovers').insert(payload);
+        if(error) throw error;
+      }catch(e){
+        console.error('Handover submit error:', e);
+        const emsg=(e&&e.message)||''; const ecode=e&&e.code;
+        if(ecode && !/fetch|network|timeout/i.test(emsg)){
+          hardError = 'Handover could not be saved — the server rejected it (' + ecode + ').\n\nYour entries are kept. Details: ' + emsg;
+        } else {
+          isOnline = false; updateConnBar();
+          queueHandover(payload); anyOffline = true;
+        }
+      }
+    }
+  }
 
-  // No connection → queue immediately. A handover must never be lost — it is how
-  // the next crew is warned about hazards.
-  if(!isOnline || !db || !navigator.onLine){
-    queueHandover(payload);
-    finishQueued();
+  // --- Save bord status (never dropped: queues on any failure) ---
+  if(hasBords && !hardError){
+    const records = selectedBords.map(([bordValue, s]) => ({
+      officer_name:  userData.name    || null,
+      officer_id:    userData.id      || null,
+      section:       userData.section || null,
+      bord:          bordValue,
+      cycle_stage:   s.stage,
+      progress_pct:  s.progress ?? 50,
+      shift_notes:   s.notes    || null,
+      session_id:    sessionId  || null,
+      user_id:       userData.uid || null,
+      recorded_at:   new Date().toISOString(),
+    }));
+    const queueBordsOffline = () => {
+      try{
+        const q = JSON.parse(localStorage.getItem('valterra_bord_queue')||'[]');
+        records.forEach(r => q.push({...r, queued_at:new Date().toISOString()}));
+        localStorage.setItem('valterra_bord_queue', JSON.stringify(q));
+      }catch(e){}
+    };
+    if(!isOnline || !db){
+      queueBordsOffline(); anyOffline = true;
+    } else {
+      try{
+        const { error } = await db.from('bord_cycle_updates').upsert(records, {
+          onConflict: 'session_id,bord', ignoreDuplicates: false,
+        });
+        if(error){
+          console.warn('BCT upsert failed, trying insert:', error.message);
+          const { error: insErr } = await db.from('bord_cycle_updates').insert(records);
+          if(insErr) throw insErr;
+        }
+        syncBordQueue();
+      }catch(e){
+        console.error('BCT save error:', e);
+        queueBordsOffline(); anyOffline = true;
+      }
+    }
+  }
+
+  // --- Result ---
+  if(hardError){
+    btn.disabled = false;
+    btn.textContent = 'Submit Handover →';
+    alert(hardError);
     return;
   }
 
-  try {
-    const { error } = await db.from('shift_handovers').insert(payload);
-
-    if(error) throw error;
-
-    btn.textContent = '✓ Handover Submitted';
-    btn.style.background = 'var(--green)';
-
-    setTimeout(() => {
-      closeHandover();
-      btn.disabled = false;
-      btn.textContent = 'Submit Handover Record →';
-      btn.style.background = '';
-    }, 1500);
-
-  } catch(e) {
-    console.error('Handover submit error:', e);
-    const emsg  = (e && e.message) || '';
-    const ecode = e && e.code;
-
-    // Definitive server rejection → tell the miner, keep the form so they can fix it.
-    if(ecode && !/fetch|network|timeout/i.test(emsg)){
-      btn.disabled = false;
-      btn.textContent = 'Submit Handover Record →';
-      alert('Handover could not be saved — the server rejected it (' + ecode + ').\n\n'
-          + 'Your entries are kept. Details: ' + emsg);
-      return;
-    }
-
-    // Network / dropped connection / unknown → queue it, never lose it.
-    isOnline = false; updateConnBar();
-    queueHandover(payload);
-    finishQueued();
+  const savedMsg = document.getElementById('bct-saved-msg');
+  btn.textContent = anyOffline ? '✓ Saved offline — will sync' : '✓ Submitted';
+  btn.style.background = anyOffline ? 'var(--amber, #b8860b)' : 'var(--green)';
+  if(savedMsg){
+    savedMsg.textContent = anyOffline
+      ? '⚡ Saved offline — will sync when signal returns'
+      : '✓ Saved — incoming shift will see this on the dashboard';
+    savedMsg.classList.add('show');
   }
+  setTimeout(() => {
+    closeHandover();
+    btn.disabled = false;
+    btn.textContent = 'Submit Handover →';
+    btn.style.background = '';
+    if(savedMsg) savedMsg.classList.remove('show');
+  }, 1600);
 }
 
 // ── SHIFT NOTES ──
@@ -5244,7 +5416,7 @@ function showHandoverBanner(handover){
   banner.className = 'handover-banner';
   banner.innerHTML = `
     <div class="handover-banner-head">
-      <div class="handover-banner-ttl">📋 Shift Handover from ${esc(handover.officer_name||'Previous Officer')}</div>
+      <div class="handover-banner-ttl">📋 Shift Handover from ${esc(handover.officer_name||'Previous Miner')}</div>
       <div class="handover-banner-new">NEW</div>
     </div>
     <div class="handover-banner-body">
@@ -5668,14 +5840,14 @@ document.addEventListener('visibilitychange', () => {
 //  BORD CYCLE TRACKER
 // ══════════════════════════════════════════
 
-// Cycle stages config — colour key matches spec
+// Cycle stages config — colour key matches spec. 'complete'/'repeat' were
+// retired from the picker but old records may still carry them, so the
+// dashboard label map keeps rendering them.
 const BORD_STAGES = [
-  { id:'drilling', label:'Drilling',  emoji:'🔵', cls:'drilling' },
-  { id:'blasting', label:'Blasting',  emoji:'🔴', cls:'blasting' },
-  { id:'lashing',  label:'Lashing',   emoji:'🟡', cls:'lashing'  },
-  { id:'support',  label:'Support',   emoji:'🟠', cls:'support'  },
-  { id:'complete', label:'Complete',  emoji:'🟢', cls:'complete' },
-  { id:'repeat',   label:'Repeat',    emoji:'🔄', cls:'repeat'   },
+  { id:'drilling', label:'Drilling',              emoji:'🔵', cls:'drilling' },
+  { id:'blasting', label:'Charging and Blasting', emoji:'🔴', cls:'blasting' },
+  { id:'lashing',  label:'Lashing',               emoji:'🟡', cls:'lashing'  },
+  { id:'support',  label:'Support',               emoji:'🟠', cls:'support'  },
 ];
 
 // Parsed zone/bord list — mirrors the zone-sel <optgroup> structure
@@ -5734,7 +5906,7 @@ function renderBordList(){
         </div>
         <div class="bct-editor${selected ? ' bct-open' : ''}" id="bct-ed-${b.value.replace(/\s/g,'_')}">
           <div class="bct-el">
-            <label>Cycle Stage</label>
+            <label>Stage</label>
             <div class="bct-stages" id="bct-stages-${b.value.replace(/\s/g,'_')}">
               ${BORD_STAGES.map(st =>
                 `<div class="bct-stage-pill${s.stage === st.id ? ` bct-pill-sel ${st.cls}` : ''}"
@@ -5743,7 +5915,7 @@ function renderBordList(){
             </div>
           </div>
           <div class="bct-el">
-            <label>Cycle Progress</label>
+            <label>Stage Progress</label>
             <div class="bct-progress-wrap">
               <input type="range" min="0" max="100" step="5"
                      value="${s.progress ?? 50}"
@@ -5841,110 +6013,9 @@ function refreshBordBadge(bordValue){
   }
 }
 
-async function submitBordUpdate(){
-  const selected = Object.entries(bctState).filter(([,v]) => v.selected);
-
-  if(selected.length === 0){
-    alert('Please select at least one bord you worked this shift, or tap Skip.');
-    return;
-  }
-
-  const noStage = selected.filter(([,v]) => !v.stage).map(([k]) => k);
-  if(noStage.length > 0){
-    const names = noStage.slice(0,3).join(', ') + (noStage.length > 3 ? '…' : '');
-    alert(`Please set the cycle stage for: ${names}`);
-    return;
-  }
-
-  const btn = document.getElementById('btn-bct-submit');
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
-
-  const records = selected.map(([bordValue, s]) => ({
-    officer_name:  userData.name    || null,
-    officer_id:    userData.id      || null,
-    section:       userData.section || null,
-    bord:          bordValue,
-    cycle_stage:   s.stage,
-    progress_pct:  s.progress ?? 50,
-    shift_notes:   s.notes    || null,
-    session_id:    sessionId  || null,
-    user_id:       userData.uid || null,
-    recorded_at:   new Date().toISOString(),
-  }));
-
-  if(!isOnline || !db){
-    // Offline — store in localStorage queue
-    try{
-      const q = JSON.parse(localStorage.getItem('valterra_bord_queue')||'[]');
-      records.forEach(r => q.push({...r, queued_at:new Date().toISOString()}));
-      localStorage.setItem('valterra_bord_queue', JSON.stringify(q));
-    }catch(e){}
-    showBctSaved(btn, true);
-    return;
-  }
-
-  try{
-    // Upsert — replace any existing record for this session+bord
-    const { error } = await db.from('bord_cycle_updates').upsert(records, {
-      onConflict: 'session_id,bord',
-      ignoreDuplicates: false,
-    });
-
-    if(error){
-      // Table may not exist yet — fallback insert without upsert
-      console.warn('BCT upsert failed, trying insert:', error.message);
-      const { error: insErr } = await db.from('bord_cycle_updates').insert(records);
-      if(insErr) throw insErr;
-    }
-
-    // Sync any offline bord queue that accumulated while underground
-    syncBordQueue();
-
-    showBctSaved(btn, false);
-  }catch(e){
-    console.error('BCT save error:', e);
-    // Save offline if DB fails — don't block miner
-    try{
-      const q = JSON.parse(localStorage.getItem('valterra_bord_queue')||'[]');
-      records.forEach(r => q.push({...r, queued_at:new Date().toISOString()}));
-      localStorage.setItem('valterra_bord_queue', JSON.stringify(q));
-    }catch(le){}
-    showBctSaved(btn, true);
-  }
-}
-
-function showBctSaved(btn, isOffline){
-  btn.textContent = '✓ Saved';
-  btn.style.background = 'var(--green)';
-  btn.style.color = '#fff';
-  const msg = document.getElementById('bct-saved-msg');
-  if(msg){
-    msg.textContent = isOffline
-      ? '⚡ Saved offline — will sync when signal returns'
-      : '✓ Bord status saved — incoming shift will see this on the dashboard';
-    msg.classList.add('show');
-  }
-  // Collapse bct after 2.5s so miner can see the action buttons cleanly
-  setTimeout(()=>{
-    const wrap = document.getElementById('bct-wrap');
-    if(wrap){
-      wrap.style.transition = 'opacity 0.4s';
-      wrap.style.opacity = '0.38';
-      wrap.style.pointerEvents = 'none';
-    }
-  }, 2500);
-}
-
-function skipBordUpdate(){
-  const wrap = document.getElementById('bct-wrap');
-  if(wrap){
-    wrap.style.transition = 'opacity 0.3s';
-    wrap.style.opacity = '0';
-    wrap.style.pointerEvents = 'none';
-    setTimeout(()=>{ wrap.style.display='none'; }, 350);
-  }
-}
+// (submitBordUpdate / showBctSaved / skipBordUpdate were merged into
+//  submitHandoverAndBord — the bord tracker now shares the handover's single
+//  submit button. syncBordQueue below is still used for offline drain.)
 
 async function syncBordQueue(){
   if(!db || !isOnline || bordSyncing) return;

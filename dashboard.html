@@ -700,7 +700,7 @@
         <span class="filter-label">Date:</span>
         <input class="f-input" type="date" id="f-date-from" onchange="loadSubmissions()" title="From date"/>
         <input class="f-input" type="date" id="f-date-to" onchange="loadSubmissions()" title="To date" style="max-width:140px;"/>
-        <input class="f-input" type="text" id="f-search" oninput="renderSubmissionsTable()" placeholder="Search officer, badge, zone…" title="Search loaded records" style="min-width:170px;flex:1;"/>
+        <input class="f-input" type="text" id="f-search" oninput="renderSubmissionsTable()" placeholder="Search miner, badge, zone…" title="Search loaded records" style="min-width:170px;flex:1;"/>
         <button class="btn-export" onclick="exportCSV('submissions')">Export CSV</button>
       </div>
       <div class="filters" style="padding-top:0.5rem;border-top:none;margin-top:-0.5rem;">
@@ -1377,7 +1377,7 @@ function renderOverview(){
 
 function subTableHtml(rows){
   const head = `<div class="tbl-head sub-grid">
-    <div class="th">Officer</div>
+    <div class="th">Miner</div>
     <div class="th">Section</div>
     <div class="th">Date / Time</div>
     <div class="th">Status</div>
@@ -1387,7 +1387,7 @@ function subTableHtml(rows){
 
   const body = rows.map(r => `
     <div class="tbl-row sub-grid" onclick="openSubDetail('${r.id}')">
-      <div class="td bold" data-label="Officer">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${r.officer_id||''}</span></div>
+      <div class="td bold" data-label="Miner">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${r.officer_id||''}</span></div>
       <div class="td" data-label="Section">${r.section||'—'}</div>
       <div class="td" data-label="Date/Time">${fmtDate(r.created_at)}</div>
       <div class="td" data-label="Status">${statusBadge(r.status)}${irtTag(r.reentry_type)}${noGasTag(r)}${approvedTag(r)}</div>
@@ -1401,7 +1401,7 @@ function subTableHtml(rows){
 
 function nmTableHtml(rows){
   const head = `<div class="tbl-head nm-grid">
-    <div class="th">Officer</div>
+    <div class="th">Miner</div>
     <div class="th">Incident Type</div>
     <div class="th">Severity</div>
     <div class="th">Zone</div>
@@ -1477,7 +1477,7 @@ function renderSOSTable(){
   }
 
   const head = `<div class="tbl-head sos-grid">
-    <div class="th">Officer</div>
+    <div class="th">Miner</div>
     <div class="th">Badge ID</div>
     <div class="th">Zone</div>
     <div class="th">Section</div>
@@ -1527,7 +1527,7 @@ async function openIncompleteDetail(id){
   document.getElementById('detail-body').innerHTML = `
     <div class="incomplete-note">⚠ This re-entry was started but never completed — the miner did not reach sign-off. Recorded as Incomplete for review.</div>
     <div class="detail-grid">
-      <div class="detail-item"><div class="detail-k">Officer</div><div class="detail-v">${s.officer_name||'—'} <span style="color:var(--muted);font-size:0.7rem;">${s.officer_id||''}</span></div></div>
+      <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${s.officer_name||'—'} <span style="color:var(--muted);font-size:0.7rem;">${s.officer_id||''}</span></div></div>
       <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${s.section||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Zone</div><div class="detail-v">${s.zone||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Re-Entry Type</div><div class="detail-v">${s.reentry_type==='irt'?'🚨 IRT — Lapse Bypassed':'⛏ Standard'}</div></div>
@@ -1637,7 +1637,7 @@ async function openSubDetail(id){
   document.getElementById('detail-body').innerHTML = `
     <div class="detail-grid">
       <div class="detail-item">
-        <div class="detail-k">Officer</div>
+        <div class="detail-k">Miner</div>
         <div class="detail-v">${sub.officer_name||'—'}</div>
       </div>
       <div class="detail-item">
@@ -1753,7 +1753,7 @@ async function openNMDetail(id){
   document.getElementById('detail-body').innerHTML = `
     <div class="detail-grid">
       <div class="detail-item">
-        <div class="detail-k">Officer</div>
+        <div class="detail-k">Miner</div>
         <div class="detail-v">${nm.officer_name||'—'}</div>
       </div>
       <div class="detail-item">
@@ -1837,7 +1837,7 @@ async function openSOSDetail(id){
   document.getElementById('detail-body').innerHTML = `
     <div class="detail-grid">
       <div class="detail-item">
-        <div class="detail-k">Officer</div>
+        <div class="detail-k">Miner</div>
         <div class="detail-v">${sos.officer_name||'—'}</div>
       </div>
       <div class="detail-item">
@@ -1959,7 +1959,7 @@ function exportCSV(type){
   if(type === 'submissions'){
     filename = 'valterra_submissions.csv';
     rows = [
-      ['ID','Officer','Badge','Section','Zone','Status','Blast Time','Re-Entry Time','Supervisor','Submitted At'],
+      ['ID','Miner','Badge','Section','Zone','Status','Blast Time','Re-Entry Time','Supervisor','Submitted At'],
       ...allSubmissions.map(s => [
         s.id, s.officer_name, s.officer_id, s.section, s.zone||'',
         s.status, s.blast_time||'', s.reentry_time||'',
@@ -1969,7 +1969,7 @@ function exportCSV(type){
   } else {
     filename = 'valterra_near_misses.csv';
     rows = [
-      ['ID','Officer','Type','Severity','Zone','Section','Description','Action Taken','Reported At'],
+      ['ID','Miner','Type','Severity','Zone','Section','Description','Action Taken','Reported At'],
       ...allNearMisses.map(n => [
         n.id, n.officer_name, n.incident_type, n.severity,
         n.zone||'', n.section||'',
@@ -2098,9 +2098,9 @@ async function exportSubPDF(id){
   <div class="ref">Ref: UNK-MIN-MIN-PRO-0002 · V6.0<br>ID: ${sub.id?.substring(0,8).toUpperCase()||'—'}<br>${new Date().toLocaleString('en-GB')}</div>
 </div>
 <div class="status-bar">SLAM RE-ENTRY RECORD — ${sub.status === 'completed' ? 'COMPLETED' : 'ABORTED — UNSAFE GAS LEVELS'}</div>
-<h2>Officer &amp; Session</h2>
+<h2>Miner &amp; Session</h2>
 <div class="grid">
-  <div><div class="k">Officer</div><div class="v">${sub.officer_name||'—'}</div></div>
+  <div><div class="k">Miner</div><div class="v">${sub.officer_name||'—'}</div></div>
   <div><div class="k">Badge ID</div><div class="v">${sub.officer_id||'—'}</div></div>
   <div><div class="k">Section</div><div class="v">${sub.section||'—'}</div></div>
   <div><div class="k">Zone</div><div class="v">${sub.zone||'—'}</div></div>
@@ -2169,6 +2169,7 @@ async function loadLiveTracking(){
     const active = [];
     incompleteRows = [];
     Object.values(sessions).forEach(s => {
+      if(s.status === 'ended') return;                           // signed out before starting → drop entirely
       if(completedSet.has(s.session_id)) return;                 // finished → drop from live
       if(now - (s._t || 0) <= windowMs){
         active.push(s);                                          // still active
@@ -2207,7 +2208,7 @@ async function loadLiveTracking(){
     } catch(e){ console.warn('Gas fetch:', e); }
 
     const head = `<div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 0.8fr;gap:0.5rem;padding:0.6rem 1rem;background:var(--teal);">
-      <div class="th">Officer</div><div class="th">Phase</div>
+      <div class="th">Miner</div><div class="th">Phase</div>
       <div class="th">Gas</div><div class="th">Zone</div><div class="th">Updated</div></div>`;
 
     const body = active.map(s => {
@@ -2278,7 +2279,7 @@ function renderGroundTable(){
     return;
   }
   const head = `<div class="tbl-head ground-grid">
-    <div class="th">Officer</div><div class="th">Zone / Section</div>
+    <div class="th">Miner</div><div class="th">Zone / Section</div>
     <div class="th">FOG Light</div><div class="th">Status</div><div class="th">Time</div></div>`;
   const body = allGroundAlerts.map(r => `
     <div class="tbl-row ground-grid" onclick="openGroundDetail('${r.id}')" style="cursor:pointer;user-select:none;">
@@ -2300,7 +2301,7 @@ async function openGroundDetail(id){
   document.getElementById('detail-title').textContent = 'Ground Alert — ' + (g.officer_name||'Unknown');
   document.getElementById('detail-body').innerHTML = `
     <div class="detail-grid">
-      <div class="detail-item"><div class="detail-k">Officer</div><div class="detail-v">${g.officer_name||'—'}</div></div>
+      <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${g.officer_name||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Badge ID</div><div class="detail-v">${g.officer_id||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Zone</div><div class="detail-v bad">${g.zone||'Not recorded'}</div></div>
       <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${g.section||'—'}</div></div>
@@ -2642,12 +2643,12 @@ function openHandoverDetail(id){
   document.getElementById('detail-title').textContent = 'Handover — ' + (h.officer_name||'Unknown');
   document.getElementById('detail-body').innerHTML = `
     <div class="detail-grid">
-      <div class="detail-item"><div class="detail-k">Officer</div><div class="detail-v">${h.officer_name||'—'}</div></div>
+      <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${h.officer_name||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Badge ID</div><div class="detail-v">${h.officer_id||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${h.section||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Shift</div><div class="detail-v">${(h.shift_type||'').toUpperCase()}</div></div>
       <div class="detail-item"><div class="detail-k">Date</div><div class="detail-v">${h.shift_date||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Incoming Officer</div><div class="detail-v">${h.incoming_officer||'Not specified'}</div></div>
+      <div class="detail-item"><div class="detail-k">Incoming Miner</div><div class="detail-v">${h.incoming_officer||'Not specified'}</div></div>
       ${h.outstanding_hazards ? '<div class="detail-item detail-full"><div class="detail-k">Outstanding Hazards</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.outstanding_hazards+'</div></div>' : ''}
       ${h.gas_concerns        ? '<div class="detail-item detail-full"><div class="detail-k">Gas / Ventilation Concerns</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.gas_concerns+'</div></div>' : ''}
       ${h.panels_avoid        ? '<div class="detail-item detail-full"><div class="detail-k">Panels / Areas to Avoid</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.panels_avoid+'</div></div>' : ''}
@@ -2696,9 +2697,11 @@ async function acknowledgeHandover(id){
 // ══════════════════════════════════════════
 const BORD_STAGE_LABELS = {
   drilling: '🔵 Drilling',
-  blasting: '🔴 Blasting',
+  blasting: '🔴 Charging and Blasting',
   lashing:  '🟡 Lashing',
   support:  '🟠 Support',
+  // Legacy stages — retired from the miner picker but kept here so historical
+  // records still render a proper label instead of a raw id.
   complete: '🟢 Complete',
   repeat:   '🔄 Repeat',
 };
@@ -2872,7 +2875,7 @@ function openBordDetail(bordValue){
 
 function exportBordCSV(){
   const rows = [
-    ['Bord','Stage','Progress %','Officer','Badge','Section','Notes','Recorded At'],
+    ['Bord','Stage','Progress %','Miner','Badge','Section','Notes','Recorded At'],
     ...allBordUpdates.map(r => [
       r.bord, r.cycle_stage||'', r.progress_pct??'', r.officer_name||'',
       r.officer_id||'', r.section||'',
