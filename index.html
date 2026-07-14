@@ -3463,12 +3463,22 @@ function nextPhase(){
     return;
   }
 
-  // Enforce 2-hour lapse on Phase 0 only if blast time entered AND standard re-entry
-  if(currentPhase === 0){
+  // Enforce the 2-hour lapse on Phase 0 for standard re-entry. IRT bypasses it
+  // by design (recorded on the submission). The lapse can only be verified from
+  // an actual blast time, so blast time is REQUIRED for standard re-entry —
+  // previously this gate was conditional on a non-empty blast time, so leaving
+  // the field blank skipped the computed countdown entirely and the only
+  // remaining check was the self-attested "Confirmed two-hour lapse" checkbox.
+  if(currentPhase === 0 && reentryType !== 'irt'){
     const blastVal = document.getElementById('blast-time')?.value;
-    if(blastVal && !lapseCleared && reentryType !== 'irt'){
-      const eb = document.getElementById('err0');
-      const el = document.getElementById('err0-list');
+    const eb = document.getElementById('err0');
+    const el = document.getElementById('err0-list');
+    if(!blastVal){
+      if(eb && el){ el.innerHTML = '• Enter the primary blast time so the 2-hour lapse can be verified (or select IRT for an authorised immediate re-entry).'; eb.classList.add('show'); }
+      document.getElementById('lapse-card')?.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+    if(!lapseCleared){
       if(eb && el){ el.innerHTML = '• 2-hour blast lapse not yet reached. Wait for clearance.'; eb.classList.add('show'); }
       document.getElementById('lapse-card')?.scrollIntoView({behavior:'smooth',block:'center'});
       return;
