@@ -997,6 +997,14 @@ function subHasGas(r){ return gasLinkedSubs.has(r.id) || (r.session_id && gasLin
 // failed (grey "Unverified") — a failed check must never look identical to "has gas",
 // since this badge is a genuine compliance signal.
 function irtTag(t){ return t === 'irt' ? ' <span class="badge irt-badge" title="Immediate Re-Entry — 2-hour lapse bypassed">IRT</span>' : ''; }
+// IRT justification: prefer the dedicated irt_reason column; fall back to the
+// copy folded into overall_remarks ("IRT reason: …") for records written before
+// the irt_reason migration was run.
+function irtReasonOf(sub){
+  if(sub.irt_reason) return sub.irt_reason;
+  const m = (sub.overall_remarks || '').match(/IRT reason:\s*([^|]+)/i);
+  return m ? m[1].trim() : '';
+}
 function noGasTag(r){
   if(gasLinkageFailed){
     return ' <span class="badge nogas-badge" style="background:#eee;color:var(--muted);" title="Could not verify gas readings — check connection and retry">⚠ Unverified</span>';
@@ -1256,8 +1264,12 @@ async function loadSubmissions(){
     status, retake_count, blast_time, reentry_time,
     safety_topics, supervisor_name, completed_at,
     reentry_duration_seconds, crew_members, photo_urls,
-    session_id, reentry_type, barring_down_done, fog_light_status`;
-  const approvalCols = `, supervisor_approved, approved_by, approved_at`;
+    session_id, reentry_type, barring_down_done, fog_light_status,
+    overall_remarks`;
+  // Optional columns added by later migrations — if any hasn't been run yet the
+  // query errors and we fall back to base columns below. irt_reason ships with
+  // the IRT-justification feature (migrations/2026-07-14_add_irt_reason.sql).
+  const approvalCols = `, supervisor_approved, approved_by, approved_at, irt_reason`;
 
   const runQuery = (cols) => {
     let q = db.from('submissions').select(cols)
@@ -1740,6 +1752,11 @@ async function openSubDetail(id){
           ${sub.reentry_type === 'irt' ? '🚨 IRT — Lapse Bypassed' : '⛏ Standard'}
         </div>
       </div>
+      ${sub.reentry_type === 'irt' ? `
+      <div class="detail-item detail-full">
+        <div class="detail-k">IRT Reason</div>
+        <div class="detail-v" style="font-weight:500;">${esc(irtReasonOf(sub)) || '—'}</div>
+      </div>` : ''}
       <div class="detail-item">
         <div class="detail-k">FOG Light</div>
         <div class="detail-v ${sub.fog_light_status==='red'?'bad':'ok'}">

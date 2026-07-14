@@ -1055,6 +1055,20 @@
   .ch4-block-body{font-size:0.75rem;color:var(--mid);line-height:1.7;margin-bottom:1.2rem;}
   .ch4-block-btn{width:100%;background:var(--red);color:#fff;border:none;padding:0.85rem;font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;border-radius:3px;cursor:pointer;}
 
+  /* ══ IRT REASON MODAL ══ */
+  .irt-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center;padding:1.5rem;}
+  .irt-ov.show{display:flex;animation:fadeUp 0.2s ease;}
+  .irt-card{background:var(--white);border-radius:6px;padding:1.5rem 1.3rem;max-width:380px;width:100%;box-shadow:0 12px 48px rgba(0,0,0,0.3);}
+  .irt-icon{font-size:1.8rem;margin-bottom:0.4rem;}
+  .irt-title{font-size:1rem;font-weight:900;color:var(--amber);margin-bottom:0.4rem;font-family:'Montserrat',sans-serif;}
+  .irt-body{font-size:0.72rem;color:var(--mid);line-height:1.6;margin-bottom:0.9rem;}
+  .irt-ta{width:100%;background:var(--offwhite);border:1.5px solid var(--border);border-radius:3px;padding:0.7rem 0.8rem;font-family:'Montserrat',sans-serif;font-size:0.8rem;color:var(--text);outline:none;resize:vertical;min-height:70px;-webkit-appearance:none;}
+  .irt-ta:focus{border-color:var(--amber);}
+  .irt-err{display:none;color:var(--red);font-size:0.68rem;font-weight:700;margin-top:0.4rem;}
+  .irt-actions{display:flex;gap:0.6rem;margin-top:1rem;}
+  .irt-cancel{flex:1;background:var(--offwhite);color:var(--mid);border:1.5px solid var(--border);padding:0.75rem;font-family:'Montserrat',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:3px;cursor:pointer;}
+  .irt-confirm{flex:2;background:var(--amber);color:#fff;border:none;padding:0.75rem;font-family:'Montserrat',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;border-radius:3px;cursor:pointer;}
+
   /* ══════════════════════════════════════
      BORD CYCLE TRACKER — inside Shift Handover modal
      ══════════════════════════════════════ */
@@ -2366,6 +2380,25 @@
       <h2>ALERT SENT</h2>
       <p>Rock Engineering and S-team have been notified. Withdraw all crew from the section immediately. Do not re-enter until Rock Engineering has cleared the area.</p>
       <button class="btn-ground-confirm" style="margin-top:1rem;background:var(--mid);" onclick="abortForGroundCondition()">Understood — Withdraw Crew &amp; Abort Re-Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- IRT REASON MODAL -->
+<div class="irt-ov" id="irt-reason-ov">
+  <div class="irt-card">
+    <div class="irt-icon">⏱️</div>
+    <div class="irt-title">Immediate Re-Entry (IRT)</div>
+    <div class="irt-body">
+      IRT <strong>bypasses the mandatory 2-hour blast lapse</strong>. Enter the reason
+      / authority for this immediate re-entry. It is recorded on the submission for
+      SHE review.
+    </div>
+    <textarea class="irt-ta" id="irt-reason-input" placeholder="e.g. Authorised by Shift Boss J. Dube — production-critical face, ventilation confirmed clear on SCADA" maxlength="500"></textarea>
+    <div class="irt-err" id="irt-reason-err">A reason is required to activate IRT.</div>
+    <div class="irt-actions">
+      <button class="irt-cancel" onclick="cancelIrtReason()">Cancel</button>
+      <button class="irt-confirm" onclick="confirmIrtReason()">Confirm IRT</button>
     </div>
   </div>
 </div>
@@ -3690,6 +3723,18 @@ function doSign(boxId,txtId,isSelf){
   document.getElementById(txtId).textContent='✓ Signed — '+name+' · '+new Date().toLocaleTimeString();
 }
 
+// Detect a PostgREST "column does not exist / not in schema cache" error, so an
+// optional column (e.g. irt_reason before its migration is run) can be dropped
+// and the insert retried instead of failing the whole submission.
+function isMissingColumnError(err){
+  if(!err) return false;
+  const blob = ((err.message||'') + ' ' + (err.details||'') + ' ' + (err.hint||'')).toLowerCase();
+  return err.code === 'PGRST204'
+      || /column .* does not exist/.test(blob)
+      || /could not find the .* column/.test(blob)
+      || /schema cache/.test(blob);
+}
+
 // ══════════════════════════════════════════
 //  SUBMIT — offline-aware
 // ══════════════════════════════════════════
@@ -3746,6 +3791,15 @@ async function submitProcedure(){
     retake_count:             gasRetakeCount,
     completed_at:             now.toISOString(),
   };
+
+  // Dedicated IRT reason column — added ONLY for IRT submissions so standard
+  // submissions stay byte-identical to before (no risk to their RPC path). The
+  // reason is also folded into overall_remarks above, so it's never lost even
+  // if this column hasn't been migrated yet; the direct-insert fallback strips
+  // it on a missing-column error. See migrations/2026-07-14_add_irt_reason.sql.
+  if(reentryType === 'irt' && irtReason){
+    submissionPayload.irt_reason = irtReason;
+  }
 
   const gasPayload = {
     session_id:   sessionId || null,   // lets dashboard find gas by session as fallback
@@ -3833,8 +3887,17 @@ async function submitProcedure(){
     if(rpcError){
       console.warn('RPC not available, falling back to direct insert:', rpcError.message);
       // Fallback: direct submission insert
-      const { data: fallbackSub, error: subError } = await db
+      let { data: fallbackSub, error: subError } = await db
         .from('submissions').insert(submissionPayload).select().single();
+      if(subError && isMissingColumnError(subError) && ('irt_reason' in submissionPayload)){
+        // irt_reason column not migrated yet — the reason is still preserved in
+        // overall_remarks, so drop the dedicated column and retry rather than
+        // failing the submit.
+        console.warn('irt_reason column missing — retrying submit without it.');
+        const { irt_reason, ...safePayload } = submissionPayload;
+        ({ data: fallbackSub, error: subError } = await db
+          .from('submissions').insert(safePayload).select().single());
+      }
       if(subError) throw subError;
       submission = fallbackSub;
       if(nmPayload.length > 0){
@@ -4574,8 +4637,13 @@ async function syncOfflineQueue(){
         sub = (rpcSub && (rpcSub.submission || rpcSub)) || null;
         submissionDone = true;
       } else {
-        const { data: directSub, error: directErr } =
+        let { data: directSub, error: directErr } =
           await db.from('submissions').insert(item.submission).select().single();
+        if(directErr && isMissingColumnError(directErr) && item.submission && ('irt_reason' in item.submission)){
+          // irt_reason not migrated yet — reason is preserved in overall_remarks.
+          const { irt_reason, ...safeSub } = item.submission;
+          ({ data: directSub, error: directErr } = await db.from('submissions').insert(safeSub).select().single());
+        }
         if(directErr){
           console.error('Sync sub error:', directErr.message);
           item.retries = (item.retries||0)+1;
@@ -5673,19 +5741,22 @@ function setReentryType(type){
   if(reentryType === 'irt' && type === 'standard') return;
 
   // IRT bypasses the mandatory 2-hour blast lapse — require a written reason and
-  // keep it on the record. If none is given, do NOT activate IRT (the lapse
-  // stays enforced). Skipped when a reason is already present (e.g. draft
-  // restore), so reloading an in-progress IRT re-entry doesn't re-prompt.
+  // keep it on the record. If no reason is captured yet, open the reason modal
+  // and defer activation until it's confirmed; the lapse stays enforced until
+  // then. When a reason already exists (e.g. draft restore) we skip straight to
+  // applying IRT so reloading an in-progress IRT re-entry doesn't re-prompt.
   if(type === 'irt' && !irtReason){
-    const reason = (window.prompt(
-      'IMMEDIATE RE-ENTRY (IRT)\n\nThis bypasses the mandatory 2-hour blast lapse.\n\n'
-      + 'Enter the reason / authority for this immediate re-entry — it is recorded on the submission for SHE review:',
-      ''
-    ) || '').trim();
-    if(!reason) return;   // cancelled or blank → stay on standard, lapse stays enforced
-    irtReason = reason;
+    openIrtReasonModal();
+    return;
   }
 
+  applyReentryType(type);
+}
+
+// Applies the re-entry type to all phases' buttons/banners and the lapse card.
+// Separated from setReentryType so the IRT reason modal can call it once a
+// justification has been captured.
+function applyReentryType(type){
   reentryType = type;
 
   // Update ALL instances of these elements across all phases
@@ -5715,6 +5786,29 @@ function setReentryType(type){
     if(document.getElementById('blast-time')?.value) checkLapse();
   }
   saveDraft();
+}
+
+// ── IRT reason modal ──────────────────────────────────────────────────────
+function openIrtReasonModal(){
+  const ta  = document.getElementById('irt-reason-input');
+  const err = document.getElementById('irt-reason-err');
+  if(ta)  ta.value = '';
+  if(err) err.style.display = 'none';
+  document.getElementById('irt-reason-ov')?.classList.add('show');
+  setTimeout(() => ta?.focus(), 60);
+}
+function cancelIrtReason(){
+  // No reason given → stay on standard re-entry; the 2-hour lapse stays enforced.
+  document.getElementById('irt-reason-ov')?.classList.remove('show');
+}
+function confirmIrtReason(){
+  const ta  = document.getElementById('irt-reason-input');
+  const err = document.getElementById('irt-reason-err');
+  const reason = (ta?.value || '').trim();
+  if(!reason){ if(err) err.style.display = 'block'; ta?.focus(); return; }
+  irtReason = reason;
+  document.getElementById('irt-reason-ov')?.classList.remove('show');
+  applyReentryType('irt');
 }
 
 // ══ CREW PRELOAD GRID ══
