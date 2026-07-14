@@ -2330,15 +2330,16 @@
     <div class="ch4-block-icon">🔥</div>
     <div class="ch4-block-title">FLAMMABLE GAS DETECTED</div>
     <div class="ch4-block-body">
-      CompX detected at or above 1.00 %.<br><br>
-      <strong>Withdraw all crew from the section immediately.</strong><br><br>
-      Do not re-enter until ventilation has cleared the area and readings are confirmed below 0.25%.
+      CompX flammable gas detected above 0.1 %.<br><br>
+      <strong>Withdraw all crew from the section immediately and institute ventilation.</strong><br><br>
+      This re-entry will be aborted and recorded for SHE review. Do not re-enter
+      until the area has been ventilated and a new procedure confirms readings are safe.
     </div>
     <div style="background:#FEF0EE;border-left:3px solid var(--red);padding:0.6rem 0.8rem;margin-bottom:1rem;font-size:0.7rem;color:var(--red);font-weight:700;text-align:left;line-height:1.6;">
       This incident has been saved to the safety record and the SHE dashboard has been notified.
     </div>
     <button class="ch4-block-btn" onclick="acknowledgeCH4Block()">
-      Understood — Withdrawing Crew Now
+      Withdraw Crew &amp; Abort Re-Entry
     </button>
   </div>
 </div>
@@ -5875,14 +5876,17 @@ function openCH4Block(){
 }
 
 function acknowledgeCH4Block(){
+  // Force abort — a flammable-gas detection ENDS this re-entry attempt. The
+  // withdraw acknowledgement is not a "clear the field and retry" action: per
+  // procedure the crew withdraws and the attempt is recorded as
+  // aborted_unsafe_gas. Do NOT clear the reading first — confirmAbort() must
+  // capture the actual unsafe CompX value that triggered the withdrawal.
+  //
+  // Previously this just hid the popup, wiped the CompX field and reset the gas
+  // flags, which let a miner immediately enter a safe value and advance — a
+  // silent bypass of the most serious gas hard block in the procedure.
   document.getElementById('ch4-block-ov').classList.remove('show');
-  // Clear the CH4 reading so miner must re-enter
-  const ch4input = document.getElementById('gas-ch4');
-  if(ch4input){ ch4input.value = ''; }
-  // Reset gas state
-  gasReadingsLocked = false;
-  gasHasFailed      = false;
-  validateGas();
+  confirmAbort();
 }
 
 // ══════════════════════════════════════════
