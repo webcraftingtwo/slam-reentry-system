@@ -3978,8 +3978,12 @@ let gasHasFailed = false;
 let gasConfirmed = false; // true once the miner taps "Confirm Readings"
 
 function validateGas() {
-  if(gasReadingsLocked) return;
-
+  // SAFETY — never skip re-validation. Readings can change AFTER a prior "all
+  // safe" pass: a value gets edited, or an intermediate keystroke ("0") counts
+  // as safe and latches the lock before the miner finishes typing ("0.8").
+  // Early-returning while locked froze the last verdict and let unsafe readings
+  // straight through the hard block. Always re-evaluate; the lock is a state
+  // flag, not a licence to stop checking.
   let failures = [];
   let allFilled = true;
 
@@ -4024,6 +4028,10 @@ function validateGas() {
 
   if(failures.length > 0 && allFilled) {
     gasHasFailed = true;
+    // A failure after a prior pass must release the lock, otherwise the
+    // gasHasFailed/!gasReadingsLocked gates below (and in confirm/advance)
+    // would still treat the readings as passed.
+    gasReadingsLocked = false;
 
     // Check for CH4 flammable gas — immediate withdraw hard block
     const ch4Failure = failures.find(f => f.id === 'ch4' || GAS_LIMITS.find(g => g.inputId === 'gas-ch4' && g.id === f.id));
@@ -4046,9 +4054,13 @@ function validateGas() {
   } else {
     banner.classList.remove('show');
     if(allFilled && failures.length === 0) {
-      gasReadingsLocked = true; // all safe and filled
-      // Start periodic 15-min recheck reminder
-      startPeriodicRecheck();
+      // Only act on the transition INTO the safe state — validateGas now runs on
+      // every keystroke, so guard the one-time side effect (the periodic recheck
+      // reminder) instead of gating the whole function on the lock.
+      if(!gasReadingsLocked){
+        gasReadingsLocked = true; // all safe and filled
+        startPeriodicRecheck();   // start periodic 15-min recheck reminder once
+      }
     }
   }
 
@@ -5842,7 +5854,12 @@ function startPeriodicRecheck(){
 //  CH4 METHANE FLAMMABLE GAS BLOCK
 // ══════════════════════════════════════════
 function openCH4Block(){
-  document.getElementById('ch4-block-ov').classList.add('show');
+  const ov = document.getElementById('ch4-block-ov');
+  // Idempotent — validateGas now runs on every keystroke, so an unsafe CH4 value
+  // would call this repeatedly. If the block is already open, don't insert a
+  // duplicate ground alert; the withdraw block is already in force.
+  if(ov && ov.classList.contains('show')) return;
+  if(ov) ov.classList.add('show');
   // Save incident to ground_alerts with type 'flammable_gas'
   if(db){
     db.from('ground_alerts').insert({
