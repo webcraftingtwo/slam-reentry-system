@@ -997,6 +997,14 @@ function subHasGas(r){ return gasLinkedSubs.has(r.id) || (r.session_id && gasLin
 // failed (grey "Unverified") — a failed check must never look identical to "has gas",
 // since this badge is a genuine compliance signal.
 function irtTag(t){ return t === 'irt' ? ' <span class="badge irt-badge" title="Immediate Re-Entry — 2-hour lapse bypassed">IRT</span>' : ''; }
+// IRT justification: prefer the dedicated irt_reason column; fall back to the
+// copy folded into overall_remarks ("IRT reason: …") for records written before
+// the irt_reason migration was run.
+function irtReasonOf(sub){
+  if(sub.irt_reason) return sub.irt_reason;
+  const m = (sub.overall_remarks || '').match(/IRT reason:\s*([^|]+)/i);
+  return m ? m[1].trim() : '';
+}
 function noGasTag(r){
   if(gasLinkageFailed){
     return ' <span class="badge nogas-badge" style="background:#eee;color:var(--muted);" title="Could not verify gas readings — check connection and retry">⚠ Unverified</span>';
@@ -1256,8 +1264,12 @@ async function loadSubmissions(){
     status, retake_count, blast_time, reentry_time,
     safety_topics, supervisor_name, completed_at,
     reentry_duration_seconds, crew_members, photo_urls,
-    session_id, reentry_type, barring_down_done, fog_light_status`;
-  const approvalCols = `, supervisor_approved, approved_by, approved_at`;
+    session_id, reentry_type, barring_down_done, fog_light_status,
+    overall_remarks`;
+  // Optional columns added by later migrations — if any hasn't been run yet the
+  // query errors and we fall back to base columns below. irt_reason ships with
+  // the IRT-justification feature (migrations/2026-07-14_add_irt_reason.sql).
+  const approvalCols = `, supervisor_approved, approved_by, approved_at, irt_reason`;
 
   const runQuery = (cols) => {
     let q = db.from('submissions').select(cols)
@@ -1379,9 +1391,16 @@ function dateAtTime(dateStr, timeStr){
   return d ? d + ' · ' + timeStr : timeStr;
 }
 
-function statusBadge(status){
+function statusBadge(status, fogStatus){
   if(status === 'completed')         return '<span class="badge completed">Completed</span>';
-  if(status === 'aborted_unsafe_gas') return '<span class="badge aborted">Aborted</span>';
+  if(status === 'aborted_unsafe_gas'){
+    // Ground-condition aborts reuse the same status value (the field app keeps
+    // the proven status to guarantee the safety record saves) but carry a red
+    // FOG light. Surface the real reason so a ground abort isn't read as gas.
+    return fogStatus === 'red'
+      ? '<span class="badge aborted" title="Aborted — unsafe ground conditions (FOG red)">Aborted — Ground</span>'
+      : '<span class="badge aborted" title="Aborted — unsafe gas levels">Aborted — Gas</span>';
+  }
   return '<span class="badge">' + (status||'—') + '</span>';
 }
 
@@ -1449,7 +1468,7 @@ function subTableHtml(rows){
       <div class="td bold" data-label="Miner">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${r.officer_id||''}</span></div>
       <div class="td" data-label="Section">${r.section||'—'}</div>
       <div class="td" data-label="Date/Time">${fmtDate(r.created_at)}</div>
-      <div class="td" data-label="Status">${statusBadge(r.status)}${irtTag(r.reentry_type)}${noGasTag(r)}${approvedTag(r)}</div>
+      <div class="td" data-label="Status">${statusBadge(r.status, r.fog_light_status)}${irtTag(r.reentry_type)}${noGasTag(r)}${approvedTag(r)}</div>
       <div class="td" data-label="Retakes">${r.retake_count > 0 ? '<span style="color:var(--amber);font-weight:700;">'+r.retake_count+'</span>' : '0'}</div>
       <div class="td" data-label="Zone">${r.zone||'—'}</div>
     </div>
@@ -1721,7 +1740,7 @@ async function openSubDetail(id){
       </div>
       <div class="detail-item">
         <div class="detail-k">Status</div>
-        <div class="detail-v">${statusBadge(sub.status)}</div>
+        <div class="detail-v">${statusBadge(sub.status, sub.fog_light_status)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-k">Supervisor</div>
@@ -1733,6 +1752,11 @@ async function openSubDetail(id){
           ${sub.reentry_type === 'irt' ? '🚨 IRT — Lapse Bypassed' : '⛏ Standard'}
         </div>
       </div>
+      ${sub.reentry_type === 'irt' ? `
+      <div class="detail-item detail-full">
+        <div class="detail-k">IRT Reason</div>
+        <div class="detail-v" style="font-weight:500;">${esc(irtReasonOf(sub)) || '—'}</div>
+      </div>` : ''}
       <div class="detail-item">
         <div class="detail-k">FOG Light</div>
         <div class="detail-v ${sub.fog_light_status==='red'?'bad':'ok'}">
@@ -2186,7 +2210,7 @@ async function exportSubPDF(id){
   <div><div class="co">VALTERRA PLATINUM</div><div style="font-size:0.72rem;color:#666;">Unki Mine · Mining Department</div></div>
   <div class="ref">Ref: UNK-MIN-MIN-PRO-0002 · V6.0<br>ID: ${sub.id?.substring(0,8).toUpperCase()||'—'}<br>${new Date().toLocaleString('en-GB')}</div>
 </div>
-<div class="status-bar">SLAM RE-ENTRY RECORD — ${sub.status === 'completed' ? 'COMPLETED' : 'ABORTED — UNSAFE GAS LEVELS'}</div>
+<div class="status-bar">SLAM RE-ENTRY RECORD — ${sub.status === 'completed' ? 'COMPLETED' : (sub.fog_light_status === 'red' ? 'ABORTED — UNSAFE GROUND CONDITIONS' : 'ABORTED — UNSAFE GAS LEVELS')}</div>
 <h2>Miner &amp; Session</h2>
 <div class="grid">
   <div><div class="k">Miner</div><div class="v">${sub.officer_name||'—'}</div></div>
