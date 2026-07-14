@@ -640,6 +640,9 @@
     <div class="dnav" id="dnav-bord" onclick="switchPanel('bord')">
       ⛏ Bord Tracker <span class="dnav-count" id="cnt-bord" style="background:var(--teal);">0</span>
     </div>
+    <div class="dnav" id="dnav-accounts" onclick="switchPanel('accounts')">
+      👤 Recent Accounts <span class="dnav-count" id="cnt-accounts">0</span>
+    </div>
   </div>
 
   <div class="dash-main">
@@ -898,6 +901,35 @@
       </div>
     </div>
 
+    <!-- RECENTLY CREATED ACCOUNTS PANEL -->
+    <div class="dash-panel" id="panel-accounts">
+      <div class="filters">
+        <span class="filter-label">Filter:</span>
+        <select class="f-select" id="f-acc-role" onchange="loadRecentAccounts()">
+          <option value="">All Roles</option>
+          <option value="officer">Officer</option>
+          <option value="supervisor">Supervisor</option>
+          <option value="she_manager">SHE Manager</option>
+          <option value="shift_boss">Shift Boss</option>
+          <option value="safety_officer">Safety Officer</option>
+          <option value="admin">Admin</option>
+        </select>
+        <select class="f-select" id="f-acc-section" onchange="loadRecentAccounts()">
+          <option value="">All Sections</option>
+          <option>North Section</option>
+          <option>South Section</option>
+          <option>Development Section</option>
+        </select>
+        <input type="date" class="f-input" id="f-acc-date" onchange="loadRecentAccounts()" style="max-width:170px;flex:0 0 auto;" title="Filter from date">
+        <button class="btn-filter" onclick="clearDateFilter('f-acc-date', loadRecentAccounts)">Clear date</button>
+        <button class="btn-filter" onclick="loadRecentAccounts()">↺ Refresh</button>
+        <button class="btn-export" onclick="exportCSV('accounts')">Export CSV</button>
+      </div>
+      <div class="tbl-wrap" id="accounts-table">
+        <div class="loading">Loading recently created accounts...</div>
+      </div>
+    </div>
+
   </div><!-- /dash-main -->
 </div><!-- /dashboard -->
 
@@ -932,6 +964,7 @@ window.addEventListener('error', (e) => {
   console.warn('Runtime error (logged, non-fatal):', e.message);
 });
 let allSubmissions = [];
+let allAccounts = [];
 
 // Gas linkage — which submissions actually have gas readings (for the "no gas" flag).
 let gasLinkedSubs = new Set();
@@ -1149,7 +1182,7 @@ async function dashSignOut(){
 // the UI can show an explicit "failed to load" state instead of one indistinguishable
 // from "nothing to report" — important for SOS/ground-alert panels specifically,
 // where an empty-looking screen could actually be hiding a real active alert.
-let loadFailed = { stats:false, submissions:false, nearMiss:false, sos:false, ground:false, handovers:false, notes:false };
+let loadFailed = { stats:false, submissions:false, nearMiss:false, sos:false, ground:false, handovers:false, notes:false, accounts:false };
 
 // ── Live-alert cues (SOS / Ground) ──────────────────────────────────────
 // Short beep via Web Audio API — no external audio file, no dependency.
@@ -1974,6 +2007,7 @@ function switchPanel(name){
   if(name === 'handovers') loadHandovers();
   if(name === 'notes')     loadShiftNotes();
   if(name === 'bord')      loadBordTracker();
+  if(name === 'accounts')  loadRecentAccounts();
 }
 
 // ── Date filtering helpers ──────────────────────────────────────────────
@@ -2010,6 +2044,15 @@ function exportCSV(type){
         s.id, s.officer_name, s.officer_id, s.section, s.zone||'',
         s.status, s.blast_time||'', s.reentry_time||'',
         s.supervisor_name||'', fmtDate(s.created_at)
+      ])
+    ];
+  } else if(type === 'accounts'){
+    filename = 'valterra_recent_accounts.csv';
+    rows = [
+      ['ID','Name','Badge','Role','Section','Email','Created At'],
+      ...allAccounts.map(a => [
+        a.id, a.full_name||'', a.badge_id||'', a.role||'',
+        a.section||'', a.email||'', fmtDate(a.created_at)
       ])
     ];
   } else {
@@ -2789,6 +2832,69 @@ function renderShiftNotes(){
       <div class="handover-item-body" style="white-space:pre-wrap;">${n.note_text||'—'}</div>
     </div>
   `).join('');
+}
+
+// ══════════════════════════════════════════
+//  RECENTLY CREATED ACCOUNTS
+// ══════════════════════════════════════════
+async function loadRecentAccounts(){
+  const roleFilter    = document.getElementById('f-acc-role')?.value    || '';
+  const sectionFilter = document.getElementById('f-acc-section')?.value || '';
+  const range         = dayRange(document.getElementById('f-acc-date')?.value || '');
+
+  let query = db.from('profiles').select('*')
+    .order('created_at', { ascending: false }).limit(300);
+
+  if(roleFilter)    query = query.eq('role', roleFilter);
+  if(sectionFilter) query = query.eq('section', sectionFilter);
+  if(range) query = query.gte('created_at', range.startIso).lt('created_at', range.endIso);
+
+  const { data, error } = await query;
+  loadFailed.accounts = !!error;
+  if(error){ console.error('Recent accounts error:', error.message); renderAccountsTable(); return; }
+  allAccounts = scrub(data || []);
+
+  const cntEl = document.getElementById('cnt-accounts');
+  if(cntEl) cntEl.textContent = allAccounts.length;
+
+  renderAccountsTable();
+}
+
+function renderAccountsTable(){
+  const el = document.getElementById('accounts-table');
+  if(!el) return;
+
+  if(loadFailed.accounts){
+    el.innerHTML = '<div class="empty">⚠ Failed to load accounts — check your connection and retry</div>';
+    return;
+  }
+  if(allAccounts.length === 0){
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👤</div>No accounts found</div>';
+    return;
+  }
+
+  const acctGrid = 'grid-template-columns:1.2fr 1fr 0.8fr 0.9fr 0.8fr 1fr;';
+  let html = `<div class="tbl-head" style="${acctGrid}">
+    <div class="th">Name</div>
+    <div class="th">Badge</div>
+    <div class="th">Role</div>
+    <div class="th">Section</div>
+    <div class="th">Status</div>
+    <div class="th">Created</div>
+  </div>`;
+
+  html += allAccounts.map(a => `
+    <div class="tbl-row" style="${acctGrid}">
+      <div class="td bold">${a.full_name || '—'}</div>
+      <div class="td">${a.badge_id || '—'}</div>
+      <div class="td">${(a.role || '').replace(/_/g, ' ').toUpperCase()}</div>
+      <div class="td">${a.section || '—'}</div>
+      <div class="td">${a.is_active ? '<span class="badge">Active</span>' : '<span class="badge incomplete">Inactive</span>'}</div>
+      <div class="td">${fmtDate(a.created_at)}</div>
+    </div>
+  `).join('');
+
+  el.innerHTML = `<div class="tbl-wrap" style="background:var(--white);border:1.5px solid var(--border);border-radius:4px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.04);">${html}</div>`;
 }
 
 // ══════════════════════════════════════════
