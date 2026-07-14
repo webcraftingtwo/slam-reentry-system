@@ -2365,7 +2365,7 @@
       <div class="ground-sent-icon">🚨</div>
       <h2>ALERT SENT</h2>
       <p>Rock Engineering and S-team have been notified. Withdraw all crew from the section immediately. Do not re-enter until Rock Engineering has cleared the area.</p>
-      <button class="btn-ground-confirm" style="margin-top:1rem;background:var(--mid);" onclick="closeGroundAlert()">Understood — Withdrawing Crew</button>
+      <button class="btn-ground-confirm" style="margin-top:1rem;background:var(--mid);" onclick="abortForGroundCondition()">Understood — Withdraw Crew &amp; Abort Re-Entry</button>
     </div>
   </div>
 </div>
@@ -2447,6 +2447,7 @@ let lapseInterval = null;
 let blastTimestamp = null;      // epoch ms anchor for the blast — see checkLapse()
 let lastBlastTimeValue = '';
 let reentryType = 'standard'; // standard | irt
+let irtReason = ''; // written justification captured when IRT is selected (bypasses the 2-hour lapse)
 let barringDownDone = null; // null | 'yes' | 'no'
 let timerExceeded = false;
 let fogLightStatus = null; // null | 'green' | 'red'
@@ -2617,6 +2618,7 @@ function saveDraft(){
       reentryTime: document.getElementById('reentry-time')?.value || '',
       // reentry type
       reentryType: reentryType,
+      irtReason:   irtReason,
       // waiting place inputs
       stalkNotes:  document.getElementById('stalk-notes')?.value || '',
       hazardChips: [],
@@ -3031,8 +3033,10 @@ function launchApp(){
   updateFailedQueueBar();
   if(isOnline){ syncOfflineQueue(); syncGasQueue(); syncHandoverQueue(); syncNearMissQueue(); syncSOSQueue(); syncBordQueue(); syncPhaseQueue(); syncShiftNoteQueue(); }
   initLapseDisplay();
-  // Restore IRT type — use setReentryType so all elements + persist bar update
+  // Restore IRT type — use setReentryType so all elements + persist bar update.
+  // Restore the captured IRT reason FIRST so setReentryType doesn't re-prompt.
   try{
+    irtReason = draft?.irtReason || irtReason || '';
     const savedType = draft?.reentryType || localStorage.getItem('valterra_reentry_type');
     if(savedType === 'irt') setReentryType('irt');
   }catch(e){}
@@ -3723,7 +3727,10 @@ async function submitProcedure(){
     safety_topics:            topics || null,
     safety_notes:             document.getElementById('stalk-notes')?.value || null,
     supervisor_name:          document.getElementById('sup-name')?.value || null,
-    overall_remarks:          document.getElementById('overall-remarks')?.value || null,
+    overall_remarks:          [
+                                (reentryType === 'irt' && irtReason) ? ('IRT reason: ' + irtReason) : null,
+                                document.getElementById('overall-remarks')?.value || null
+                              ].filter(Boolean).join('  |  ') || null,
     ground_observations:      document.getElementById('ground-obs-txt')?.value || null,
     misfire_details:          document.getElementById('misfire-details')?.value || null,
     explosives_notes:         document.getElementById('explosives-notes')?.value || null,
@@ -4181,7 +4188,10 @@ function closeAbort() {
   document.getElementById('abort-ov').classList.remove('show');
 }
 
-async function confirmAbort() {
+// opts (optional): { ground:true, reason:'…' } for a FOG-light RED / unsafe
+// ground-condition abort. Defaults to the unsafe-gas abort behaviour.
+async function confirmAbort(opts) {
+  const isGround = !!(opts && opts.ground);
   document.getElementById('abort-ov').classList.remove('show');
 
   const coVal  = parseFloat(document.getElementById('gas-co')?.value);
@@ -4204,6 +4214,17 @@ async function confirmAbort() {
     completed_at:  new Date().toISOString(),
   };
 
+  // Ground-condition abort (FOG light RED) reuses this terminal abort path so
+  // the miner cannot proceed. Status stays 'aborted_unsafe_gas' (the value the
+  // submissions table is known to accept — avoids risking a rejected safety
+  // record on an unverified status enum), but we tag the true reason on the
+  // existing fog_light_status / ground_observations columns so the record and
+  // the dashboard can tell a ground abort apart from an unsafe-gas abort.
+  if(isGround){
+    abortSubmissionPayload.fog_light_status    = 'red';
+    abortSubmissionPayload.ground_observations = (opts && opts.reason) || 'FOG light RED — unsafe ground conditions reported by miner.';
+  }
+
   const abortGasPayload = {
     session_id:    sessionId || null,
     co_ppm:        isNaN(coVal)  ? null : coVal,
@@ -4224,7 +4245,7 @@ async function confirmAbort() {
   // via the RPC once signal returns.
   if(!isOnline){
     addToOfflineQueue({ submission: abortSubmissionPayload, gas_readings: abortGasPayload, near_misses: [] });
-    showAbortedScreen(true);
+    showAbortedScreen(true, isGround);
     return;
   }
 
@@ -4255,7 +4276,7 @@ async function confirmAbort() {
       if(gasErr) throw gasErr;
     }
 
-    showAbortedScreen(false);
+    showAbortedScreen(false, isGround);
 
   } catch(err) {
     console.error('Abort save error:', err);
@@ -4281,11 +4302,11 @@ async function confirmAbort() {
     // be lost: queue it exactly like an offline submission and confirm to the miner.
     isOnline = false; updateConnBar();
     addToOfflineQueue({ submission: abortSubmissionPayload, gas_readings: abortGasPayload, near_misses: [] });
-    showAbortedScreen(true);
+    showAbortedScreen(true, isGround);
   }
 }
 
-function showAbortedScreen(isOffline){
+function showAbortedScreen(isOffline, isGround){
   clearDraft();
   document.getElementById('app').style.display = 'none';
   const suc = document.getElementById('success');
@@ -4294,12 +4315,13 @@ function showAbortedScreen(isOffline){
   document.getElementById('rec-zone').textContent = currentZone || 'Not recorded';
   document.getElementById('rec-nm').textContent   = nearMisses.length;
   document.getElementById('rec-ts').textContent   = new Date().toLocaleString() + (isOffline ? ' · Queued offline' : '');
+  const reason = isGround ? 'unsafe ground conditions (FOG light RED)' : 'unsafe gas readings';
   const statusEl = suc.querySelector('.rec-v.ok');
-  if(statusEl){ statusEl.textContent='⚠ ABORTED — UNSAFE GAS LEVELS'; statusEl.style.color='var(--accent)'; }
+  if(statusEl){ statusEl.textContent = isGround ? '⚠ ABORTED — UNSAFE GROUND CONDITIONS' : '⚠ ABORTED — UNSAFE GAS LEVELS'; statusEl.style.color='var(--accent)'; }
   suc.querySelector('.suc-ttl').textContent = 'Re-Entry Aborted';
   suc.querySelector('.suc-sub').textContent = isOffline
-    ? 'Re-entry aborted due to unsafe gas readings. No signal — record saved on device and will auto-sync when signal returns.'
-    : 'Re-entry aborted due to unsafe gas readings. All data saved and flagged for SHE review.';
+    ? 'Re-entry aborted due to ' + reason + '. No signal — record saved on device and will auto-sync when signal returns.'
+    : 'Re-entry aborted due to ' + reason + '. All data saved and flagged for SHE review.';
   suc.style.display = 'flex';
 }
 
@@ -4825,6 +4847,15 @@ function closeGroundAlert(){
   const redBtn   = document.getElementById('fog-red');
   if(greenBtn) greenBtn.classList.remove('green-sel','red-sel');
   if(redBtn)   redBtn.classList.remove('green-sel','red-sel');
+}
+
+// FOG light RED = miner reporting unsafe ground conditions. This is a hard
+// block: it force-aborts the re-entry (same terminal path as flammable gas) so
+// the miner cannot dismiss the alert, re-select green and carry on — which
+// would silently retract a red report that has already notified Rock Eng / SHE.
+function abortForGroundCondition(){
+  document.getElementById('ground-ov').classList.remove('show');
+  confirmAbort({ ground:true, reason:'FOG light RED — unsafe ground conditions reported by miner. Rock Engineering and S-team notified.' });
 }
 
 // ══════════════════════════════════════════
@@ -5640,6 +5671,20 @@ async function checkDuplicate(){
 function setReentryType(type){
   // Once IRT is selected it cannot be switched back — safety by design
   if(reentryType === 'irt' && type === 'standard') return;
+
+  // IRT bypasses the mandatory 2-hour blast lapse — require a written reason and
+  // keep it on the record. If none is given, do NOT activate IRT (the lapse
+  // stays enforced). Skipped when a reason is already present (e.g. draft
+  // restore), so reloading an in-progress IRT re-entry doesn't re-prompt.
+  if(type === 'irt' && !irtReason){
+    const reason = (window.prompt(
+      'IMMEDIATE RE-ENTRY (IRT)\n\nThis bypasses the mandatory 2-hour blast lapse.\n\n'
+      + 'Enter the reason / authority for this immediate re-entry — it is recorded on the submission for SHE review:',
+      ''
+    ) || '').trim();
+    if(!reason) return;   // cancelled or blank → stay on standard, lapse stays enforced
+    irtReason = reason;
+  }
 
   reentryType = type;
 
