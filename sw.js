@@ -18,7 +18,7 @@
    installs, precaches the fresh shell, and the old cache is deleted on activate.
    ========================================================================== */
 
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = 'slam-shell-' + CACHE_VERSION;
 
 // App-shell assets to precache so the app opens with zero signal.
