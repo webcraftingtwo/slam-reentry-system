@@ -4,8 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valterra | SLAM Re-Entry Procedure</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- PWA — installable, offline-capable field app -->
+<meta name="theme-color" content="#1B7B6E">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SLAM Re-Entry">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+
+<link href="vendor/fonts/montserrat.css" rel="stylesheet">
+<script src="vendor/supabase.js"></script>
+<script>
+  // Register the service worker (app-shell offline cache). Deferred to load so
+  // it never competes with first paint. Failure is non-fatal — the app still
+  // runs online exactly as before.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function (e) {
+        console.warn('Service worker registration failed:', e);
+      });
+    });
+  }
+</script>
 <style>
   :root {
     --teal:      #1B7B6E;

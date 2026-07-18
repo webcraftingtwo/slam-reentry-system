@@ -4,9 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valterra | Management Dashboard v6.0.0</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- PWA — installable, offline-capable supervisor dashboard -->
+<meta name="theme-color" content="#1B7B6E">
+<link rel="manifest" href="dashboard.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SLAM Dashboard">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+
+<link href="vendor/fonts/montserrat.css" rel="stylesheet">
+<script src="vendor/supabase.js"></script>
+<script src="vendor/chart.umd.min.js"></script>
+<script>
+  // Register the shared service worker (app-shell offline cache). Non-fatal on failure.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function (e) {
+        console.warn('Service worker registration failed:', e);
+      });
+    });
+  }
+</script>
 <style>
   :root {
     --teal:      #1B7B6E;

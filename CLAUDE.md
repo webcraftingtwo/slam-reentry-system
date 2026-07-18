@@ -14,6 +14,20 @@ Currently in a two-section pilot phase.
 - index.html — field app used by underground crews.
 - dashboard.html — supervisor / SHE monitoring view.
 
+## PWA / offline install
+- The app is an installable PWA (add-to-home-screen, launches offline).
+- No build step, no bundler, no npm at runtime — still plain static files.
+- Previously-CDN dependencies are VENDORED locally on purpose (so the app
+  loads with no signal underground). Do not re-point these at a CDN:
+  - vendor/supabase.js — Supabase JS UMD (window.supabase). Used by both pages.
+  - vendor/chart.umd.min.js — Chart.js (dashboard only).
+  - vendor/fonts/ — self-hosted Montserrat (latin + latin-ext woff2) + css.
+- sw.js — service worker; caches the app shell only. It NEVER intercepts
+  Supabase (cross-origin) or non-GET requests, so data/auth/offline-queue
+  behaviour is unchanged. To ship an app update, bump CACHE_VERSION in sw.js.
+- manifest.json (field app) + dashboard.webmanifest (dashboard); icons/ holds
+  the app icons (generated from the teal wave logo).
+
 ## Hard rules — do not break these
 - NEVER add external dependencies, a bundler, or a build step.
 - NEVER weaken or bypass Row Level Security policies. Ask before
