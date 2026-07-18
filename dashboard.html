@@ -4,9 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valterra | Management Dashboard v6.0.0</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- PWA — installable, offline-capable supervisor dashboard -->
+<meta name="theme-color" content="#1B7B6E">
+<link rel="manifest" href="dashboard.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SLAM Dashboard">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+
+<link href="vendor/fonts/montserrat.css" rel="stylesheet">
+<script src="vendor/supabase.js"></script>
+<script src="vendor/chart.umd.min.js"></script>
+<script>
+  // Register the shared service worker (app-shell offline cache). Non-fatal on failure.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function (e) {
+        console.warn('Service worker registration failed:', e);
+      });
+    });
+  }
+</script>
 <style>
   :root {
     --teal:      #1B7B6E;
@@ -860,6 +881,13 @@
             <option>South Strike (SS)</option>
             <option>North Strike (NS)</option>
           </select>
+          <select class="f-select" id="f-bord-stage" onchange="loadBordTracker()" style="max-width:150px;">
+            <option value="">All Stages</option>
+            <option value="drilling">Drilling</option>
+            <option value="blasting">Blasting</option>
+            <option value="lashing">Lashing</option>
+            <option value="support">Support</option>
+          </select>
           <input type="date" class="f-input" id="f-bord-date" onchange="loadBordTracker()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
           <button class="btn-filter" onclick="clearDateFilter('f-bord-date', loadBordTracker)">Clear date</button>
           <button class="btn-filter" onclick="loadBordTracker()">↺ Refresh</button>
@@ -873,8 +901,6 @@
         <span class="bct-legend-pill blasting">🔴 Blasting</span>
         <span class="bct-legend-pill lashing">🟡 Lashing</span>
         <span class="bct-legend-pill support">🟠 Support</span>
-        <span class="bct-legend-pill complete">🟢 Complete</span>
-        <span class="bct-legend-pill repeat">🔄 Repeat</span>
       </div>
 
       <div id="bord-table">
@@ -2929,8 +2955,9 @@ const BORD_STAGE_LABELS = {
   blasting: '🔴 Charging and Blasting',
   lashing:  '🟡 Lashing',
   support:  '🟠 Support',
-  // Legacy stages — retired from the miner picker but kept here so historical
-  // records still render a proper label instead of a raw id.
+  // Legacy stages — retired from the miner picker AND removed from the tracker
+  // legend + stage filter. Kept here only so any historical record still renders
+  // a readable label instead of a raw id; they are not part of the active cycle.
   complete: '🟢 Complete',
   repeat:   '🔄 Repeat',
 };
@@ -2943,6 +2970,7 @@ async function loadBordTracker(){
   el.innerHTML = '<div class="loading">Loading bord status...</div>';
 
   const sectionFilter = document.getElementById('f-bord-section')?.value || '';
+  const stageFilter   = document.getElementById('f-bord-stage')?.value   || '';
   const range         = dayRange(document.getElementById('f-bord-date')?.value || '');
 
   try {
@@ -2974,11 +3002,12 @@ async function loadBordTracker(){
       }
     });
 
-    // Filter by section if selected
+    // Filter by section and/or current stage (both optional). Stage filters on
+    // the latest cycle_stage per bord — i.e. bords currently AT that stage.
     const filteredBords = Object.values(latestPerBord).filter(r => {
-      if(!sectionFilter) return true;
-      if(sectionFilter === 'South Strike (SS)') return r.bord.includes('SS');
-      if(sectionFilter === 'North Strike (NS)')  return r.bord.includes('NS');
+      if(sectionFilter === 'South Strike (SS)' && !(r.bord||'').includes('SS')) return false;
+      if(sectionFilter === 'North Strike (NS)'  && !(r.bord||'').includes('NS')) return false;
+      if(stageFilter && (r.cycle_stage||'') !== stageFilter) return false;
       return true;
     });
 
@@ -2988,7 +3017,8 @@ async function loadBordTracker(){
 
     if(filteredBords.length === 0){
       const when = range ? 'on the selected date' : 'in the last 30 days';
-      el.innerHTML = '<div class="empty"><div class="empty-icon">⛏</div>No bord updates ' + when + '</div>';
+      const stageNote = stageFilter ? (' at stage “' + (BORD_STAGE_LABELS[stageFilter] || stageFilter) + '”') : '';
+      el.innerHTML = '<div class="empty"><div class="empty-icon">⛏</div>No bord updates ' + when + stageNote + '</div>';
       return;
     }
 

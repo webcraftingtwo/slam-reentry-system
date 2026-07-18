@@ -4,8 +4,89 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valterra | SLAM Re-Entry Procedure</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- PWA — installable, offline-capable field app -->
+<meta name="theme-color" content="#1B7B6E">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SLAM Re-Entry">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+
+<link href="vendor/fonts/montserrat.css" rel="stylesheet">
+<script src="vendor/supabase.js"></script>
+<script>
+  // Register the service worker (app-shell offline cache). Deferred to load so
+  // it never competes with first paint. Failure is non-fatal — the app still
+  // runs online exactly as before.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function (e) {
+        console.warn('Service worker registration failed:', e);
+      });
+    });
+  }
+
+  // ── PWA install button ──────────────────────────────────────────────
+  // Reveals the home-screen "Install App" card only when the app can actually
+  // be installed, and hides it once installed. Android/Chrome/Edge fire
+  // beforeinstallprompt; iOS Safari has no such event, so we show manual steps.
+  (function () {
+    var deferredPrompt = null;
+
+    function isStandalone(){
+      return window.matchMedia && window.matchMedia('(display-mode: standalone)').matches
+             || window.navigator.standalone === true;
+    }
+    function isiOS(){
+      return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+    }
+    function showInstallCard(subText){
+      var card = document.getElementById('home-card-install');
+      if(!card) return;
+      if(subText){ var s = document.getElementById('hc-install-sub'); if(s) s.textContent = subText; }
+      card.style.display = '';
+    }
+    function hideInstallCard(){
+      var card = document.getElementById('home-card-install');
+      if(card) card.style.display = 'none';
+    }
+
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();          // suppress the mini-infobar; use our own button
+      deferredPrompt = e;
+      if(!isStandalone()) showInstallCard();
+    });
+
+    window.addEventListener('appinstalled', function () {
+      deferredPrompt = null;
+      hideInstallCard();
+    });
+
+    // Called by the Install App card.
+    window.promptInstall = function () {
+      if(deferredPrompt){
+        deferredPrompt.prompt();
+        var choice = deferredPrompt.userChoice;
+        if(choice && choice.finally){ choice.finally(function(){ deferredPrompt = null; hideInstallCard(); }); }
+        else { deferredPrompt = null; hideInstallCard(); }
+        return;
+      }
+      if(isiOS()){
+        alert('To install SLAM Re-Entry:\n\n1. Tap the Share button (⬆) at the bottom of Safari\n2. Choose “Add to Home Screen”\n3. Tap “Add”');
+      }
+    };
+
+    // iOS gets the card up-front (no install event fires there); other browsers
+    // reveal it when beforeinstallprompt arrives. Never show it once installed.
+    window.addEventListener('DOMContentLoaded', function () {
+      if(isStandalone()){ hideInstallCard(); return; }
+      if(isiOS()) showInstallCard('Tap for steps to add this app to your home screen');
+    });
+  })();
+</script>
 <style>
   :root {
     --teal:      #1B7B6E;
@@ -1435,6 +1516,12 @@
         <div class="hc-label">Near Miss</div>
         <div class="hc-sub">Report a near-miss incident</div>
       </div>
+      <!-- Shown only when the app is installable (and not already installed) -->
+      <div class="home-card hc-accent" id="home-card-install" onclick="promptInstall()" style="display:none;">
+        <span class="hc-icon">⬇️</span>
+        <div class="hc-label">Install App</div>
+        <div class="hc-sub" id="hc-install-sub">Add SLAM Re-Entry to your home screen for offline use</div>
+      </div>
     </div>
   </div>
 </div>
@@ -2424,7 +2511,6 @@
   </div>
 
   <div style="width:100%;max-width:400px;margin:1rem auto 0;border-top:1px solid rgba(255,255,255,0.12);padding-top:1rem;display:flex;flex-direction:column;gap:0.5rem;animation:fadeUp 0.4s ease 0.5s both;">
-    <button class="btn-new" onclick="openHandover()" style="background:rgba(184,204,0,0.15);border-color:var(--accent);">📋 Complete Shift Handover</button>
     <button class="btn-new" onclick="resetAll()">Done — Return to Home</button>
   </div>
 </div>
