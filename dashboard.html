@@ -6,7 +6,7 @@
 <title>Valterra | Management Dashboard v6.0.0</title>
 
 <!-- PWA — installable, offline-capable supervisor dashboard -->
-<meta name="theme-color" content="#1B7B6E">
+<meta name="theme-color" content="#007179">
 <link rel="manifest" href="dashboard.webmanifest">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,20 +30,32 @@
 </script>
 <style>
   :root {
-    --teal:      #1B7B6E;
-    --teal-dark: #145F55;
-    --teal-lite: #2A9585;
-    --teal-pale: #E8F4F2;
-    --accent:    #B8CC00;
+    /* Brand anchors — Valterra teal + grey, everything derives from these */
+    --teal:      #007179;
+    --teal-dark: #00494F;
+    --teal-lite: #2E8C93;
+    --teal-pale: #E3F0F1;
+    --accent:    #B8CC00;   /* high-vis — markers and fills only, never text on light */
+    --acc-dark:  #94A300;
+    --acc-ink:   #5F6A00;   /* high-vis darkened for text on light */
     --white:     #FFFFFF;
-    --offwhite:  #F4F7F6;
-    --text:      #1A1A1A;
-    --mid:       #4A5550;
-    --muted:     #8A9E99;
-    --border:    #C8DEDB;
-    --green:     #27AE60;
-    --red:       #E74C3C;
-    --amber:     #F39C12;
+    --offwhite:  #EEF3F4;   /* mist — tinted from brand grey, not neutral */
+    --text:      #10181A;
+    --mid:       #3D5158;   /* brand grey darkened to pass AA on light */
+    --muted:     #587078;   /* secondary text on light, AA-safe */
+    --grey:      #73929B;   /* brand grey — labels on dark, dividers, disabled */
+    --border:    #C9D6DA;
+    --green:     #0E7C3F;   /* status trio — AA-safe as text on light */
+    --red:       #C0392B;
+    --amber:     #F39C12;   /* fills only */
+    --amber-ink: #8A6100;   /* amber as text on light */
+    /* Instrument readout — the signature */
+    --panel:     #0F1719;   /* detector LCD face */
+    --panel-edge:#223034;
+    --ok-hi:     #3DDC84;   /* digit colours on dark panel */
+    --bad-hi:    #FF6B5E;
+    --warn-hi:   #FFB03A;
+    --mono:      ui-monospace,'Cascadia Mono','Roboto Mono',Consolas,monospace;
   }
 
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -53,7 +65,7 @@
     background:var(--offwhite);
     color:var(--text);
     min-height:100vh;
-    font-size:13px;
+    font-size:14px;
   }
 
   /* ══════════ LOGIN ══════════ */
@@ -65,7 +77,7 @@
   }
 
   .login-card{
-    background:var(--white);border-radius:6px;
+    background:var(--white);border-radius:4px;
     padding:2rem 1.8rem;width:100%;max-width:380px;
     box-shadow:0 8px 40px rgba(0,0,0,0.2);
   }
@@ -73,17 +85,17 @@
   .login-logo{display:flex;align-items:center;gap:0.6rem;margin-bottom:1.5rem;}
   .login-logo svg{width:0px;height:0px;}
   .login-name{font-size:1rem;font-weight:800;color:var(--teal);letter-spacing:0.08em;text-transform:uppercase;}
-  .login-plat{font-size:0.48rem;font-weight:600;color:var(--muted);letter-spacing:0.3em;text-transform:uppercase;}
+  .login-plat{font-size:0.66rem;font-weight:600;color:var(--muted);letter-spacing:0.3em;text-transform:uppercase;}
 
   .login-title{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:0.3rem;}
-  .login-sub{font-size:0.7rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.5;}
+  .login-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.5;}
 
   .lg{margin-bottom:0.85rem;}
-  .lg label{display:block;font-size:0.58rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;}
+  .lg label{display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;}
   .lg input{
     width:100%;background:var(--offwhite);border:1.5px solid var(--border);
     color:var(--text);padding:0.65rem 0.82rem;
-    font-family:'Montserrat',sans-serif;font-size:0.8rem;font-weight:500;
+    font-family:'Montserrat',sans-serif;font-size:0.875rem;font-weight:500;
     border-radius:3px;outline:none;transition:border-color 0.18s;
     -webkit-appearance:none;
   }
@@ -92,7 +104,7 @@
   .btn-login{
     width:100%;background:var(--teal);color:#fff;border:none;
     padding:0.85rem;font-family:'Montserrat',sans-serif;
-    font-size:0.72rem;font-weight:800;letter-spacing:0.18em;
+    font-size:0.8rem;font-weight:800;letter-spacing:0.18em;
     text-transform:uppercase;border-radius:3px;cursor:pointer;
     margin-top:0.5rem;transition:background 0.18s;
   }
@@ -102,14 +114,14 @@
   .login-err{
     background:#FEF0EE;border:1.5px solid var(--red);border-radius:3px;
     padding:0.6rem 0.8rem;margin-bottom:0.9rem;
-    font-size:0.7rem;font-weight:600;color:var(--red);
+    font-size:0.78rem;font-weight:600;color:var(--red);
     display:none;
   }
   .login-err.show{display:block;}
 
   .login-access-note{
     text-align:center;margin-top:1rem;
-    font-size:0.62rem;color:var(--muted);line-height:1.5;
+    font-size:0.72rem;color:var(--muted);line-height:1.5;
   }
 
   /* ══════════ DASHBOARD ══════════ */
@@ -125,11 +137,11 @@
   .tb-l{display:flex;align-items:center;gap:0.5rem;}
   .tb-logo{font-size:0.95rem;font-weight:800;color:#fff;letter-spacing:0.08em;text-transform:uppercase;}
   .tb-sep{width:1px;height:14px;background:rgba(255,255,255,0.22);margin:0 0.6rem;}
-  .tb-title{font-size:0.55rem;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.15em;text-transform:uppercase;}
+  .tb-title{font-size:0.68rem;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.15em;text-transform:uppercase;}
   .tb-r{display:flex;align-items:center;gap:0.6rem;}
-  .tb-av{width:28px;height:28px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:800;color:var(--text);}
-  .tb-user{font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.78);}
-  .btn-signout{background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);padding:0.3rem 0.7rem;font-family:'Montserrat',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all 0.15s;}
+  .tb-av{width:28px;height:28px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:var(--text);}
+  .tb-user{font-size:0.74rem;font-weight:600;color:rgba(255,255,255,0.78);}
+  .btn-signout{background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);padding:0.3rem 0.7rem;font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all 0.15s;}
   .btn-signout:hover{background:rgba(255,255,255,0.1);color:#fff;}
 
   /* NAV TABS */
@@ -141,7 +153,7 @@
   .dash-nav::-webkit-scrollbar{display:none;}
   .dnav{
     flex:0 0 auto;padding:0.8rem 1.2rem;
-    font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+    font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
     color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;
     white-space:nowrap;transition:all 0.18s;
     display:flex;align-items:center;gap:0.4rem;
@@ -149,7 +161,7 @@
   .dnav.active{color:var(--teal);border-bottom-color:var(--teal);}
   .dnav-count{
     background:var(--teal);color:#fff;
-    font-size:0.5rem;font-weight:800;
+    font-size:0.66rem;font-weight:800;
     padding:0.1rem 0.4rem;border-radius:100px;
     min-width:18px;text-align:center;
   }
@@ -168,12 +180,12 @@
     background:var(--white);border:1.5px solid var(--border);border-radius:4px;
     padding:1rem 1.1rem;box-shadow:0 1px 4px rgba(0,0,0,0.04);
   }
-  .stat-label{font-size:0.55rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
-  .stat-val{font-size:1.8rem;font-weight:900;color:var(--teal);line-height:1;margin-bottom:0.2rem;}
+  .stat-label{font-size:0.68rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
+  .stat-val{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.8rem;font-weight:700;color:var(--teal);line-height:1;margin-bottom:0.2rem;}
   .stat-val.red{color:var(--red);}
-  .stat-val.amber{color:var(--amber);}
+  .stat-val.amber{color:var(--amber-ink);}
   .stat-val.green{color:var(--green);}
-  .stat-sub{font-size:0.58rem;color:var(--muted);font-weight:500;}
+  .stat-sub{font-size:0.7rem;color:var(--muted);font-weight:500;}
 
   /* FILTERS */
   .filters{
@@ -181,14 +193,14 @@
     padding:0.85rem 1rem;margin-bottom:1rem;
     display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;
   }
-  .filter-label{font-size:0.58rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
+  .filter-label{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
 
   .f-select{
     background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);
     padding:0.42rem 1.6rem 0.42rem 0.65rem;
-    font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:600;
+    font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:600;
     border-radius:3px;outline:none;cursor:pointer;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231B7B6E' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23007179' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat:no-repeat;background-position:right 0.5rem center;
     -webkit-appearance:none;appearance:none;
     transition:border-color 0.15s;
@@ -198,7 +210,7 @@
   .f-input{
     background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);
     padding:0.42rem 0.65rem;
-    font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:500;
+    font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:500;
     border-radius:3px;outline:none;flex:1;min-width:140px;
     transition:border-color 0.15s;
   }
@@ -207,7 +219,7 @@
   .btn-filter{
     background:var(--teal);color:#fff;border:none;
     padding:0.42rem 1rem;font-family:'Montserrat',sans-serif;
-    font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+    font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
     border-radius:3px;cursor:pointer;transition:background 0.15s;white-space:nowrap;
   }
   .btn-filter:hover{background:var(--teal-dark);}
@@ -215,7 +227,7 @@
   .btn-export{
     background:transparent;color:var(--teal);
     border:1.5px solid var(--teal);padding:0.42rem 1rem;
-    font-family:'Montserrat',sans-serif;font-size:0.62rem;font-weight:700;
+    font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:700;
     letter-spacing:0.1em;text-transform:uppercase;border-radius:3px;cursor:pointer;
     transition:all 0.15s;white-space:nowrap;margin-left:auto;
   }
@@ -227,8 +239,8 @@
   .tbl-row{display:grid;padding:0.75rem 1rem;border-bottom:1px solid var(--offwhite);transition:background 0.12s;cursor:pointer;user-select:none;-webkit-user-select:none;}
   .tbl-row:last-child{border-bottom:none;}
   .tbl-row:hover{background:var(--teal-pale);}
-  .th{font-size:0.52rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);}
-  .td{font-size:0.72rem;font-weight:500;color:var(--mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .th{font-size:0.68rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);}
+  .td{font-size:0.8rem;font-weight:500;color:var(--mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .td.bold{font-weight:700;color:var(--text);}
 
   /* Submissions table columns */
@@ -255,24 +267,24 @@
 
   /* STATUS BADGES */
   .badge{
-    display:inline-block;font-size:0.52rem;font-weight:800;
+    display:inline-block;font-size:0.68rem;font-weight:800;
     letter-spacing:0.1em;text-transform:uppercase;
     padding:0.18rem 0.5rem;border-radius:2px;
   }
   .badge.completed{background:#E8F8EE;color:var(--green);}
   .badge.aborted{background:#FEF0EE;color:var(--red);}
   .badge.irt-badge{background:#FEF0EE;color:var(--red);margin-left:0.3rem;}
-  .badge.nogas-badge{background:#FFF4E0;color:var(--amber);margin-left:0.3rem;text-transform:none;letter-spacing:0.02em;}
-  .gas-verdict{margin-top:1rem;padding:0.6rem 0.85rem;border-radius:4px;font-size:0.74rem;font-weight:800;letter-spacing:0.02em;}
+  .badge.nogas-badge{background:#FFF4E0;color:var(--amber-ink);margin-left:0.3rem;text-transform:none;letter-spacing:0.02em;}
+  .gas-verdict{margin-top:1rem;padding:0.6rem 0.85rem;border-radius:4px;font-size:0.8rem;font-weight:800;letter-spacing:0.02em;}
   .gas-verdict.safe{background:#E8F8EE;color:var(--green);border:1px solid var(--green);}
   .gas-verdict.danger{background:#FEF0EE;color:var(--red);border:1px solid var(--red);}
-  .badge.incomplete{background:#FFF4E0;color:var(--amber);}
+  .badge.incomplete{background:#FFF4E0;color:var(--amber-ink);}
   .badge.approved{background:#E8F8EE;color:var(--green);margin-left:0.3rem;}
-  .btn-approve{background:var(--teal);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;font-size:0.72rem;font-weight:700;cursor:pointer;}
+  .btn-approve{background:var(--teal);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;font-size:0.8rem;font-weight:700;cursor:pointer;}
   .btn-approve:hover{background:var(--teal-dark);}
-  .incomplete-note{background:#FFF8EC;border:1px solid var(--amber);color:#8a6d00;padding:0.7rem 0.9rem;border-radius:4px;font-size:0.72rem;font-weight:600;margin-bottom:1rem;line-height:1.5;}
+  .incomplete-note{background:#FFF8EC;border:1px solid var(--amber);color:var(--amber-ink);padding:0.7rem 0.9rem;border-radius:4px;font-size:0.8rem;font-weight:600;margin-bottom:1rem;line-height:1.5;}
   .badge.low{background:#E8F8EE;color:var(--green);}
-  .badge.medium{background:#FFF4E0;color:var(--amber);}
+  .badge.medium{background:#FFF4E0;color:var(--amber-ink);}
   .badge.high{background:#FEF0EE;color:var(--red);}
   .badge.sent{background:#FEF0EE;color:var(--red);}
   .badge.sent.badge-pulse, .badge.ground-active.badge-pulse{animation:alertPulse 1.2s infinite;}
@@ -290,39 +302,39 @@
   .detail-close{background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;padding:0.2rem;}
   .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
   .detail-item{background:var(--offwhite);border:1px solid var(--border);border-radius:3px;padding:0.65rem 0.75rem;}
-  .detail-k{font-size:0.55rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.2rem;}
-  .detail-v{font-size:0.8rem;font-weight:700;color:var(--text);}
+  .detail-k{font-size:0.68rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.2rem;}
+  .detail-v{font-size:0.875rem;font-weight:700;color:var(--text);}
   .detail-v.ok{color:var(--green);}
   .detail-v.bad{color:var(--red);}
   .detail-full{grid-column:1/-1;}
 
-  /* GAS READINGS IN DETAIL */
+  /* GAS READINGS IN DETAIL — same instrument readout as the field app */
   .gas-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem;}
-  .gas-cell{background:var(--white);border:1.5px solid var(--border);border-radius:3px;padding:0.6rem;text-align:center;}
-  .gas-cell.safe{border-color:var(--green);background:rgba(39,174,96,0.04);}
-  .gas-cell.danger{border-color:var(--red);background:rgba(231,76,60,0.04);}
-  .gas-name{font-size:0.5rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.2rem;}
-  .gas-val{font-size:1rem;font-weight:800;}
-  .gas-cell.safe .gas-val{color:var(--green);}
-  .gas-cell.danger .gas-val{color:var(--red);}
-  .gas-lim{font-size:0.52rem;color:var(--muted);}
+  .gas-cell{background:var(--panel);border:1px solid var(--panel-edge);border-top:3px solid var(--panel-edge);border-radius:3px;padding:0.6rem;text-align:center;box-shadow:inset 0 2px 4px rgba(0,0,0,0.4);}
+  .gas-cell.safe{border-top-color:var(--green);}
+  .gas-cell.danger{border-top-color:var(--bad-hi);}
+  .gas-name{font-size:0.66rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.2rem;}
+  .gas-val{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.15rem;font-weight:600;color:#F2F7F7;}
+  .gas-cell.safe .gas-val{color:var(--ok-hi);}
+  .gas-cell.danger .gas-val{color:var(--bad-hi);}
+  .gas-lim{font-size:0.68rem;color:var(--grey);}
 
   /* EMPTY STATE */
   .empty{
     text-align:center;padding:3rem 1rem;
-    font-size:0.78rem;color:var(--muted);font-weight:500;
+    font-size:0.85rem;color:var(--muted);font-weight:500;
   }
   .empty-icon{font-size:2.5rem;margin-bottom:0.6rem;}
 
   /* LOADING */
-  .loading{text-align:center;padding:2rem;color:var(--muted);font-size:0.75rem;font-weight:600;}
+  .loading{text-align:center;padding:2rem;color:var(--muted);font-size:0.82rem;font-weight:600;}
 
   /* SECTION PANELS */
   .dash-panel{display:none;}
   .dash-panel.active{display:block;animation:fadeUp 0.2s ease both;}
 
   /* SECTION LABEL */
-  .slbl{font-size:0.58rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--teal);margin:0 0 0.6rem;display:flex;align-items:center;gap:0.45rem;}
+  .slbl{font-size:0.7rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--teal);margin:0 0 0.6rem;display:flex;align-items:center;gap:0.45rem;}
   .slbl::after{content:'';flex:1;height:1px;background:var(--border);}
 
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
@@ -331,7 +343,7 @@
   .btn-resolve{
     width:100%;background:var(--green);color:#fff;border:none;
     padding:0.82rem;font-family:'Montserrat',sans-serif;
-    font-size:0.72rem;font-weight:800;letter-spacing:0.15em;
+    font-size:0.8rem;font-weight:800;letter-spacing:0.15em;
     text-transform:uppercase;border-radius:3px;cursor:pointer;
     margin-top:0.6rem;transition:background 0.15s;
     display:flex;align-items:center;justify-content:center;gap:0.5rem;
@@ -341,7 +353,7 @@
   .resolved-badge{
     display:inline-flex;align-items:center;gap:0.4rem;
     background:#E8F8EE;border:1.5px solid var(--green);
-    color:var(--green);font-size:0.65rem;font-weight:800;
+    color:var(--green);font-size:0.74rem;font-weight:800;
     letter-spacing:0.1em;text-transform:uppercase;
     padding:0.4rem 0.8rem;border-radius:3px;
     margin-top:0.6rem;width:100%;justify-content:center;
@@ -353,7 +365,7 @@
   .preset-btn{
     background:var(--offwhite);border:1.5px solid var(--border);color:var(--mid);
     padding:0.32rem 0.65rem;font-family:'Montserrat',sans-serif;
-    font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+    font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
     border-radius:3px;cursor:pointer;white-space:nowrap;transition:all 0.15s;
   }
   .preset-btn:hover,.preset-btn.active{background:var(--teal);border-color:var(--teal);color:#fff;}
@@ -362,11 +374,11 @@
   .btn-pdf{
     background:var(--red);color:#fff;border:none;
     padding:0.5rem 1rem;font-family:'Montserrat',sans-serif;
-    font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+    font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
     border-radius:3px;cursor:pointer;transition:background 0.15s;white-space:nowrap;
     margin-top:0.8rem;width:100%;
   }
-  .btn-pdf:hover{background:#c0392b;}
+  .btn-pdf:hover{background:#96281B;}
 
   /* ══════ SESSION EXPIRED ══════ */
   .dash-session-ov{
@@ -375,37 +387,37 @@
   }
   .dash-session-ov.show{display:flex;}
   .dash-session-card{
-    background:var(--white);border-radius:6px;padding:1.8rem 1.4rem;
+    background:var(--white);border-radius:4px;padding:1.8rem 1.4rem;
     max-width:340px;width:100%;text-align:center;
   }
   .dash-session-icon{font-size:2rem;margin-bottom:0.6rem;}
   .dash-session-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:0.4rem;}
-  .dash-session-desc{font-size:0.72rem;color:var(--mid);line-height:1.6;margin-bottom:1.2rem;}
+  .dash-session-desc{font-size:0.8rem;color:var(--mid);line-height:1.6;margin-bottom:1.2rem;}
   .dash-session-pw{
     width:100%;background:var(--offwhite);border:1.5px solid var(--border);
     color:var(--text);padding:0.65rem 0.82rem;
-    font-family:'Montserrat',sans-serif;font-size:0.8rem;
+    font-family:'Montserrat',sans-serif;font-size:0.875rem;
     border-radius:3px;outline:none;margin-bottom:0.7rem;-webkit-appearance:none;
   }
   .dash-session-pw:focus{border-color:var(--teal);}
   .btn-dash-reauth{
     width:100%;background:var(--teal);color:#fff;border:none;padding:0.82rem;
-    font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:800;
+    font-family:'Montserrat',sans-serif;font-size:0.8rem;font-weight:800;
     letter-spacing:0.15em;text-transform:uppercase;border-radius:3px;cursor:pointer;
   }
-  .dash-session-err{font-size:0.68rem;color:var(--red);font-weight:600;margin-top:0.5rem;display:none;}
+  .dash-session-err{font-size:0.76rem;color:var(--red);font-weight:600;margin-top:0.5rem;display:none;}
   .dash-session-err.show{display:block;}
 
   /* ══════ CREW IN DETAIL ══════ */
   .crew-tags{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.3rem;}
-  .crew-tag{background:var(--teal-pale);color:var(--teal-dark);font-size:0.65rem;font-weight:600;padding:0.2rem 0.55rem;border-radius:100px;}
+  .crew-tag{background:var(--teal-pale);color:var(--teal-dark);font-size:0.74rem;font-weight:600;padding:0.2rem 0.55rem;border-radius:100px;}
 
 
   /* ══════ LIVE TRACKING ══════ */
   .live-badge {
     display:inline-flex;align-items:center;gap:0.35rem;
     background:#FEF0EE;border:1px solid var(--red);
-    color:var(--red);font-size:0.55rem;font-weight:800;
+    color:var(--red);font-size:0.68rem;font-weight:800;
     letter-spacing:0.12em;text-transform:uppercase;
     padding:0.18rem 0.5rem;border-radius:2px;
   }
@@ -421,15 +433,15 @@
   }
   .active-card:hover { background:var(--teal-pale); }
   .active-phase {
-    display:inline-block;font-size:0.55rem;font-weight:800;
+    display:inline-block;font-size:0.68rem;font-weight:800;
     letter-spacing:0.1em;text-transform:uppercase;
     padding:0.18rem 0.5rem;border-radius:2px;
     background:var(--teal);color:var(--accent);
   }
-  .active-time { font-size:0.65rem;color:var(--muted);font-weight:500; }
+  .active-time { font-size:0.74rem;color:var(--muted);font-weight:500; }
   .gas-mini { display:flex;gap:0.3rem;flex-wrap:wrap; }
   .gas-chip {
-    font-size:0.55rem;font-weight:700;padding:0.12rem 0.4rem;border-radius:2px;
+    font-size:0.68rem;font-weight:700;padding:0.12rem 0.4rem;border-radius:2px;
   }
   .gas-chip.safe   { background:#E8F8EE;color:var(--green); }
   .gas-chip.danger { background:#FEF0EE;color:var(--red); }
@@ -449,8 +461,8 @@
     padding:1.2rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,0.04);
   }
   .chart-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem; }
-  .chart-title { font-size:0.85rem;font-weight:800;color:var(--text); }
-  .chart-sub   { font-size:0.62rem;color:var(--muted);margin-top:0.1rem; }
+  .chart-title { font-size:0.9rem;font-weight:800;color:var(--text); }
+  .chart-sub   { font-size:0.72rem;color:var(--muted);margin-top:0.1rem; }
   .chart-wrap  { position:relative;height:220px; }
 
   /* ══════ MISSED RE-ENTRY ══════ */
@@ -460,26 +472,26 @@
     display:flex;align-items:center;justify-content:space-between;
     box-shadow:0 1px 4px rgba(0,0,0,0.04);
   }
-  .missed-item.has-gap { border-left:3px solid var(--amber); }
-  .missed-item.ok      { border-left:3px solid var(--green); }
+  .missed-item.has-gap { border-left:4px solid var(--amber); }
+  .missed-item.ok      { border-left:4px solid var(--green); }
   .missed-count-badge {
-    background:var(--amber);color:#fff;
-    font-size:0.58rem;font-weight:800;letter-spacing:0.1em;
+    background:var(--amber);color:var(--text);
+    font-size:0.7rem;font-weight:800;letter-spacing:0.1em;
     padding:0.2rem 0.5rem;border-radius:2px;
   }
   .missed-count-badge.ok { background:var(--green); }
 
   /* ══════ HANDOVER TAB ══════ */
   .handover-item {
-    background:var(--white);border:1.5px solid var(--border);border-left:3px solid var(--teal);
+    background:var(--white);border:1.5px solid var(--border);border-left:4px solid var(--teal);
     border-radius:4px;padding:0.85rem 1rem;margin-bottom:0.6rem;
     cursor:pointer;transition:background 0.12s;
   }
   .handover-item:hover { background:var(--teal-pale); }
   .handover-item-head  { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem; }
-  .handover-item-name  { font-size:0.8rem;font-weight:700;color:var(--text); }
-  .handover-item-time  { font-size:0.62rem;color:var(--muted); }
-  .handover-item-body  { font-size:0.72rem;color:var(--mid);line-height:1.55; }
+  .handover-item-name  { font-size:0.875rem;font-weight:700;color:var(--text); }
+  .handover-item-time  { font-size:0.72rem;color:var(--muted); }
+  .handover-item-body  { font-size:0.8rem;color:var(--mid);line-height:1.55; }
 
 
   @media(max-width:600px){
@@ -487,9 +499,9 @@
     .tbl-head{display:none!important;}
     .tbl-row{display:block!important;padding:0.85rem 1rem;border:1.5px solid var(--border);border-radius:4px;margin-bottom:0.5rem;}
     .tbl-wrap{background:transparent!important;border:none!important;}
-    .td{display:flex;justify-content:space-between;align-items:center;padding:0.2rem 0;font-size:0.75rem;border-bottom:1px solid var(--offwhite);}
+    .td{display:flex;justify-content:space-between;align-items:center;padding:0.2rem 0;font-size:0.82rem;border-bottom:1px solid var(--offwhite);}
     .td:last-child{border-bottom:none;}
-    .td::before{content:attr(data-label);font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0;margin-right:0.5rem;}
+    .td::before{content:attr(data-label);font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0;margin-right:0.5rem;}
     .stats-grid{grid-template-columns:1fr 1fr;}
     .filters{flex-direction:column;align-items:stretch;}
     .f-select,.f-input,.btn-filter,.btn-export{width:100%;}
@@ -498,7 +510,7 @@
 
   /* ══════ BORD CYCLE TRACKER ══════ */
   .bct-legend-pill {
-    font-size:0.6rem;font-weight:700;letter-spacing:0.06em;
+    font-size:0.72rem;font-weight:700;letter-spacing:0.06em;
     padding:0.22rem 0.6rem;border-radius:100px;white-space:nowrap;
   }
   .bct-legend-pill.drilling { background:rgba(52,152,219,0.15);color:#2980b9; }
@@ -531,9 +543,9 @@
   .bord-card.no-data  { border-left-color:var(--border);opacity:0.6; }
 
   .bord-card-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem; }
-  .bord-name { font-size:0.82rem;font-weight:800;color:var(--text); }
+  .bord-name { font-size:0.88rem;font-weight:800;color:var(--text); }
   .bord-stage-badge {
-    font-size:0.58rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+    font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
     padding:0.18rem 0.5rem;border-radius:2px;
   }
   .bord-stage-badge.drilling { background:rgba(52,152,219,0.15);color:#2980b9; }
@@ -550,16 +562,36 @@
   .bord-progress-fill {
     height:100%;border-radius:4px;background:var(--teal);transition:width 0.3s;
   }
-  .bord-meta { font-size:0.62rem;color:var(--muted);line-height:1.5; }
-  .bord-notes { font-size:0.68rem;color:var(--mid);margin-top:0.3rem;line-height:1.5;font-style:italic; }
+  .bord-meta { font-size:0.72rem;color:var(--muted);line-height:1.5; }
+  .bord-notes { font-size:0.76rem;color:var(--mid);margin-top:0.3rem;line-height:1.5;font-style:italic; }
 
   /* Zone group header in bord panel */
   .bord-zone-hd {
-    font-size:0.6rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;
+    font-size:0.72rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;
     color:var(--teal);margin:1.2rem 0 0.5rem;
     display:flex;align-items:center;gap:0.5rem;
   }
   .bord-zone-hd::after { content:'';flex:1;height:1px;background:var(--border); }
+
+  /* ══════ QUALITY FLOOR — matches the field app ══════ */
+  /* Tap targets: supervisors use phones underground too */
+  .dnav,.preset-btn,.btn-filter,.btn-export,.btn-signout,.btn-approve,
+  .btn-pdf,.f-select,.f-input{min-height:44px;}
+  .preset-btn,.btn-filter,.btn-export,.btn-signout{display:inline-flex;align-items:center;justify-content:center;}
+  .detail-close{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;}
+
+  /* Timestamps and gas chips read as instrument values */
+  .gas-chip,.active-time,.handover-item-time{font-variant-numeric:tabular-nums;}
+  input[type="date"],input[type="time"],input[type="datetime-local"]{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+
+  /* Visible keyboard focus, in high-vis */
+  button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,
+  [onclick]:focus-visible{outline:2.5px solid var(--acc-dark);outline-offset:2px;}
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;}
+  }
 
 </style>
 </head>
@@ -568,7 +600,7 @@
 <!-- LOADING SCREEN -->
 <div id="loading-screen" style="
   min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(145deg,#145F55 0%,#1B7B6E 100%);
+  background:linear-gradient(145deg,#00494F 0%,#007179 100%);
   flex-direction:column;gap:1rem;
 ">
   <svg width="42" height="32" viewBox="0 0 34 26" fill="none">
@@ -576,7 +608,7 @@
     <path d="M2 13 Q8 5 14 13 Q20 21 26 13 Q30 7 33 11" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.65"/>
     <path d="M2 6 Q8 -2 14 6 Q20 14 26 6 Q30 0 33 4" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
   </svg>
-  <div style="font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:0.2em;text-transform:uppercase;">Loading...</div>
+  <div style="font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:0.2em;text-transform:uppercase;">Loading...</div>
 </div>
 
 <!-- ══════════════════ LOGIN ══════════════════ -->
@@ -584,9 +616,9 @@
   <div class="login-card">
     <div class="login-logo">
       <svg viewBox="0 0 34 26" fill="none">
-        <path d="M2 20 Q8 12 14 20 Q20 28 26 20 Q30 14 33 18" stroke="#1B7B6E" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
-        <path d="M2 13 Q8 5 14 13 Q20 21 26 13 Q30 7 33 11" stroke="#1B7B6E" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.65"/>
-        <path d="M2 6 Q8 -2 14 6 Q20 14 26 6 Q30 0 33 4" stroke="#1B7B6E" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
+        <path d="M2 20 Q8 12 14 20 Q20 28 26 20 Q30 14 33 18" stroke="#007179" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+        <path d="M2 13 Q8 5 14 13 Q20 21 26 13 Q30 7 33 11" stroke="#007179" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.65"/>
+        <path d="M2 6 Q8 -2 14 6 Q20 14 26 6 Q30 0 33 4" stroke="#007179" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
       </svg>
       <div>
         <div class="login-name">Valterra</div>
@@ -782,7 +814,7 @@
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
         <div>
           <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Active Procedures</div>
-          <div style="font-size:0.7rem;color:var(--muted);">Miners currently underground in progress — refreshes every 30 seconds</div>
+          <div style="font-size:0.78rem;color:var(--muted);">Miners currently underground in progress — refreshes every 30 seconds</div>
         </div>
         <button class="btn-filter" onclick="loadLiveTracking()" style="white-space:nowrap;">↺ Refresh</button>
       </div>
@@ -873,7 +905,7 @@
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
         <div>
           <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Mining Cycle Board Status</div>
-          <div style="font-size:0.7rem;color:var(--muted);">Current cycle stage per bord — updated by miners at end of shift. Refreshes on tab open.</div>
+          <div style="font-size:0.78rem;color:var(--muted);">Current cycle stage per bord — updated by miners at end of shift. Refreshes on tab open.</div>
         </div>
         <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
           <select class="f-select" id="f-bord-section" onchange="loadBordTracker()" style="max-width:160px;">
@@ -1491,7 +1523,7 @@ function subTableHtml(rows){
 
   const body = rows.map(r => `
     <div class="tbl-row sub-grid" onclick="openSubDetail('${r.id}')">
-      <div class="td bold" data-label="Miner">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${r.officer_id||''}</span></div>
+      <div class="td bold" data-label="Miner">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${r.officer_id||''}</span></div>
       <div class="td" data-label="Section">${r.section||'—'}</div>
       <div class="td" data-label="Date/Time">${fmtDate(r.created_at)}</div>
       <div class="td" data-label="Status">${statusBadge(r.status, r.fog_light_status)}${irtTag(r.reentry_type)}${noGasTag(r)}${approvedTag(r)}</div>
@@ -1631,7 +1663,7 @@ async function openIncompleteDetail(id){
   document.getElementById('detail-body').innerHTML = `
     <div class="incomplete-note">⚠ This re-entry was started but never completed — the miner did not reach sign-off. Recorded as Incomplete for review.</div>
     <div class="detail-grid">
-      <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${s.officer_name||'—'} <span style="color:var(--muted);font-size:0.7rem;">${s.officer_id||''}</span></div></div>
+      <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${s.officer_name||'—'} <span style="color:var(--muted);font-size:0.78rem;">${s.officer_id||''}</span></div></div>
       <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${s.section||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Zone</div><div class="detail-v">${s.zone||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Re-Entry Type</div><div class="detail-v">${s.reentry_type==='irt'?'🚨 IRT — Lapse Bypassed':'⛏ Standard'}</div></div>
@@ -1715,7 +1747,7 @@ async function openSubDetail(id){
       const fr = scrub(fails || []);
       if(fr.length){
         failedHtml = '<div class="slbl" style="margin-top:1.2rem;color:var(--red);">⚠ Failed readings before clearance — ' + fr.length + ' recorded</div>'
-          + fr.map(r => `<div style="font-size:0.6rem;color:var(--muted);margin:0.3rem 0 0.1rem;">${new Date(r.created_at).toLocaleTimeString()}</div>` + gasCardHtml(r)).join('');
+          + fr.map(r => `<div style="font-size:0.72rem;color:var(--muted);margin:0.3rem 0 0.1rem;">${new Date(r.created_at).toLocaleTimeString()}</div>` + gasCardHtml(r)).join('');
       }
     }
   }catch(e){ /* non-fatal */ }
@@ -1736,7 +1768,7 @@ async function openSubDetail(id){
       ${new Date(r.created_at).toLocaleTimeString()}
     </div>
     ${gasCardHtml(r)}
-  `).join('') : '<div style="margin-top:1rem;font-size:0.7rem;color:var(--muted);font-style:italic;">No gas readings recorded for this submission.</div>') + failedHtml;
+  `).join('') : '<div style="margin-top:1rem;font-size:0.78rem;color:var(--muted);font-style:italic;">No gas readings recorded for this submission.</div>') + failedHtml;
 
   document.getElementById('detail-body').innerHTML = `
     <div class="detail-grid">
@@ -1791,7 +1823,7 @@ async function openSubDetail(id){
       </div>
       <div class="detail-item detail-full">
         <div class="detail-k">Safety Talk Topics</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.75rem;">${sub.safety_topics||'—'}</div>
+        <div class="detail-v" style="font-weight:500;font-size:0.82rem;">${sub.safety_topics||'—'}</div>
       </div>
       ${(() => {
         let crew = [];
@@ -1818,8 +1850,8 @@ async function openSubDetail(id){
         <div class="detail-k">Supervisor Sign-Off</div>
         <div class="detail-v">
           ${sub.supervisor_approved
-            ? '<span class="badge approved">✓ Approved</span> <span style="color:var(--muted);font-size:0.72rem;">by ' + (esc(sub.approved_by)||'—') + ' · ' + fmtDate(sub.approved_at) + '</span>'
-            : '<button class="btn-approve" onclick="approveSubmission(\'' + sub.id + '\')">✓ Approve Record</button> <span style="color:var(--muted);font-size:0.7rem;margin-left:0.5rem;">Not yet reviewed</span>'}
+            ? '<span class="badge approved">✓ Approved</span> <span style="color:var(--muted);font-size:0.8rem;">by ' + (esc(sub.approved_by)||'—') + ' · ' + fmtDate(sub.approved_at) + '</span>'
+            : '<button class="btn-approve" onclick="approveSubmission(\'' + sub.id + '\')">✓ Approve Record</button> <span style="color:var(--muted);font-size:0.78rem;margin-left:0.5rem;">Not yet reviewed</span>'}
         </div>
       </div>
     </div>
@@ -1879,11 +1911,11 @@ async function openNMDetail(id){
       </div>
       <div class="detail-item detail-full">
         <div class="detail-k">What Happened</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">${nm.description||'—'}</div>
+        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${nm.description||'—'}</div>
       </div>
       <div class="detail-item detail-full">
         <div class="detail-k">Corrective Action Taken</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">${nm.action_taken||'—'}</div>
+        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${nm.action_taken||'—'}</div>
       </div>
       <div class="detail-item detail-full">
         <div class="detail-k">Reported At</div>
@@ -1892,7 +1924,7 @@ async function openNMDetail(id){
       ${nm.reviewed_by ? `
       <div class="detail-item detail-full">
         <div class="detail-k">Review Notes</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">${nm.review_notes||'—'}</div>
+        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${nm.review_notes||'—'}</div>
       </div>` : ''}
     </div>
 
@@ -1901,8 +1933,8 @@ async function openNMDetail(id){
     <div class="resolve-section">
       <div class="slbl" style="margin-top:1rem;">Mark as Reviewed</div>
       <div class="lg" style="margin-bottom:0.6rem;">
-        <label style="font-size:0.58rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;display:block;">Review Notes (optional)</label>
-        <textarea id="nm-review-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.8rem;border-radius:3px;outline:none;min-height:70px;resize:vertical;" placeholder="Follow-up actions, coaching given, anything closing this out..."></textarea>
+        <label style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;display:block;">Review Notes (optional)</label>
+        <textarea id="nm-review-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.875rem;border-radius:3px;outline:none;min-height:70px;resize:vertical;" placeholder="Follow-up actions, coaching given, anything closing this out..."></textarea>
       </div>
       <button class="btn-resolve" onclick="reviewNearMiss('${nm.id}')">
         ✓ Mark Reviewed
@@ -1972,7 +2004,7 @@ async function openSOSDetail(id){
       ${isResolved ? `
       <div class="detail-item detail-full">
         <div class="detail-k">Resolution Notes</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">${esc(sos.notes)||'—'}</div>
+        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${esc(sos.notes)||'—'}</div>
       </div>
       <div class="detail-item detail-full">
         <div class="detail-k">Resolved At</div>
@@ -1984,8 +2016,8 @@ async function openSOSDetail(id){
     <div class="resolve-section">
       <div class="slbl" style="margin-top:1rem;">Resolve This Alert</div>
       <div class="lg" style="margin-bottom:0.6rem;">
-        <label style="font-size:0.58rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;display:block;">Resolution Notes</label>
-        <textarea id="resolve-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.8rem;border-radius:3px;outline:none;min-height:80px;resize:vertical;" placeholder="Describe what happened and what action was taken..."></textarea>
+        <label style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;display:block;">Resolution Notes</label>
+        <textarea id="resolve-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.875rem;border-radius:3px;outline:none;min-height:80px;resize:vertical;" placeholder="Describe what happened and what action was taken..."></textarea>
       </div>
       <button class="btn-resolve" onclick="resolveSOSAlert('${sos.id}')">
         ✓ Mark as Resolved
@@ -2214,26 +2246,26 @@ async function exportSubPDF(id){
 <title>SLAM Record — ${sub.officer_name||'Unknown'}</title>
 <style>
   body{font-family:Arial,sans-serif;font-size:10pt;color:#1a1a1a;margin:2cm;}
-  .hdr{display:flex;justify-content:space-between;border-bottom:3px solid #1B7B6E;padding-bottom:0.8rem;margin-bottom:1rem;}
-  .co{font-size:1.1rem;font-weight:bold;color:#1B7B6E;}.ref{font-size:0.72rem;color:#666;text-align:right;line-height:1.6;}
-  .status-bar{background:#1B7B6E;color:#B8CC00;padding:0.4rem 0.8rem;font-weight:bold;font-size:0.8rem;letter-spacing:0.1em;text-align:center;margin-bottom:1rem;}
-  h2{font-size:0.95rem;font-weight:bold;color:#1B7B6E;border-bottom:1px solid #C8DEDB;padding-bottom:0.25rem;margin:1rem 0 0.5rem;}
+  .hdr{display:flex;justify-content:space-between;border-bottom:3px solid #007179;padding-bottom:0.8rem;margin-bottom:1rem;}
+  .co{font-size:1.1rem;font-weight:bold;color:#007179;}.ref{font-size:0.8rem;color:#666;text-align:right;line-height:1.6;}
+  .status-bar{background:#007179;color:#B8CC00;padding:0.4rem 0.8rem;font-weight:bold;font-size:0.875rem;letter-spacing:0.1em;text-align:center;margin-bottom:1rem;}
+  h2{font-size:0.95rem;font-weight:bold;color:#007179;border-bottom:1px solid #C8DEDB;padding-bottom:0.25rem;margin:1rem 0 0.5rem;}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:0.35rem 1.5rem;}
-  .k{font-size:0.65rem;font-weight:bold;text-transform:uppercase;letter-spacing:0.1em;color:#666;}
+  .k{font-size:0.74rem;font-weight:bold;text-transform:uppercase;letter-spacing:0.1em;color:#666;}
   .v{font-size:0.88rem;font-weight:bold;margin-bottom:0.4rem;}
   .ptbl{width:100%;border-collapse:collapse;margin:0.4rem 0;}
-  .ptbl th,.ptbl td{border:1px solid #C8DEDB;padding:0.3rem 0.5rem;font-size:0.82rem;}
-  .ptbl th{background:#1B7B6E;color:#fff;}
-  .safe{color:#27AE60;font-weight:bold;}.danger{color:#E74C3C;font-weight:bold;}.warn{color:#F39C12;font-weight:bold;font-size:0.78rem;}
-  ul{margin:0.2rem 0 0.5rem 1.2rem;line-height:1.7;font-size:0.85rem;}
-  .nm{background:#FFF4E0;border-left:3px solid #F39C12;padding:0.35rem 0.6rem;margin:0.25rem 0;font-size:0.8rem;}
-  .foot{margin-top:1.5rem;border-top:1px solid #C8DEDB;padding-top:0.5rem;font-size:0.65rem;color:#999;display:flex;justify-content:space-between;}
-  .ok{background:#E8F8EE;color:#27AE60;padding:0.1rem 0.4rem;border-radius:2px;font-size:0.72rem;font-weight:bold;}
-  .ab{background:#FEF0EE;color:#E74C3C;padding:0.1rem 0.4rem;border-radius:2px;font-size:0.72rem;font-weight:bold;}
+  .ptbl th,.ptbl td{border:1px solid #C8DEDB;padding:0.3rem 0.5rem;font-size:0.88rem;}
+  .ptbl th{background:#007179;color:#fff;}
+  .safe{color:#27AE60;font-weight:bold;}.danger{color:#E74C3C;font-weight:bold;}.warn{color:#F39C12;font-weight:bold;font-size:0.85rem;}
+  ul{margin:0.2rem 0 0.5rem 1.2rem;line-height:1.7;font-size:0.9rem;}
+  .nm{background:#FFF4E0;border-left:4px solid #F39C12;padding:0.35rem 0.6rem;margin:0.25rem 0;font-size:0.875rem;}
+  .foot{margin-top:1.5rem;border-top:1px solid #C8DEDB;padding-top:0.5rem;font-size:0.74rem;color:#999;display:flex;justify-content:space-between;}
+  .ok{background:#E8F8EE;color:#27AE60;padding:0.1rem 0.4rem;border-radius:2px;font-size:0.8rem;font-weight:bold;}
+  .ab{background:#FEF0EE;color:#E74C3C;padding:0.1rem 0.4rem;border-radius:2px;font-size:0.8rem;font-weight:bold;}
   @media print{body{margin:1cm;}}
 </style></head><body>
 <div class="hdr">
-  <div><div class="co">VALTERRA PLATINUM</div><div style="font-size:0.72rem;color:#666;">Unki Mine · Mining Department</div></div>
+  <div><div class="co">VALTERRA PLATINUM</div><div style="font-size:0.8rem;color:#666;">Unki Mine · Mining Department</div></div>
   <div class="ref">Ref: UNK-MIN-MIN-PRO-0002 · V6.0<br>ID: ${sub.id?.substring(0,8).toUpperCase()||'—'}<br>${new Date().toLocaleString('en-GB')}</div>
 </div>
 <div class="status-bar">SLAM RE-ENTRY RECORD — ${sub.status === 'completed' ? 'COMPLETED' : (sub.fog_light_status === 'red' ? 'ABORTED — UNSAFE GROUND CONDITIONS' : 'ABORTED — UNSAFE GAS LEVELS')}</div>
@@ -2250,7 +2282,7 @@ async function exportSubPDF(id){
   <div><div class="k">Status</div><div class="v"><span class="${sub.status === 'completed' ? 'ok' : 'ab'}">${sub.status === 'completed' ? 'COMPLETED' : 'ABORTED'}</span></div></div>
   <div><div class="k">Submitted</div><div class="v">${fmtDate(sub.created_at)}</div></div>
 </div>
-<h2>Safety Talk Topics</h2><p style="font-size:0.85rem;">${sub.safety_topics||'Not recorded'}</p>
+<h2>Safety Talk Topics</h2><p style="font-size:0.9rem;">${sub.safety_topics||'Not recorded'}</p>
 <h2>Gas Readings (MGDI)</h2>${gasHtml}
 <h2>Crew Present (${crew.length})</h2>
 <ul>${crew.length > 0 ? crew.map(c => '<li>'+esc(c.name)+(c.badge?' (#'+esc(c.badge)+')':'')+' — '+esc(c.role)+'</li>').join('') : '<li>Not recorded</li>'}</ul>
@@ -2360,11 +2392,11 @@ async function loadLiveTracking(){
             <span class="gas-chip ${gas.ch4_safe?'safe':'danger'}">CompX:${gas.ch4_percent??'—'}</span></div>`
         : '<span class="gas-chip empty">Pending</span>';
       return `<div class="active-card">
-        <div><div style="font-size:0.78rem;font-weight:700;">${s.officer_name||'—'}</div>
-        <div style="font-size:0.62rem;color:var(--muted);">${s.officer_id||''} · ${s.section||'—'}</div></div>
+        <div><div style="font-size:0.85rem;font-weight:700;">${s.officer_name||'—'}</div>
+        <div style="font-size:0.72rem;color:var(--muted);">${s.officer_id||''} · ${s.section||'—'}</div></div>
         <div><span class="active-phase">Phase ${(s.phase_number||0)+1} — ${s.phase_name||'—'}</span></div>
         <div>${gasTxt}</div>
-        <div style="font-size:0.75rem;font-weight:600;">${s.zone||'—'}</div>
+        <div style="font-size:0.82rem;font-weight:600;">${s.zone||'—'}</div>
         <div class="active-time">${fmtDate(s.completed_at || s.created_at)}</div></div>`;
     }).join('');
     el.innerHTML = '<div class="tbl-wrap">' + head + body + '</div>';
@@ -2422,7 +2454,7 @@ function renderGroundTable(){
     <div class="th">FOG Light</div><div class="th">Status</div><div class="th">Time</div></div>`;
   const body = allGroundAlerts.map(r => `
     <div class="tbl-row ground-grid" onclick="openGroundDetail('${r.id}')" style="cursor:pointer;user-select:none;">
-      <div class="td bold">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${r.officer_id||''}</span></div>
+      <div class="td bold">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${r.officer_id||''}</span></div>
       <div class="td">${r.zone||'—'} · ${r.section||'—'}</div>
       <div class="td" style="color:var(--red);font-weight:700;">🔴 RED — Unsafe</div>
       <div class="td">${r.status==='active'
@@ -2451,17 +2483,17 @@ async function openGroundDetail(id){
       <div class="detail-item"><div class="detail-k">Triggered At</div><div class="detail-v">${fmtDate(g.created_at)}</div></div>
       ${isResolved ? `
       <div class="detail-item detail-full"><div class="detail-k">Resolution Notes</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">${esc(g.notes)||'—'}</div></div>
+        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${esc(g.notes)||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Resolved By</div><div class="detail-v">${esc(g.resolved_by)||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Resolved At</div><div class="detail-v">${fmtDate(g.resolved_at)}</div></div>` : ''}
     </div>
     ${!isResolved ? `
     <div class="resolve-section">
       <div class="slbl" style="margin-top:1rem;">Clear This Alert</div>
-      <div style="background:#FEF0EE;border:1px solid var(--red);border-radius:3px;padding:0.65rem;margin-bottom:0.7rem;font-size:0.7rem;color:var(--red);font-weight:600;">
+      <div style="background:#FEF0EE;border:1px solid var(--red);border-radius:3px;padding:0.65rem;margin-bottom:0.7rem;font-size:0.78rem;color:var(--red);font-weight:600;">
         ⚠ Only resolve after Rock Engineering has confirmed the area is safe.
       </div>
-      <textarea id="ground-resolve-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.8rem;border-radius:3px;outline:none;min-height:80px;resize:vertical;margin-bottom:0.7rem;" placeholder="Describe what Rock Engineering found and what action was taken..."></textarea>
+      <textarea id="ground-resolve-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.875rem;border-radius:3px;outline:none;min-height:80px;resize:vertical;margin-bottom:0.7rem;" placeholder="Describe what Rock Engineering found and what action was taken..."></textarea>
       <button class="btn-resolve" onclick="resolveGroundAlert('${g.id}')">✓ Cleared by Rock Engineering</button>
     </div>` : '<div class="resolved-badge">✓ Ground condition cleared by Rock Engineering</div>'}
   `;
@@ -2620,7 +2652,7 @@ async function loadVolumeChart(cutoff, section){
     data:{
       labels,
       datasets:[
-        { label:'Completed', data:completed, backgroundColor:'rgba(27,123,110,0.7)', borderRadius:2 },
+        { label:'Completed', data:completed, backgroundColor:'rgba(0,113,121,0.7)', borderRadius:2 },
         { label:'Aborted',   data:aborted,   backgroundColor:'rgba(231,76,60,0.7)',   borderRadius:2 },
       ]
     },
@@ -2708,8 +2740,8 @@ async function loadMissedReentries(){
       return `
         <div class="missed-item ${hasGap ? 'has-gap' : 'ok'}">
           <div>
-            <div style="font-size:0.8rem;font-weight:800;color:var(--text);">${day.dayLabel}</div>
-            <div style="font-size:0.65rem;color:var(--muted);margin-top:0.15rem;">
+            <div style="font-size:0.875rem;font-weight:800;color:var(--text);">${day.dayLabel}</div>
+            <div style="font-size:0.74rem;color:var(--muted);margin-top:0.15rem;">
               ${day.sections.map(r =>
                 '<span style="color:' + (r.count > 0 ? 'var(--green)' : 'var(--amber)') + ';font-weight:700;">'
                 + r.section.replace(' Section','') + ': ' + r.count + '</span>'
@@ -2718,7 +2750,7 @@ async function loadMissedReentries(){
           </div>
           <div style="text-align:right;">
             <span class="missed-count-badge ${total > 0 ? 'ok' : ''}">${total} record${total===1?'':'s'}</span>
-            ${hasGap ? '<div style="font-size:0.58rem;color:var(--amber);font-weight:700;margin-top:0.2rem;">⚠ Gap detected</div>' : ''}
+            ${hasGap ? '<div style="font-size:0.7rem;color:var(--amber);font-weight:700;margin-top:0.2rem;">⚠ Gap detected</div>' : ''}
           </div>
         </div>`;
     }).join('');
@@ -2764,7 +2796,7 @@ function renderHandovers(){
   el.innerHTML = allHandovers.map(h => `
     <div class="handover-item" onclick="openHandoverDetail('${h.id}')">
       <div class="handover-item-head">
-        <div class="handover-item-name">${h.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${h.officer_id||''} · ${h.section||'—'} · ${(h.shift_type||'').toUpperCase()} SHIFT</span>
+        <div class="handover-item-name">${h.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${h.officer_id||''} · ${h.section||'—'} · ${(h.shift_type||'').toUpperCase()} SHIFT</span>
         ${h.acknowledged_by ? ' <span class="badge completed">✓ Acknowledged</span>' : ''}</div>
         <div class="handover-item-time">${fmtDate(h.created_at)}</div>
       </div>
@@ -2790,18 +2822,18 @@ function openHandoverDetail(id){
       <div class="detail-item"><div class="detail-k">Shift</div><div class="detail-v">${(h.shift_type||'').toUpperCase()}</div></div>
       <div class="detail-item"><div class="detail-k">Date</div><div class="detail-v">${h.shift_date||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Incoming Miner</div><div class="detail-v">${h.incoming_officer||'Not specified'}</div></div>
-      ${h.outstanding_hazards ? '<div class="detail-item detail-full"><div class="detail-k">Outstanding Hazards</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.outstanding_hazards+'</div></div>' : ''}
-      ${h.gas_concerns        ? '<div class="detail-item detail-full"><div class="detail-k">Gas / Ventilation Concerns</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.gas_concerns+'</div></div>' : ''}
-      ${h.panels_avoid        ? '<div class="detail-item detail-full"><div class="detail-k">Panels / Areas to Avoid</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.panels_avoid+'</div></div>' : ''}
-      ${h.equipment_status    ? '<div class="detail-item detail-full"><div class="detail-k">Equipment Status</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.equipment_status+'</div></div>' : ''}
-      ${h.general_notes       ? '<div class="detail-item detail-full"><div class="detail-k">General Notes</div><div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">'+h.general_notes+'</div></div>' : ''}
+      ${h.outstanding_hazards ? '<div class="detail-item detail-full"><div class="detail-k">Outstanding Hazards</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.outstanding_hazards+'</div></div>' : ''}
+      ${h.gas_concerns        ? '<div class="detail-item detail-full"><div class="detail-k">Gas / Ventilation Concerns</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.gas_concerns+'</div></div>' : ''}
+      ${h.panels_avoid        ? '<div class="detail-item detail-full"><div class="detail-k">Panels / Areas to Avoid</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.panels_avoid+'</div></div>' : ''}
+      ${h.equipment_status    ? '<div class="detail-item detail-full"><div class="detail-k">Equipment Status</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.equipment_status+'</div></div>' : ''}
+      ${h.general_notes       ? '<div class="detail-item detail-full"><div class="detail-k">General Notes</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.general_notes+'</div></div>' : ''}
     </div>
 
     ${h.acknowledged_by ? `
     <div class="resolved-badge">✓ Acknowledged by ${h.acknowledged_by} — ${fmtDate(h.acknowledged_at)}</div>` : `
     <div class="resolve-section">
       <div class="slbl" style="margin-top:1rem;">Acknowledge This Handover</div>
-      <div class="lg" style="margin-bottom:0.6rem;font-size:0.7rem;color:var(--muted);">
+      <div class="lg" style="margin-bottom:0.6rem;font-size:0.78rem;color:var(--muted);">
         Confirms you've read and understood the hazards/notes above before entering the section.
       </div>
       <button class="btn-resolve" onclick="acknowledgeHandover('${h.id}')">
@@ -2876,7 +2908,7 @@ function renderShiftNotes(){
   el.innerHTML = allShiftNotes.map(n => `
     <div class="handover-item" style="cursor:default;">
       <div class="handover-item-head">
-        <div class="handover-item-name">${n.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.65rem;">${n.officer_id||''} · ${n.section||'—'}</span></div>
+        <div class="handover-item-name">${n.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${n.officer_id||''} · ${n.section||'—'}</span></div>
         <div class="handover-item-time">${fmtDate(n.created_at)}</div>
       </div>
       <div class="handover-item-body" style="white-space:pre-wrap;">${n.note_text||'—'}</div>
@@ -3094,7 +3126,7 @@ function openBordDetail(bordValue){
       </div>
       <div class="detail-item">
         <div class="detail-k">Current Stage</div>
-        <div class="detail-v"><span class="bord-stage-badge ${stage}" style="font-size:0.72rem;">${stageLabel}</span></div>
+        <div class="detail-v"><span class="bord-stage-badge ${stage}" style="font-size:0.8rem;">${stageLabel}</span></div>
       </div>
       <div class="detail-item">
         <div class="detail-k">Progress</div>
@@ -3120,7 +3152,7 @@ function openBordDetail(bordValue){
       ${latest.shift_notes ? `
       <div class="detail-item detail-full">
         <div class="detail-k">Shift Notes</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.75rem;white-space:pre-wrap;">${latest.shift_notes}</div>
+        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${latest.shift_notes}</div>
       </div>` : ''}
     </div>
 
@@ -3128,9 +3160,9 @@ function openBordDetail(bordValue){
     <div class="slbl" style="margin-top:1rem;">Update History (last ${history.length})</div>
     <div style="display:flex;flex-direction:column;gap:0.35rem;">
       ${history.slice(1).map(r => `
-        <div style="background:var(--offwhite);border:1px solid var(--border);border-radius:3px;padding:0.5rem 0.75rem;font-size:0.7rem;">
+        <div style="background:var(--offwhite);border:1px solid var(--border);border-radius:3px;padding:0.5rem 0.75rem;font-size:0.78rem;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="bord-stage-badge ${r.cycle_stage||'no-data'}" style="font-size:0.58rem;">${BORD_STAGE_LABELS[r.cycle_stage]||r.cycle_stage||'—'}</span>
+            <span class="bord-stage-badge ${r.cycle_stage||'no-data'}" style="font-size:0.7rem;">${BORD_STAGE_LABELS[r.cycle_stage]||r.cycle_stage||'—'}</span>
             <span style="color:var(--muted);">${fmtDate(r.recorded_at)}</span>
           </div>
           <div style="color:var(--mid);margin-top:0.2rem;">${r.officer_name||'—'} · ${r.progress_pct??0}% progress</div>
