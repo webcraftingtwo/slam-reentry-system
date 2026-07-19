@@ -17,6 +17,7 @@
 
 <link href="vendor/fonts/montserrat.css" rel="stylesheet">
 <script src="vendor/supabase.js"></script>
+<script src="crew-names.js"></script>
 <script src="vendor/chart.umd.min.js"></script>
 <script>
   // Register the shared service worker (app-shell offline cache). Non-fatal on failure.
@@ -742,9 +743,8 @@
         <span class="filter-label">Filter:</span>
         <select class="f-select" id="f-section" onchange="loadSubmissions()">
           <option value="">All Sections</option>
-          <option>North Section</option>
-          <option>South Section</option>
-          <option>Development Section</option>
+          <option value="14 South">14 South — Challengers</option>
+          <option value="16 North">16 North — Pioneers</option>
         </select>
         <select class="f-select" id="f-status" onchange="loadSubmissions()">
           <option value="">All Statuses</option>
@@ -790,9 +790,8 @@
         </select>
         <select class="f-select" id="f-nm-section" onchange="loadNearMisses()">
           <option value="">All Sections</option>
-          <option>North Section</option>
-          <option>South Section</option>
-          <option>Development Section</option>
+          <option value="14 South">14 South — Challengers</option>
+          <option value="16 North">16 North — Pioneers</option>
         </select>
         <button class="btn-export" onclick="exportCSV('near_misses')">Export CSV</button>
       </div>
@@ -840,9 +839,8 @@
           </div>
           <select class="f-select" id="analytics-section" onchange="loadAnalytics()" style="max-width:160px;">
             <option value="">All Sections</option>
-            <option>North Section</option>
-            <option>South Section</option>
-            <option>Development Section</option>
+            <option value="14 South">14 South — Challengers</option>
+            <option value="16 North">16 North — Pioneers</option>
           </select>
         </div>
         <div class="chart-wrap">
@@ -882,15 +880,17 @@
         <span class="filter-label">Filter:</span>
         <select class="f-select" id="f-ho-section" onchange="loadHandovers()">
           <option value="">All Sections</option>
-          <option>North Section</option>
-          <option>South Section</option>
-          <option>Development Section</option>
+          <option value="14 South">14 South — Challengers</option>
+          <option value="16 North">16 North — Pioneers</option>
         </select>
         <select class="f-select" id="f-ho-shift" onchange="loadHandovers()">
           <option value="">All Shifts</option>
-          <option value="day">Day Shift</option>
-          <option value="afternoon">Afternoon Shift</option>
-          <option value="night">Night Shift</option>
+          <option value="A">Shift A</option>
+          <option value="B">Shift B</option>
+          <option value="C">Shift C</option>
+          <option value="day">Day Shift (old)</option>
+          <option value="afternoon">Afternoon Shift (old)</option>
+          <option value="night">Night Shift (old)</option>
         </select>
         <input type="date" class="f-input" id="f-ho-date" onchange="loadHandovers()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
         <button class="btn-filter" onclick="clearDateFilter('f-ho-date', loadHandovers)">Clear date</button>
@@ -910,8 +910,8 @@
         <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
           <select class="f-select" id="f-bord-section" onchange="loadBordTracker()" style="max-width:160px;">
             <option value="">All Sections</option>
-            <option>South Strike (SS)</option>
-            <option>North Strike (NS)</option>
+            <option value="14 South">14 South — Challengers</option>
+            <option value="16 North">16 North — Pioneers</option>
           </select>
           <select class="f-select" id="f-bord-stage" onchange="loadBordTracker()" style="max-width:150px;">
             <option value="">All Stages</option>
@@ -946,9 +946,8 @@
         <span class="filter-label">Filter:</span>
         <select class="f-select" id="f-sn-section" onchange="loadShiftNotes()">
           <option value="">All Sections</option>
-          <option>North Section</option>
-          <option>South Section</option>
-          <option>Development Section</option>
+          <option value="14 South">14 South — Challengers</option>
+          <option value="16 North">16 North — Pioneers</option>
         </select>
         <input type="date" class="f-input" id="f-sn-date" onchange="loadShiftNotes()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
         <button class="btn-filter" onclick="clearDateFilter('f-sn-date', loadShiftNotes)">Clear date</button>
@@ -974,9 +973,8 @@
         </select>
         <select class="f-select" id="f-acc-section" onchange="loadRecentAccounts()">
           <option value="">All Sections</option>
-          <option>North Section</option>
-          <option>South Section</option>
-          <option>Development Section</option>
+          <option value="14 South">14 South — Challengers</option>
+          <option value="16 North">16 North — Pioneers</option>
         </select>
         <input type="date" class="f-input" id="f-acc-date" onchange="loadRecentAccounts()" style="max-width:170px;flex:0 0 auto;" title="Filter from date">
         <button class="btn-filter" onclick="clearDateFilter('f-acc-date', loadRecentAccounts)">Clear date</button>
@@ -1011,6 +1009,14 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 let db = null;
 let currentUser = null;
+
+// ── Section compartmentalization (client mirror of the RLS fence) ──
+// Non-null → every data query is restricted to this section. shift_boss,
+// supervisor (section manager) and safety_officer are scoped; she_manager
+// and admin see all sections. RLS enforces the same rule server-side —
+// this mirror just keeps the UI honest and the queries cheap.
+let sectionScope = null;
+const scoped = q => sectionScope ? q.eq('section', sectionScope) : q;
 
 // Safety net: a transient network rejection or stray error must never blank the
 // dashboard or surface a raw error to a supervisor. Logged for debugging.
@@ -1200,6 +1206,31 @@ async function verifyAndLaunch(user){
 
   currentUser = { ...profile, uid: user.id };
 
+  const SECTION_SCOPED_ROLES = ['shift_boss','supervisor','safety_officer'];
+  sectionScope = SECTION_SCOPED_ROLES.includes(profile.role) ? (profile.section || '') : null;
+  if(sectionScope === ''){
+    // Scoped role with no section on the profile — fail closed, never open.
+    await db.auth.signOut();
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display   = 'flex';
+    showLoginErr('Your account has no section assigned. Ask an admin to set your section (14 South or 16 North) before using the dashboard.');
+    return;
+  }
+  if(sectionScope){
+    // Lock every section filter to the user's own section.
+    ['f-section','f-nm-section','f-ho-section','f-bord-section','f-sn-section','f-acc-section','analytics-section']
+      .forEach(id => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        if(![...el.options].some(o => o.value === sectionScope)){
+          el.add(new Option(sectionScope, sectionScope));
+        }
+        el.value = sectionScope;
+        el.disabled = true;
+        el.title = 'Locked to your section';
+      });
+  }
+
   const fname = profile.full_name || 'User';
   const frole = profile.role || '';
   const initials = fname.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
@@ -1284,10 +1315,10 @@ async function loadStats(){
   const today = new Date().toISOString().split('T')[0];
 
   const [subRes, nmRes, sosRes, groundRes] = await Promise.all([
-    db.from('submissions').select('id,status,created_at'),
-    db.from('near_misses').select('id'),
-    db.from('sos_alerts').select('id'),
-    db.from('ground_alerts').select('id,status'),
+    scoped(db.from('submissions').select('id,status,created_at')),
+    scoped(db.from('near_misses').select('id')),
+    scoped(db.from('sos_alerts').select('id')),
+    scoped(db.from('ground_alerts').select('id,status')),
   ]);
 
   loadFailed.stats = !!(subRes.error || nmRes.error || sosRes.error || groundRes.error);
@@ -1330,7 +1361,7 @@ async function loadSubmissions(){
   const approvalCols = `, supervisor_approved, approved_by, approved_at, irt_reason`;
 
   const runQuery = (cols) => {
-    let q = db.from('submissions').select(cols)
+    let q = scoped(db.from('submissions').select(cols))
       .order('created_at', { ascending: false }).limit(500);
     if(section)  q = q.eq('section', section);
     if(status)   q = q.eq('status', status);
@@ -1385,7 +1416,7 @@ async function loadNearMisses(){
   const severity = document.getElementById('f-nm-severity')?.value || '';
   const section  = document.getElementById('f-nm-section')?.value  || '';
 
-  let query = db.from('near_misses').select('*')
+  let query = scoped(db.from('near_misses').select('*'))
     .order('created_at', { ascending: false }).limit(200);
 
   if(severity) query = query.eq('severity', severity);
@@ -1399,8 +1430,8 @@ async function loadNearMisses(){
 }
 
 async function loadSOS(){
-  const { data, error } = await db.from('sos_alerts')
-    .select('*').order('created_at', { ascending: false }).limit(100);
+  const { data, error } = await scoped(db.from('sos_alerts').select('*'))
+    .order('created_at', { ascending: false }).limit(100);
   loadFailed.sos = !!error;
   if(error) console.error('SOS load error:', error.message);
   allSOS = scrub(data || []);
@@ -2314,8 +2345,8 @@ async function loadLiveTracking(){
     const lookback = new Date(Date.now() - 24*60*60*1000).toISOString();   // scan last 24h
     const windowMs = LIVE_WINDOW_HOURS * 60*60*1000;
 
-    const { data:progress, error } = await db.from('phase_progress')
-      .select('*').gte('created_at', lookback).order('created_at',{ascending:false});
+    const { data:progress, error } = await scoped(db.from('phase_progress').select('*'))
+      .gte('created_at', lookback).order('created_at',{ascending:false});
     if(error){ console.error('Live tracking:', error.message); return; }
     const rows = scrub(progress || []);
 
@@ -2412,7 +2443,7 @@ async function loadLiveTracking(){
 let allGroundAlerts = [];
 
 async function loadGroundAlerts(){
-  const { data, error } = await db.from('ground_alerts').select('*')
+  const { data, error } = await scoped(db.from('ground_alerts').select('*'))
     .order('created_at',{ascending:false}).limit(100);
   loadFailed.ground = !!error;
   if(error){ console.error('Ground alerts:', error.message); renderGroundTable(); return; }
@@ -2524,7 +2555,7 @@ let gasTrendChart  = null;
 let volumeChart    = null;
 
 async function loadAnalytics(){
-  const section = document.getElementById('analytics-section')?.value || '';
+  const section = sectionScope || document.getElementById('analytics-section')?.value || '';
 
   // Load last 30 days of gas readings
   const cutoff = new Date();
@@ -2625,7 +2656,7 @@ async function loadAnalytics(){
 }
 
 async function loadVolumeChart(cutoff, section){
-  let query = db.from('submissions').select('status,created_at')
+  let query = scoped(db.from('submissions').select('status,created_at'))
     .gte('created_at', cutoff.toISOString()).order('created_at',{ascending:true});
   if(section) query = query.eq('section', section);
   const { data: subs } = await query;
@@ -2678,8 +2709,7 @@ async function loadMissedReentries(){
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - 14);
 
-  const { data: subs, error } = await db.from('submissions')
-    .select('section,created_at,status')
+  const { data: subs, error } = await scoped(db.from('submissions').select('section,created_at,status'))
     .gte('created_at', cutoff.toISOString())
     .order('created_at', { ascending: false });
 
@@ -2696,7 +2726,7 @@ async function loadMissedReentries(){
   });
 
   // Generate last 14 days
-  const sections = ['North Section','South Section','Development Section'];
+  const sections = ['14 South','16 North'];
   const rows = [];
 
   for(let i = 0; i < 14; i++){
@@ -2766,7 +2796,7 @@ async function loadHandovers(){
   const shift   = document.getElementById('f-ho-shift')?.value   || '';
   const range   = dayRange(document.getElementById('f-ho-date')?.value || '');
 
-  let query = db.from('shift_handovers').select('*')
+  let query = scoped(db.from('shift_handovers').select('*'))
     .order('created_at',{ascending:false}).limit(100);
 
   if(section) query = query.eq('section', section);
@@ -2796,7 +2826,7 @@ function renderHandovers(){
   el.innerHTML = allHandovers.map(h => `
     <div class="handover-item" onclick="openHandoverDetail('${h.id}')">
       <div class="handover-item-head">
-        <div class="handover-item-name">${h.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${h.officer_id||''} · ${h.section||'—'} · ${(h.shift_type||'').toUpperCase()} SHIFT</span>
+        <div class="handover-item-name">${h.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${h.officer_id||''} · ${h.section||'—'} · ${shiftLabel(h.shift_type)}</span>
         ${h.acknowledged_by ? ' <span class="badge completed">✓ Acknowledged</span>' : ''}</div>
         <div class="handover-item-time">${fmtDate(h.created_at)}</div>
       </div>
@@ -2819,7 +2849,7 @@ function openHandoverDetail(id){
       <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${h.officer_name||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Badge ID</div><div class="detail-v">${h.officer_id||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${h.section||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Shift</div><div class="detail-v">${(h.shift_type||'').toUpperCase()}</div></div>
+      <div class="detail-item"><div class="detail-k">Shift</div><div class="detail-v">${shiftLabel(h.shift_type)||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Date</div><div class="detail-v">${h.shift_date||'—'}</div></div>
       <div class="detail-item"><div class="detail-k">Incoming Miner</div><div class="detail-v">${h.incoming_officer||'Not specified'}</div></div>
       ${h.outstanding_hazards ? '<div class="detail-item detail-full"><div class="detail-k">Outstanding Hazards</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.outstanding_hazards+'</div></div>' : ''}
@@ -2874,7 +2904,7 @@ async function loadShiftNotes(){
   const section = document.getElementById('f-sn-section')?.value || '';
   const range   = dayRange(document.getElementById('f-sn-date')?.value || '');
 
-  let query = db.from('shift_notes').select('*')
+  let query = scoped(db.from('shift_notes').select('*'))
     .order('created_at',{ascending:false}).limit(200);
 
   if(section) query = query.eq('section', section);
@@ -2924,7 +2954,7 @@ async function loadRecentAccounts(){
   const sectionFilter = document.getElementById('f-acc-section')?.value || '';
   const range         = dayRange(document.getElementById('f-acc-date')?.value || '');
 
-  let query = db.from('profiles').select('*')
+  let query = scoped(db.from('profiles').select('*'))
     .order('created_at', { ascending: false }).limit(300);
 
   if(roleFilter)    query = query.eq('role', roleFilter);
@@ -3008,8 +3038,7 @@ async function loadBordTracker(){
   try {
     // Pull updates for the selected day, or the most recent 30 days when no
     // date is chosen. Either way we dedupe to the latest update per bord below.
-    let query = db.from('bord_cycle_updates')
-      .select('*')
+    let query = scoped(db.from('bord_cycle_updates').select('*'))
       .order('recorded_at', { ascending: false })
       .limit(500);
 
@@ -3036,9 +3065,13 @@ async function loadBordTracker(){
 
     // Filter by section and/or current stage (both optional). Stage filters on
     // the latest cycle_stage per bord — i.e. bords currently AT that stage.
+    // Section comes from the row when present; legacy rows without one are
+    // inferred from the bord code prefix (14S… / 16N…).
+    const bordSectionOf = r => r.section
+      || ((r.bord||'').startsWith('16N') ? '16 North'
+      :   (r.bord||'').startsWith('14S') ? '14 South' : '');
     const filteredBords = Object.values(latestPerBord).filter(r => {
-      if(sectionFilter === 'South Strike (SS)' && !(r.bord||'').includes('SS')) return false;
-      if(sectionFilter === 'North Strike (NS)'  && !(r.bord||'').includes('NS')) return false;
+      if(sectionFilter && bordSectionOf(r) !== sectionFilter) return false;
       if(stageFilter && (r.cycle_stage||'') !== stageFilter) return false;
       return true;
     });
@@ -3054,10 +3087,11 @@ async function loadBordTracker(){
       return;
     }
 
-    // Group by zone (SS vs NS)
+    // Group by section, headed with the crew name.
     const groups = {};
     filteredBords.forEach(r => {
-      const zone = (r.bord||'').includes('NS') ? 'North Strike (NS)' : 'South Strike (SS)';
+      const sec  = bordSectionOf(r);
+      const zone = sec ? sec + ' — ' + crewName(sec) : 'Other';
       if(!groups[zone]) groups[zone] = [];
       groups[zone].push(r);
     });

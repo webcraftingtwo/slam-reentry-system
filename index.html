@@ -17,6 +17,7 @@
 
 <link href="vendor/fonts/montserrat.css" rel="stylesheet">
 <script src="vendor/supabase.js"></script>
+<script src="crew-names.js"></script>
 <script>
   // Register the service worker (app-shell offline cache). Deferred to load so
   // it never competes with first paint. Failure is non-fatal — the app still
@@ -1463,9 +1464,10 @@
         <label>Section</label>
         <select id="su-section">
           <option value="">Select section</option>
-          <option>North Section</option>
-          <option>South Section</option>
-          <option>Development Section</option>
+          <!-- Labels show the crew name miners know; values stay the canonical
+               section names the database and RLS fence on. -->
+          <option value="14 South">Challengers (14 South)</option>
+          <option value="16 North">Pioneers (16 North)</option>
         </select>
       </div>
       <div class="fg">
@@ -1619,126 +1621,27 @@
            only parses <optgroup> bords. -->
       <option value="Lamp and Crush">Lamp and Crush</option>
       <option value="Waiting Place">Waiting Place</option>
-      <optgroup label="South Strike (SS)">
-        <option value="1SS B1">1 South Strike — Bord 1</option>
-        <option value="1SS B2">1 South Strike — Bord 2</option>
-        <option value="1SS B3">1 South Strike — Bord 3</option>
-        <option value="1SS B4">1 South Strike — Bord 4</option>
-        <option value="2SS B1">2 South Strike — Bord 1</option>
-        <option value="2SS B2">2 South Strike — Bord 2</option>
-        <option value="2SS B3">2 South Strike — Bord 3</option>
-        <option value="2SS B4">2 South Strike — Bord 4</option>
-        <option value="3SS B1">3 South Strike — Bord 1</option>
-        <option value="3SS B2">3 South Strike — Bord 2</option>
-        <option value="3SS B3">3 South Strike — Bord 3</option>
-        <option value="3SS B4">3 South Strike — Bord 4</option>
-        <option value="4SS B1">4 South Strike — Bord 1</option>
-        <option value="4SS B2">4 South Strike — Bord 2</option>
-        <option value="4SS B3">4 South Strike — Bord 3</option>
-        <option value="4SS B4">4 South Strike — Bord 4</option>
-        <option value="5SS B1">5 South Strike — Bord 1</option>
-        <option value="5SS B2">5 South Strike — Bord 2</option>
-        <option value="5SS B3">5 South Strike — Bord 3</option>
-        <option value="5SS B4">5 South Strike — Bord 4</option>
-        <option value="6SS B1">6 South Strike — Bord 1</option>
-        <option value="6SS B2">6 South Strike — Bord 2</option>
-        <option value="6SS B3">6 South Strike — Bord 3</option>
-        <option value="6SS B4">6 South Strike — Bord 4</option>
-        <option value="7SS B1">7 South Strike — Bord 1</option>
-        <option value="7SS B2">7 South Strike — Bord 2</option>
-        <option value="7SS B3">7 South Strike — Bord 3</option>
-        <option value="7SS B4">7 South Strike — Bord 4</option>
-        <option value="8SS B1">8 South Strike — Bord 1</option>
-        <option value="8SS B2">8 South Strike — Bord 2</option>
-        <option value="8SS B3">8 South Strike — Bord 3</option>
-        <option value="8SS B4">8 South Strike — Bord 4</option>
-        <option value="9SS B1">9 South Strike — Bord 1</option>
-        <option value="9SS B2">9 South Strike — Bord 2</option>
-        <option value="9SS B3">9 South Strike — Bord 3</option>
-        <option value="9SS B4">9 South Strike — Bord 4</option>
-        <option value="10SS B1">10 South Strike — Bord 1</option>
-        <option value="10SS B2">10 South Strike — Bord 2</option>
-        <option value="10SS B3">10 South Strike — Bord 3</option>
-        <option value="10SS B4">10 South Strike — Bord 4</option>
-        <option value="11SS B1">11 South Strike — Bord 1</option>
-        <option value="11SS B2">11 South Strike — Bord 2</option>
-        <option value="11SS B3">11 South Strike — Bord 3</option>
-        <option value="11SS B4">11 South Strike — Bord 4</option>
-        <option value="12SS B1">12 South Strike — Bord 1</option>
-        <option value="12SS B2">12 South Strike — Bord 2</option>
-        <option value="12SS B3">12 South Strike — Bord 3</option>
-        <option value="12SS B4">12 South Strike — Bord 4</option>
-        <option value="13SS B1">13 South Strike — Bord 1</option>
-        <option value="13SS B2">13 South Strike — Bord 2</option>
-        <option value="13SS B3">13 South Strike — Bord 3</option>
-        <option value="13SS B4">13 South Strike — Bord 4</option>
-        <option value="14SS B1">14 South Strike — Bord 1</option>
-        <option value="14SS B2">14 South Strike — Bord 2</option>
-        <option value="14SS B3">14 South Strike — Bord 3</option>
-        <option value="14SS B4">14 South Strike — Bord 4</option>
+      <optgroup label="14 South">
+        <option value="14S B1">14 South — Bord 1</option>
+        <option value="14S B2">14 South — Bord 2</option>
+        <option value="14S B3">14 South — Bord 3</option>
+        <option value="14S B4">14 South — Bord 4</option>
+        <option value="14S B5">14 South — Bord 5</option>
+        <option value="14S B6">14 South — Bord 6</option>
+        <option value="14S B7">14 South — Bord 7</option>
+        <option value="14S B8">14 South — Bord 8</option>
       </optgroup>
-      <optgroup label="North Strike (NS)">
-        <option value="1NS B1">1 North Strike — Bord 1</option>
-        <option value="1NS B2">1 North Strike — Bord 2</option>
-        <option value="1NS B3">1 North Strike — Bord 3</option>
-        <option value="1NS B4">1 North Strike — Bord 4</option>
-        <option value="2NS B1">2 North Strike — Bord 1</option>
-        <option value="2NS B2">2 North Strike — Bord 2</option>
-        <option value="2NS B3">2 North Strike — Bord 3</option>
-        <option value="2NS B4">2 North Strike — Bord 4</option>
-        <option value="3NS B1">3 North Strike — Bord 1</option>
-        <option value="3NS B2">3 North Strike — Bord 2</option>
-        <option value="3NS B3">3 North Strike — Bord 3</option>
-        <option value="3NS B4">3 North Strike — Bord 4</option>
-        <option value="4NS B1">4 North Strike — Bord 1</option>
-        <option value="4NS B2">4 North Strike — Bord 2</option>
-        <option value="4NS B3">4 North Strike — Bord 3</option>
-        <option value="4NS B4">4 North Strike — Bord 4</option>
-        <option value="5NS B1">5 North Strike — Bord 1</option>
-        <option value="5NS B2">5 North Strike — Bord 2</option>
-        <option value="5NS B3">5 North Strike — Bord 3</option>
-        <option value="5NS B4">5 North Strike — Bord 4</option>
-        <option value="6NS B1">6 North Strike — Bord 1</option>
-        <option value="6NS B2">6 North Strike — Bord 2</option>
-        <option value="6NS B3">6 North Strike — Bord 3</option>
-        <option value="6NS B4">6 North Strike — Bord 4</option>
-        <option value="7NS B1">7 North Strike — Bord 1</option>
-        <option value="7NS B2">7 North Strike — Bord 2</option>
-        <option value="7NS B3">7 North Strike — Bord 3</option>
-        <option value="7NS B4">7 North Strike — Bord 4</option>
-        <option value="8NS B1">8 North Strike — Bord 1</option>
-        <option value="8NS B2">8 North Strike — Bord 2</option>
-        <option value="8NS B3">8 North Strike — Bord 3</option>
-        <option value="8NS B4">8 North Strike — Bord 4</option>
-        <option value="9NS B1">9 North Strike — Bord 1</option>
-        <option value="9NS B2">9 North Strike — Bord 2</option>
-        <option value="9NS B3">9 North Strike — Bord 3</option>
-        <option value="9NS B4">9 North Strike — Bord 4</option>
-        <option value="10NS B1">10 North Strike — Bord 1</option>
-        <option value="10NS B2">10 North Strike — Bord 2</option>
-        <option value="10NS B3">10 North Strike — Bord 3</option>
-        <option value="10NS B4">10 North Strike — Bord 4</option>
-        <option value="11NS B1">11 North Strike — Bord 1</option>
-        <option value="11NS B2">11 North Strike — Bord 2</option>
-        <option value="11NS B3">11 North Strike — Bord 3</option>
-        <option value="11NS B4">11 North Strike — Bord 4</option>
-        <option value="12NS B1">12 North Strike — Bord 1</option>
-        <option value="12NS B2">12 North Strike — Bord 2</option>
-        <option value="12NS B3">12 North Strike — Bord 3</option>
-        <option value="12NS B4">12 North Strike — Bord 4</option>
-        <option value="13NS B1">13 North Strike — Bord 1</option>
-        <option value="13NS B2">13 North Strike — Bord 2</option>
-        <option value="13NS B3">13 North Strike — Bord 3</option>
-        <option value="13NS B4">13 North Strike — Bord 4</option>
-        <option value="14NS B1">14 North Strike — Bord 1</option>
-        <option value="14NS B2">14 North Strike — Bord 2</option>
-        <option value="14NS B3">14 North Strike — Bord 3</option>
-        <option value="14NS B4">14 North Strike — Bord 4</option>
-        <option value="14NS B1">16 North  — Bord 6</option>
-        <option value="14NS B2">16 North — Bord 7</option>
-        <option value="14NS B3">16 North — Bord 8</option>
-        
-        
+      <optgroup label="16 North">
+        <option value="16N B1">16 North — Bord 1</option>
+        <option value="16N B2">16 North — Bord 2</option>
+        <option value="16N B3">16 North — Bord 3</option>
+        <option value="16N B4">16 North — Bord 4</option>
+        <option value="16N B5">16 North — Bord 5</option>
+        <option value="16N B6">16 North — Bord 6</option>
+        <option value="16N B7">16 North — Bord 7</option>
+        <option value="16N B8">16 North — Bord 8</option>
+        <option value="16N B9">16 North — Bord 9</option>
+        <option value="16N Strike">16 North — Strike (between Bord 1 and 9)</option>
       </optgroup>
     </select>
   </div>
@@ -2407,9 +2310,9 @@
       <div class="handover-section">
         <label>Shift Type</label>
         <select id="ho-shift" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.875rem;border-radius:3px;outline:none;-webkit-appearance:none;">
-          <option value="day">Day Shift</option>
-          <option value="night">Night Shift</option>
-          <option value="afternoon">Afternoon Shift</option>
+          <option value="A">Shift A</option>
+          <option value="B">Shift B</option>
+          <option value="C">Shift C</option>
         </select>
       </div>
 
@@ -5476,7 +5379,7 @@ async function submitHandoverAndBord(){
       officer_name:         userData.name   || null,
       officer_id:           userData.id     || null,
       section:              userData.section|| null,
-      shift_type:           shift           || 'day',
+      shift_type:           shift           || 'A',
       outstanding_hazards:  hazards         || null,
       gas_concerns:         gas             || null,
       panels_avoid:         panels          || null,
@@ -5484,6 +5387,9 @@ async function submitHandoverAndBord(){
       general_notes:        notes           || null,
       incoming_officer:     incoming        || null,
       shift_date:           new Date().toISOString().split('T')[0],
+      // Bords worked this shift (from the bord tracker selection) so the
+      // handover is routed to the incoming crew of those specific bords.
+      bords:                hasBords ? selectedBords.map(([k]) => k).join(', ') : null,
     };
     if(!isOnline || !db || !navigator.onLine){
       queueHandover(payload); anyOffline = true;
@@ -5705,19 +5611,21 @@ async function loadIncomingHandover(){
     yesterday.setDate(yesterday.getDate() - 1);
     const cutoff = yesterday.toISOString().split('T')[0];
 
+    // Latest handovers for this section (RLS also restricts reads to the
+    // miner's own section server-side). Multiple bords can hand over in one
+    // shift, so show the most recent handover per outgoing officer/bord set.
     const { data, error } = await db
       .from('shift_handovers')
       .select('*')
       .eq('section', userData.section)
       .gte('shift_date', cutoff)
       .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
+      .limit(3);
 
-    if(error || !data) return;
+    if(error || !data || !data.length) return;
 
-    // Show handover banner
-    showHandoverBanner(data);
+    // Show newest first; banner is persistent for the whole shift.
+    data.reverse().forEach(h => showHandoverBanner(h));
   } catch(e) {
     console.warn('Handover load (non-fatal):', e);
   }
@@ -5727,22 +5635,29 @@ function showHandoverBanner(handover){
   const slot = document.getElementById('home-banner-slot');
   if(!slot) return;
 
+  // Bord chips — the handover is targeted at the incoming crew of these bords.
+  const bordChips = (handover.bords || '')
+    .split(',').map(b => b.trim()).filter(Boolean)
+    .map(b => '<span style="display:inline-block;background:var(--teal);color:#fff;font-size:0.7rem;font-weight:700;letter-spacing:0.06em;padding:0.14rem 0.5rem;border-radius:2px;margin:0 0.3rem 0.25rem 0;">' + esc(b) + '</span>')
+    .join('');
+
   const banner = document.createElement('div');
   banner.className = 'handover-banner';
   banner.innerHTML = `
     <div class="handover-banner-head">
-      <div class="handover-banner-ttl">📋 Shift Handover from ${esc(handover.officer_name||'Previous Miner')}</div>
-      <div class="handover-banner-new">NEW</div>
+      <div class="handover-banner-ttl">📋 Shift Handover from ${esc(handover.officer_name||'Previous Miner')} — ${esc(crewName(handover.section))}</div>
+      <div class="handover-banner-new">${esc(shiftLabel(handover.shift_type))}</div>
     </div>
     <div class="handover-banner-body">
+      ${bordChips ? '<div style="margin-bottom:0.35rem;">' + bordChips + '</div>' : ''}
       ${handover.outstanding_hazards ? '<strong>Hazards:</strong> ' + esc(handover.outstanding_hazards) + '<br>' : ''}
       ${handover.gas_concerns        ? '<strong>Gas Concerns:</strong> ' + esc(handover.gas_concerns) + '<br>' : ''}
       ${handover.panels_avoid        ? '<strong>Panels to Avoid:</strong> ' + esc(handover.panels_avoid) + '<br>' : ''}
       ${handover.general_notes       ? '<strong>Notes:</strong> ' + esc(handover.general_notes) : ''}
-      <div style="margin-top:0.4rem;font-size:0.72rem;color:var(--teal);font-weight:700;letter-spacing:0.08em;">Tap to dismiss · ${esc(handover.shift_type||'')} shift · ${esc(handover.shift_date||'')}</div>
+      <div style="margin-top:0.4rem;font-size:0.72rem;color:var(--teal);font-weight:700;letter-spacing:0.08em;">${esc(handover.shift_date||'')} · stays visible for the incoming shift</div>
     </div>
   `;
-  banner.onclick = () => banner.remove();
+  // Persistent by design: no dismiss — the incoming crew must not lose this.
 
   slot.insertBefore(banner, slot.firstChild);
 }
@@ -6228,7 +6143,7 @@ const BCT_ZONES = (function(){
   const sel = document.getElementById('zone-sel');
   if(!sel) return zones;
   sel.querySelectorAll('optgroup').forEach(og => {
-    const zoneLabel = og.label; // e.g. "South Strike (SS)"
+    const zoneLabel = og.label; // e.g. "14 South"
     const bords = [];
     og.querySelectorAll('option').forEach(opt => {
       if(opt.value) bords.push({ value: opt.value, label: opt.textContent.trim() });

@@ -47,6 +47,25 @@ Currently in a two-section pilot phase.
   Complete → Repeat.
 - Timers use wall-clock time (previously buggy — keep correct).
 
+## Section compartmentalization
+- Sections are exactly "14 South" and "16 North". Zones are 14S B1–B8,
+  16N B1–B9, and 16N Strike — nothing else.
+- Enforcement is RLS (migrations/2026-07-18_section_compartmentalization.sql):
+  miners, shift_boss, supervisor (section manager) and safety_officer can
+  only read their own section's rows; she_manager and admin read all.
+  The client-side scoping in dashboard.html (sectionScope + scoped()) is a
+  UI mirror of that rule, NOT the enforcement — never treat it as such.
+- shift_handovers.bords records which bords the outgoing crew worked; the
+  home-screen handover banner is persistent (no dismiss) and bord-labelled.
+- Rollout order: apply migrations BEFORE deploying app updates that write
+  new columns, otherwise inserts land in the failed-record queue.
+- Crew names: 14 South = "Challengers", 16 North = "Pioneers". These are
+  DISPLAY labels only — crew-names.js is the single source (shared by both
+  pages, precached by sw.js). The database and RLS always use the canonical
+  section values; never store a crew name in a section column.
+- Shifts are A / B / C (6-on/3-off rotation). shift_type stores 'A'/'B'/'C';
+  legacy rows keep 'day'/'night'/'afternoon' and shiftLabel() renders both.
+
 ## Secrets
 - Never put Supabase service-role keys, passwords, or any secret in
   this repo or in this file. Client uses the anon key only.
