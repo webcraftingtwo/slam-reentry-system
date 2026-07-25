@@ -968,9 +968,6 @@
   .feat-section select:focus,.feat-section input:focus,.feat-section textarea:focus{border-color:var(--teal);}
   .feat-row{display:flex;gap:0.6rem;}
   .feat-row .feat-section{flex:1;}
-  .feat-check-row{display:flex;align-items:center;gap:0.55rem;padding:0.55rem 0;min-height:44px;}
-  .feat-check-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--teal);flex-shrink:0;}
-  .feat-check-row label{font-size:0.8rem;font-weight:600;color:var(--text);text-transform:none;letter-spacing:normal;margin:0;}
   .btn-submit-feat{
     width:100%;background:var(--teal);color:#fff;border:none;padding:0.85rem;
     font-family:'Montserrat',sans-serif;font-size:0.8rem;font-weight:800;
@@ -985,7 +982,14 @@
   /* Bord multi-select checklist (machinery assignment) — reuses BCT_ZONES */
   .feat-bord-check{display:flex;align-items:center;gap:0.5rem;padding:0.45rem 0;min-height:40px;border-bottom:1px solid var(--border);}
   .feat-bord-check:last-child{border-bottom:none;}
-  .feat-bord-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--teal);flex-shrink:0;}
+  .feat-bord-check input[type=checkbox]{
+    width:18px;height:18px;accent-color:var(--teal);flex-shrink:0;
+    /* The global input,select,textarea rule above sets appearance:none and
+       width:100% — harmless for text inputs but it strips a checkbox's native
+       box/checkmark entirely and stretches it full-width, making it render
+       invisible. Restore native rendering so accent-color actually shows. */
+    appearance:auto;-webkit-appearance:auto;
+  }
   .feat-bord-check label{font-size:0.8rem;font-weight:500;color:var(--text);margin:0;}
   .feat-zone-hd{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:0.6rem 0 0.2rem;}
 
@@ -1001,6 +1005,9 @@
   .status-chip.sel.running{background:var(--green);border-color:var(--green);color:#fff;}
   .status-chip.sel.breakdown{background:var(--red);border-color:var(--red);color:#fff;}
   .status-chip.sel.idle{background:var(--amber);border-color:var(--amber);color:var(--amber-ink);}
+  .status-chip.sel.day{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .status-chip.sel.night{background:var(--teal-dark);border-color:var(--teal-dark);color:#fff;}
+  .status-chip-row.wide .status-chip{flex:1;}
 
   /* HANDOVER BANNER on login */
   .handover-banner{
@@ -1627,7 +1634,7 @@
       <div class="home-card" onclick="openProdPerf()">
         <span class="hc-icon">📈</span>
         <div class="hc-label">Production Performance</div>
-        <div class="hc-sub">Log drilled/support m² vs plan, hoist &amp; blast status</div>
+        <div class="hc-sub">Log drilled/support metres vs plan, tonnage hoisted &amp; blast status</div>
       </div>
       <div class="home-card" onclick="openMachinery()">
         <span class="hc-icon">🚜</span>
@@ -1637,7 +1644,7 @@
       <div class="home-card" onclick="openTonnage()">
         <span class="hc-icon">⚖</span>
         <div class="hc-label">Hourly Tonnage</div>
-        <div class="hc-sub">Log tonnage hoisted this hour vs target</div>
+        <div class="hc-sub">Log tonnage hoisted this hour</div>
       </div>
       <!-- Shown only when the app is installable (and not already installed) -->
       <div class="home-card hc-accent" id="home-card-install" onclick="promptInstall()" style="display:none;">
@@ -2467,50 +2474,51 @@
           <label>Bord</label>
           <select id="pp-bord"></select>
         </div>
-        <div class="feat-section">
-          <label>Shift</label>
-          <select id="pp-shift">
-            <option value="A">Shift A</option>
-            <option value="B">Shift B</option>
-            <option value="C">Shift C</option>
-          </select>
+      </div>
+
+      <div class="feat-section">
+        <label>Shift</label>
+        <div class="status-chip-row wide" id="pp-period-row">
+          <div class="status-chip day sel" data-period="day" onclick="ppSetPeriod('day')">☀ Day Shift</div>
+          <div class="status-chip night" data-period="night" onclick="ppSetPeriod('night')">🌙 Night Shift</div>
         </div>
       </div>
 
       <div class="feat-row">
         <div class="feat-section">
-          <label>Drilled — Expected (m²)</label>
+          <label>Drilled — Expected (m)</label>
           <input type="number" step="0.1" min="0" id="pp-drill-exp" placeholder="0.0"/>
         </div>
         <div class="feat-section">
-          <label>Drilled — Actual (m²)</label>
+          <label>Drilled — Actual (m)</label>
           <input type="number" step="0.1" min="0" id="pp-drill-act" placeholder="0.0"/>
         </div>
       </div>
 
       <div class="feat-row">
         <div class="feat-section">
-          <label>Support — Expected (m²)</label>
+          <label>Support — Expected (m)</label>
           <input type="number" step="0.1" min="0" id="pp-supp-exp" placeholder="0.0"/>
         </div>
         <div class="feat-section">
-          <label>Support — Actual (m²)</label>
+          <label>Support — Actual (m)</label>
           <input type="number" step="0.1" min="0" id="pp-supp-act" placeholder="0.0"/>
         </div>
       </div>
 
-      <div class="feat-check-row">
-        <input type="checkbox" id="pp-hoisted"/>
-        <label for="pp-hoisted">Hoisted</label>
+      <div class="feat-section">
+        <label>Total Tonnage Hoisted</label>
+        <input type="number" step="1" min="0" id="pp-tonnage-hoisted" placeholder="0"/>
       </div>
-      <div class="feat-check-row">
-        <input type="checkbox" id="pp-charging"/>
-        <label for="pp-charging">Ends available for charging</label>
+
+      <div class="feat-section">
+        <label id="pp-ends-label">Ends Available for Charging</label>
+        <div id="pp-ends-bord-list"></div>
       </div>
 
       <div class="feat-section">
         <label>Blast Plan Notes</label>
-        <textarea id="pp-blast-notes" placeholder="Bord names, charge-up plan, anything the blast crew needs..."></textarea>
+        <textarea id="pp-blast-notes" placeholder="Charge-up plan, anything the blast crew needs..."></textarea>
       </div>
 
       <div class="feat-saved-msg" id="pp-saved-msg">✓ Saved — will appear on the dashboard</div>
@@ -2549,11 +2557,10 @@
 
       <div class="feat-section">
         <label>Shift</label>
-        <select id="mach-shift">
-          <option value="A">Shift A</option>
-          <option value="B">Shift B</option>
-          <option value="C">Shift C</option>
-        </select>
+        <div class="status-chip-row wide" id="mach-period-row">
+          <div class="status-chip day sel" data-period="day" onclick="machSetPeriod('day')">☀ Day Shift</div>
+          <div class="status-chip night" data-period="night" onclick="machSetPeriod('night')">🌙 Night Shift</div>
+        </div>
       </div>
 
       <div class="feat-section">
@@ -2616,13 +2623,13 @@
           <label>Bord</label>
           <select id="ton-bord"></select>
         </div>
-        <div class="feat-section">
-          <label>Shift</label>
-          <select id="ton-shift">
-            <option value="A">Shift A</option>
-            <option value="B">Shift B</option>
-            <option value="C">Shift C</option>
-          </select>
+      </div>
+
+      <div class="feat-section">
+        <label>Shift</label>
+        <div class="status-chip-row wide" id="ton-period-row">
+          <div class="status-chip day sel" data-period="day" onclick="tonSetPeriod('day')">☀ Day Shift</div>
+          <div class="status-chip night" data-period="night" onclick="tonSetPeriod('night')">🌙 Night Shift</div>
         </div>
       </div>
 
@@ -2631,15 +2638,9 @@
         <select id="ton-hour"></select>
       </div>
 
-      <div class="feat-row">
-        <div class="feat-section">
-          <label>Tonnage — Actual</label>
-          <input type="number" step="0.1" min="0" id="ton-actual" placeholder="0.0"/>
-        </div>
-        <div class="feat-section">
-          <label>Tonnage — Target</label>
-          <input type="number" step="0.1" min="0" id="ton-target" placeholder="0.0"/>
-        </div>
+      <div class="feat-section">
+        <label>Tonnage — Actual</label>
+        <input type="number" step="0.1" min="0" id="ton-actual" placeholder="0.0"/>
       </div>
 
       <div class="feat-saved-msg" id="ton-saved-msg">✓ Saved — will appear on the dashboard</div>
@@ -6620,6 +6621,12 @@ function numOrNull(v){
   return Number.isFinite(n) ? n : null;
 }
 
+function intOrNull(v){
+  if(v === undefined || v === null || v === '') return null;
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) ? n : null;
+}
+
 // Single-select bord dropdown, grouped by section — mirrors the zone-sel/
 // BCT_ZONES structure so the bord list is defined once and reused everywhere.
 function populateFeatBordSelect(selectId, preselect){
@@ -6701,8 +6708,31 @@ async function submitFeatRecord({ table, payload, queueFn, btnId, btnLabel, save
 }
 
 // ── PRODUCTION SHIFT PERFORMANCE ──
+let ppPeriod = 'day';
+let ppEndsBords = new Set();
+
+// The same field means different things on Day vs Night shift — Day crews
+// charge up, Night crews blast. One column (ends_available_bords), label
+// switches with the shift.
+function ppSetPeriod(period){
+  ppPeriod = period;
+  setPeriodChips('pp-period-row', period);
+  const lbl = document.getElementById('pp-ends-label');
+  if(lbl) lbl.textContent = period === 'day' ? 'Ends Available for Charging' : 'Ends Available for Blasting';
+}
+
+function renderPPEndsBordList(){
+  renderFeatBordChecklist('pp-ends-bord-list', ppEndsBords, 'ppToggleEndsBord');
+}
+function ppToggleEndsBord(bordValue){
+  if(ppEndsBords.has(bordValue)) ppEndsBords.delete(bordValue);
+  else ppEndsBords.add(bordValue);
+}
+
 function openProdPerf(){
   populateFeatBordSelect('pp-bord');
+  ppSetPeriod('day');
+  renderPPEndsBordList();
   document.getElementById('pp-ov').classList.add('show');
 }
 function closeProdPerf(){
@@ -6748,12 +6778,12 @@ async function syncProdPerfQueue(){
 }
 
 function resetProdPerfForm(){
-  ['pp-drill-exp','pp-drill-act','pp-supp-exp','pp-supp-act','pp-blast-notes'].forEach(id=>{
+  ['pp-drill-exp','pp-drill-act','pp-supp-exp','pp-supp-act','pp-tonnage-hoisted','pp-blast-notes'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
-  ['pp-hoisted','pp-charging'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.checked=false;
-  });
+  ppEndsBords = new Set();
+  renderPPEndsBordList();
+  ppSetPeriod('day');
 }
 
 async function submitProdPerf(){
@@ -6761,20 +6791,20 @@ async function submitProdPerf(){
   if(!bord){ alert('Select a bord before submitting.'); return; }
 
   const payload = {
-    user_id:                      userData.uid     || null,
-    officer_name:                 userData.name    || null,
-    officer_id:                   userData.id      || null,
-    section:                      userData.section || null,
-    shift_type:                   document.getElementById('pp-shift')?.value || 'A',
-    bord:                         bord,
-    drilled_expected_m2:          numOrNull(document.getElementById('pp-drill-exp')?.value),
-    drilled_actual_m2:            numOrNull(document.getElementById('pp-drill-act')?.value),
-    support_expected_m2:          numOrNull(document.getElementById('pp-supp-exp')?.value),
-    support_actual_m2:            numOrNull(document.getElementById('pp-supp-act')?.value),
-    hoisted:                      !!document.getElementById('pp-hoisted')?.checked,
-    ends_available_for_charging:  !!document.getElementById('pp-charging')?.checked,
-    blast_plan_notes:             document.getElementById('pp-blast-notes')?.value?.trim() || null,
-    session_id:                   sessionId || null,
+    user_id:                userData.uid     || null,
+    officer_name:            userData.name    || null,
+    officer_id:              userData.id      || null,
+    section:                  userData.section || null,
+    shift_period:            ppPeriod,
+    bord:                    bord,
+    drilled_expected_m:      numOrNull(document.getElementById('pp-drill-exp')?.value),
+    drilled_actual_m:        numOrNull(document.getElementById('pp-drill-act')?.value),
+    support_expected_m:      numOrNull(document.getElementById('pp-supp-exp')?.value),
+    support_actual_m:        numOrNull(document.getElementById('pp-supp-act')?.value),
+    tonnage_hoisted:         intOrNull(document.getElementById('pp-tonnage-hoisted')?.value),
+    ends_available_bords:    ppEndsBords.size ? Array.from(ppEndsBords).join(', ') : null,
+    blast_plan_notes:        document.getElementById('pp-blast-notes')?.value?.trim() || null,
+    session_id:              sessionId || null,
   };
 
   await submitFeatRecord({
@@ -6792,34 +6822,48 @@ async function submitProdPerf(){
 // ── MACHINERY AVAILABILITY & UTILIZATION ──
 let machSelectedBords = new Set();
 let machStatus = 'running';
+let machPeriod = 'day';
+
+function machSetPeriod(period){
+  machPeriod = period;
+  setPeriodChips('mach-period-row', period);
+}
 
 function openMachinery(){
   populateFeatBordSelect('mach-location');
   renderMachBordList();
   machSetStatus('running');
+  machSetPeriod('day');
   document.getElementById('mach-ov').classList.add('show');
 }
 function closeMachinery(){
   document.getElementById('mach-ov').classList.remove('show');
 }
 
-function renderMachBordList(){
-  const container = document.getElementById('mach-bord-list');
+// Generic bord multi-select checklist, reused by both Machinery (assigned
+// bords) and Production Performance (ends-available bords) — container ids
+// are baked into each checkbox's id so the two checklists can't collide.
+function renderFeatBordChecklist(containerId, selectedSet, toggleFnName){
+  const container = document.getElementById(containerId);
   if(!container) return;
   let html = '';
   Object.entries(BCT_ZONES).forEach(([zoneName, bords]) => {
     html += `<div class="feat-zone-hd">${zoneName}</div>`;
     bords.forEach(b => {
-      const key = b.value.replace(/\s/g,'_');
-      const checked = machSelectedBords.has(b.value) ? 'checked' : '';
+      const key = containerId + '-' + b.value.replace(/\s/g,'_');
+      const checked = selectedSet.has(b.value) ? 'checked' : '';
       html += `
         <div class="feat-bord-check">
-          <input type="checkbox" id="mach-bord-${key}" ${checked} onchange="machToggleBord('${b.value}')"/>
-          <label for="mach-bord-${key}">${b.label}</label>
+          <input type="checkbox" id="${key}" ${checked} onchange="${toggleFnName}('${b.value}')"/>
+          <label for="${key}">${b.label}</label>
         </div>`;
     });
   });
   container.innerHTML = html;
+}
+
+function renderMachBordList(){
+  renderFeatBordChecklist('mach-bord-list', machSelectedBords, 'machToggleBord');
 }
 function machToggleBord(bordValue){
   if(machSelectedBords.has(bordValue)) machSelectedBords.delete(bordValue);
@@ -6833,6 +6877,14 @@ function machSetStatus(status){
   });
   const bdRow = document.getElementById('mach-breakdown-row');
   if(bdRow) bdRow.style.display = (status === 'breakdown') ? 'flex' : 'none';
+}
+
+// Shared Day/Night shift toggle — used by all 3 production features (not
+// shift_handovers, which keeps A/B/C per CLAUDE.md).
+function setPeriodChips(rowId, period){
+  document.querySelectorAll('#'+rowId+' .status-chip').forEach(chip=>{
+    chip.classList.toggle('sel', chip.dataset.period === period);
+  });
 }
 
 function machToggleOtherType(){
@@ -6890,6 +6942,7 @@ function resetMachineryForm(){
   machSelectedBords = new Set();
   renderMachBordList();
   machSetStatus('running');
+  machSetPeriod('day');
 }
 
 async function submitMachinery(){
@@ -6908,7 +6961,7 @@ async function submitMachinery(){
     officer_name:     userData.name    || null,
     officer_id:        userData.id      || null,
     section:            userData.section || null,
-    shift_type:        document.getElementById('mach-shift')?.value || 'A',
+    shift_period:      machPeriod,
     machine_type:      machType,
     machine_number:    machNumber,
     status:            machStatus,
@@ -6933,9 +6986,16 @@ async function submitMachinery(){
 }
 
 // ── HOURLY TONNAGE TRACKER ──
+let tonPeriod = 'day';
+function tonSetPeriod(period){
+  tonPeriod = period;
+  setPeriodChips('ton-period-row', period);
+}
+
 function openTonnage(){
   populateFeatBordSelect('ton-bord');
   populateHourSelect('ton-hour');
+  tonSetPeriod('day');
   document.getElementById('ton-ov').classList.add('show');
 }
 function closeTonnage(){
@@ -6981,7 +7041,8 @@ async function syncTonnageQueue(){
 }
 
 function resetTonnageForm(){
-  ['ton-actual','ton-target'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const el = document.getElementById('ton-actual'); if(el) el.value='';
+  tonSetPeriod('day');
 }
 
 async function submitTonnage(){
@@ -6994,11 +7055,10 @@ async function submitTonnage(){
     officer_name:     userData.name    || null,
     officer_id:        userData.id      || null,
     section:            userData.section || null,
-    shift_type:        document.getElementById('ton-shift')?.value || 'A',
+    shift_period:      tonPeriod,
     bord:               bord,
     hour_slot:          hour,
     tonnage_actual:     numOrNull(document.getElementById('ton-actual')?.value),
-    tonnage_target:     numOrNull(document.getElementById('ton-target')?.value),
   };
 
   await submitFeatRecord({
