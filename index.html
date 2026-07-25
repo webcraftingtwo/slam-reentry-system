@@ -932,6 +932,76 @@
   .btn-submit-handover:hover{background:var(--teal-dark);}
   .btn-submit-handover:disabled{opacity:0.5;cursor:not-allowed;}
 
+  /* SHARED FEATURE MODAL — Production Performance / Machinery / Hourly Tonnage.
+     Same bottom-sheet + sticky teal header pattern as .handover-*, factored
+     out since 3 features share it (see .handover-* above for the original). */
+  .feat-ov{
+    display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,0.55);z-index:300;
+    align-items:flex-end;justify-content:center;
+  }
+  .feat-ov.show{display:flex;}
+  .feat-card{
+    background:var(--white);width:100%;max-width:560px;
+    border-radius:8px 8px 0 0;
+    max-height:88vh;overflow-y:auto;
+    animation:slideUp 0.22s ease;
+  }
+  .feat-head{
+    background:var(--teal);padding:1rem 1.2rem;
+    display:flex;align-items:center;justify-content:space-between;
+    position:sticky;top:0;z-index:10;
+  }
+  .feat-title{font-size:0.9rem;font-weight:800;color:#fff;}
+  .feat-close{background:none;border:none;color:rgba(255,255,255,0.6);font-size:1.2rem;cursor:pointer;min-width:44px;min-height:44px;}
+  .feat-body{padding:1.2rem;}
+  .feat-section{margin-bottom:1rem;}
+  .feat-section label{display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.35rem;}
+  .feat-section select,.feat-section input,.feat-section textarea{
+    width:100%;background:var(--offwhite);border:1.5px solid var(--border);
+    color:var(--text);padding:0.65rem 0.82rem;
+    font-family:'Montserrat',sans-serif;font-size:0.875rem;font-weight:500;
+    border-radius:3px;outline:none;-webkit-appearance:none;
+    transition:border-color 0.15s;
+  }
+  .feat-section textarea{min-height:64px;resize:vertical;}
+  .feat-section select:focus,.feat-section input:focus,.feat-section textarea:focus{border-color:var(--teal);}
+  .feat-row{display:flex;gap:0.6rem;}
+  .feat-row .feat-section{flex:1;}
+  .feat-check-row{display:flex;align-items:center;gap:0.55rem;padding:0.55rem 0;min-height:44px;}
+  .feat-check-row input[type=checkbox]{width:20px;height:20px;accent-color:var(--teal);flex-shrink:0;}
+  .feat-check-row label{font-size:0.8rem;font-weight:600;color:var(--text);text-transform:none;letter-spacing:normal;margin:0;}
+  .btn-submit-feat{
+    width:100%;background:var(--teal);color:#fff;border:none;padding:0.85rem;
+    font-family:'Montserrat',sans-serif;font-size:0.8rem;font-weight:800;
+    letter-spacing:0.15em;text-transform:uppercase;border-radius:3px;cursor:pointer;
+    margin-top:0.5rem;transition:background 0.15s;
+  }
+  .btn-submit-feat:hover{background:var(--teal-dark);}
+  .btn-submit-feat:disabled{opacity:0.5;cursor:not-allowed;}
+  .feat-saved-msg{display:none;text-align:center;font-size:0.78rem;font-weight:700;color:var(--green);margin-top:0.6rem;}
+  .feat-saved-msg.show{display:block;}
+
+  /* Bord multi-select checklist (machinery assignment) — reuses BCT_ZONES */
+  .feat-bord-check{display:flex;align-items:center;gap:0.5rem;padding:0.45rem 0;min-height:40px;border-bottom:1px solid var(--border);}
+  .feat-bord-check:last-child{border-bottom:none;}
+  .feat-bord-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--teal);flex-shrink:0;}
+  .feat-bord-check label{font-size:0.8rem;font-weight:500;color:var(--text);margin:0;}
+  .feat-zone-hd{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:0.6rem 0 0.2rem;}
+
+  /* Machine status chips — semantic colours match the app's existing status trio */
+  .status-chip-row{display:flex;gap:0.5rem;flex-wrap:wrap;}
+  .status-chip{
+    display:inline-flex;align-items:center;justify-content:center;gap:0.3rem;
+    padding:0.5rem 0.85rem;border-radius:20px;font-size:0.72rem;font-weight:700;
+    text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;
+    border:1.5px solid var(--border);background:var(--offwhite);color:var(--mid);
+    min-height:44px;
+  }
+  .status-chip.sel.running{background:var(--green);border-color:var(--green);color:#fff;}
+  .status-chip.sel.breakdown{background:var(--red);border-color:var(--red);color:#fff;}
+  .status-chip.sel.idle{background:var(--amber);border-color:var(--amber);color:var(--amber-ink);}
+
   /* HANDOVER BANNER on login */
   .handover-banner{
     background:var(--teal-pale);border:1.5px solid var(--teal);border-radius:4px;
@@ -968,7 +1038,7 @@
   @media print {
     .topbar,.sos-strip,.conn-bar,.pnav,.zone-bar,.pfoot,
     .sos-fab,.sos-fab-label,.phase-toast,#splash,#success,#home,
-    .warn-ov,.sos-ov,.nm-ov,.sn-ov,.ground-ov,.handover-ov,.session-ov,
+    .warn-ov,.sos-ov,.nm-ov,.sn-ov,.ground-ov,.handover-ov,.session-ov,.feat-ov,
     .btn-next,.btn-sos,.btn-nm{display:none!important;}
     body{background:#fff;font-size:9pt;}
     #app{display:block!important;}
@@ -1553,6 +1623,21 @@
         <span class="hc-icon">⚠</span>
         <div class="hc-label">Near Miss</div>
         <div class="hc-sub">Report a near-miss incident</div>
+      </div>
+      <div class="home-card" onclick="openProdPerf()">
+        <span class="hc-icon">📈</span>
+        <div class="hc-label">Production Performance</div>
+        <div class="hc-sub">Log drilled/support m² vs plan, hoist &amp; blast status</div>
+      </div>
+      <div class="home-card" onclick="openMachinery()">
+        <span class="hc-icon">🚜</span>
+        <div class="hc-label">Machinery</div>
+        <div class="hc-sub">Log machine startup, breakdown &amp; bord assignment</div>
+      </div>
+      <div class="home-card" onclick="openTonnage()">
+        <span class="hc-icon">⚖</span>
+        <div class="hc-label">Hourly Tonnage</div>
+        <div class="hc-sub">Log tonnage hoisted this hour vs target</div>
       </div>
       <!-- Shown only when the app is installable (and not already installed) -->
       <div class="home-card hc-accent" id="home-card-install" onclick="promptInstall()" style="display:none;">
@@ -2369,6 +2454,200 @@
   </div>
 </div>
 
+<!-- PRODUCTION SHIFT PERFORMANCE MODAL -->
+<div class="feat-ov" id="pp-ov">
+  <div class="feat-card">
+    <div class="feat-head">
+      <div class="feat-title">📈 Production Shift Performance</div>
+      <button class="feat-close" onclick="closeProdPerf()">✕</button>
+    </div>
+    <div class="feat-body">
+      <div class="feat-row">
+        <div class="feat-section">
+          <label>Bord</label>
+          <select id="pp-bord"></select>
+        </div>
+        <div class="feat-section">
+          <label>Shift</label>
+          <select id="pp-shift">
+            <option value="A">Shift A</option>
+            <option value="B">Shift B</option>
+            <option value="C">Shift C</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="feat-row">
+        <div class="feat-section">
+          <label>Drilled — Expected (m²)</label>
+          <input type="number" step="0.1" min="0" id="pp-drill-exp" placeholder="0.0"/>
+        </div>
+        <div class="feat-section">
+          <label>Drilled — Actual (m²)</label>
+          <input type="number" step="0.1" min="0" id="pp-drill-act" placeholder="0.0"/>
+        </div>
+      </div>
+
+      <div class="feat-row">
+        <div class="feat-section">
+          <label>Support — Expected (m²)</label>
+          <input type="number" step="0.1" min="0" id="pp-supp-exp" placeholder="0.0"/>
+        </div>
+        <div class="feat-section">
+          <label>Support — Actual (m²)</label>
+          <input type="number" step="0.1" min="0" id="pp-supp-act" placeholder="0.0"/>
+        </div>
+      </div>
+
+      <div class="feat-check-row">
+        <input type="checkbox" id="pp-hoisted"/>
+        <label for="pp-hoisted">Hoisted</label>
+      </div>
+      <div class="feat-check-row">
+        <input type="checkbox" id="pp-charging"/>
+        <label for="pp-charging">Ends available for charging</label>
+      </div>
+
+      <div class="feat-section">
+        <label>Blast Plan Notes</label>
+        <textarea id="pp-blast-notes" placeholder="Bord names, charge-up plan, anything the blast crew needs..."></textarea>
+      </div>
+
+      <div class="feat-saved-msg" id="pp-saved-msg">✓ Saved — will appear on the dashboard</div>
+      <button class="btn-submit-feat" id="btn-submit-pp" onclick="submitProdPerf()">Submit Production Data →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MACHINERY AVAILABILITY & UTILIZATION MODAL -->
+<div class="feat-ov" id="mach-ov">
+  <div class="feat-card">
+    <div class="feat-head">
+      <div class="feat-title">🚜 Machinery Availability</div>
+      <button class="feat-close" onclick="closeMachinery()">✕</button>
+    </div>
+    <div class="feat-body">
+      <div class="feat-row">
+        <div class="feat-section">
+          <label>Machine Type</label>
+          <select id="mach-type" onchange="machToggleOtherType()">
+            <option value="LHD">LHD</option>
+            <option value="Rig">Rig</option>
+            <option value="Bolter">Bolter</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="feat-section">
+          <label>Machine Number</label>
+          <input type="text" id="mach-number" placeholder="e.g. 53"/>
+        </div>
+      </div>
+      <div class="feat-section" id="mach-type-other-wrap" style="display:none;">
+        <label>Specify Machine Type</label>
+        <input type="text" id="mach-type-other" placeholder="e.g. Scoop, Dozer"/>
+      </div>
+
+      <div class="feat-section">
+        <label>Shift</label>
+        <select id="mach-shift">
+          <option value="A">Shift A</option>
+          <option value="B">Shift B</option>
+          <option value="C">Shift C</option>
+        </select>
+      </div>
+
+      <div class="feat-section">
+        <label>Status</label>
+        <div class="status-chip-row" id="mach-status-row">
+          <div class="status-chip running sel" data-status="running" onclick="machSetStatus('running')">Running</div>
+          <div class="status-chip breakdown" data-status="breakdown" onclick="machSetStatus('breakdown')">Breakdown</div>
+          <div class="status-chip idle" data-status="idle" onclick="machSetStatus('idle')">Idle</div>
+        </div>
+      </div>
+
+      <div class="feat-row">
+        <div class="feat-section">
+          <label>Startup Time</label>
+          <input type="time" id="mach-startup"/>
+        </div>
+        <div class="feat-section">
+          <label>Location</label>
+          <select id="mach-location"></select>
+        </div>
+      </div>
+
+      <div class="feat-row" id="mach-breakdown-row" style="display:none;">
+        <div class="feat-section">
+          <label>Breakdown Start</label>
+          <input type="time" id="mach-bd-start"/>
+        </div>
+        <div class="feat-section">
+          <label>Breakdown End</label>
+          <input type="time" id="mach-bd-end"/>
+        </div>
+      </div>
+
+      <div class="feat-section">
+        <label>Assigned Bords</label>
+        <div id="mach-bord-list"></div>
+      </div>
+
+      <div class="feat-section">
+        <label>Comments</label>
+        <textarea id="mach-comments" placeholder="Anything else about this machine's shift..."></textarea>
+      </div>
+
+      <div class="feat-saved-msg" id="mach-saved-msg">✓ Saved — will appear on the dashboard</div>
+      <button class="btn-submit-feat" id="btn-submit-mach" onclick="submitMachinery()">Submit Machinery Log →</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOURLY TONNAGE TRACKER MODAL -->
+<div class="feat-ov" id="ton-ov">
+  <div class="feat-card">
+    <div class="feat-head">
+      <div class="feat-title">⚖ Hourly Tonnage Tracker</div>
+      <button class="feat-close" onclick="closeTonnage()">✕</button>
+    </div>
+    <div class="feat-body">
+      <div class="feat-row">
+        <div class="feat-section">
+          <label>Bord</label>
+          <select id="ton-bord"></select>
+        </div>
+        <div class="feat-section">
+          <label>Shift</label>
+          <select id="ton-shift">
+            <option value="A">Shift A</option>
+            <option value="B">Shift B</option>
+            <option value="C">Shift C</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="feat-section">
+        <label>Hour</label>
+        <select id="ton-hour"></select>
+      </div>
+
+      <div class="feat-row">
+        <div class="feat-section">
+          <label>Tonnage — Actual</label>
+          <input type="number" step="0.1" min="0" id="ton-actual" placeholder="0.0"/>
+        </div>
+        <div class="feat-section">
+          <label>Tonnage — Target</label>
+          <input type="number" step="0.1" min="0" id="ton-target" placeholder="0.0"/>
+        </div>
+      </div>
+
+      <div class="feat-saved-msg" id="ton-saved-msg">✓ Saved — will appear on the dashboard</div>
+      <button class="btn-submit-feat" id="btn-submit-ton" onclick="submitTonnage()">Log Tonnage →</button>
+    </div>
+  </div>
+</div>
+
 <!-- CH4 METHANE IMMEDIATE WITHDRAW MODAL -->
 <div class="ch4-block-ov" id="ch4-block-ov">
   <div class="ch4-block-card">
@@ -3094,7 +3373,7 @@ function launchApp(){
   startSessionWatch();
   updateConnBar();
   updateFailedQueueBar();
-  if(isOnline){ syncOfflineQueue(); syncGasQueue(); syncHandoverQueue(); syncNearMissQueue(); syncSOSQueue(); syncBordQueue(); syncPhaseQueue(); syncShiftNoteQueue(); }
+  if(isOnline){ syncOfflineQueue(); syncGasQueue(); syncHandoverQueue(); syncNearMissQueue(); syncSOSQueue(); syncBordQueue(); syncPhaseQueue(); syncShiftNoteQueue(); syncProdPerfQueue(); syncMachineryQueue(); syncTonnageQueue(); }
   initLapseDisplay();
   // Restore IRT type — use setReentryType so all elements + persist bar update.
   // Restore the captured IRT reason FIRST so setReentryType doesn't re-prompt.
@@ -4535,7 +4814,7 @@ let isOnline = navigator.onLine;
 // item, producing duplicate rows (e.g. a duplicated SOS alert).
 let offlineSyncing = false, nmSyncing = false, sosSyncing = false,
     handoverSyncing = false, gasSyncing = false, bordSyncing = false, phaseSyncing = false,
-    shiftNoteSyncing = false;
+    shiftNoteSyncing = false, prodPerfSyncing = false, machinerySyncing = false, tonnageSyncing = false;
 
 // Race-safe queue drain (shared by every offline queue below). A naive
 // "read once, loop with awaits, overwrite everything at the end" sync silently loses
@@ -4727,7 +5006,7 @@ async function syncOfflineQueue(){
   } finally { offlineSyncing = false; }
 }
 
-window.addEventListener('online', ()=>{ isOnline=true; updateConnBar(); syncOfflineQueue(); syncGasQueue(); syncHandoverQueue(); syncNearMissQueue(); syncSOSQueue(); syncBordQueue(); syncPhaseQueue(); syncShiftNoteQueue(); });
+window.addEventListener('online', ()=>{ isOnline=true; updateConnBar(); syncOfflineQueue(); syncGasQueue(); syncHandoverQueue(); syncNearMissQueue(); syncSOSQueue(); syncBordQueue(); syncPhaseQueue(); syncShiftNoteQueue(); syncProdPerfQueue(); syncMachineryQueue(); syncTonnageQueue(); });
 window.addEventListener('offline',()=>{ isOnline=false; updateConnBar(); });
 
 // ══════════════════════════════════════════
@@ -6327,6 +6606,411 @@ async function syncBordQueue(){
     }
   }catch(e){ console.warn('Bord queue sync (non-fatal):', e); }
   finally { bordSyncing = false; }
+}
+
+
+// ══════════════════════════════════════════
+//  PRODUCTION FEATURES — shared helpers
+//  (Production Shift Performance / Machinery / Hourly Tonnage)
+// ══════════════════════════════════════════
+
+function numOrNull(v){
+  if(v === undefined || v === null || v === '') return null;
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+// Single-select bord dropdown, grouped by section — mirrors the zone-sel/
+// BCT_ZONES structure so the bord list is defined once and reused everywhere.
+function populateFeatBordSelect(selectId, preselect){
+  const sel = document.getElementById(selectId);
+  if(!sel) return;
+  let html = '';
+  Object.entries(BCT_ZONES).forEach(([zoneName, bords]) => {
+    html += `<optgroup label="${zoneName}">`;
+    bords.forEach(b => { html += `<option value="${b.value}">${b.label}</option>`; });
+    html += `</optgroup>`;
+  });
+  sel.innerHTML = html;
+  const target = preselect || currentZone;
+  if(target && sel.querySelector(`option[value="${target}"]`)) sel.value = target;
+}
+
+function populateHourSelect(selectId){
+  const sel = document.getElementById(selectId);
+  if(!sel) return;
+  let html = '';
+  for(let h=0; h<24; h++){
+    const label = String(h).padStart(2,'0') + ':00';
+    html += `<option value="${label}">${label}</option>`;
+  }
+  sel.innerHTML = html;
+  sel.value = String(new Date().getHours()).padStart(2,'0') + ':00';
+}
+
+// Shared submit path for the 3 periodic-log features below — same online/
+// offline/hard-error semantics as every other write path in this app (see
+// submitHandoverAndBord). Never drop a record: queue it if there's any doubt.
+async function submitFeatRecord({ table, payload, queueFn, btnId, btnLabel, savedMsgId, closeFn, resetFn }){
+  const btn = document.getElementById(btnId);
+  if(btn){ btn.disabled = true; btn.textContent = 'Submitting…'; }
+
+  let anyOffline = false, hardError = null;
+
+  if(!isOnline || !db || !navigator.onLine){
+    queueFn(payload); anyOffline = true;
+  } else {
+    try{
+      const { error } = await db.from(table).insert(payload);
+      if(error) throw error;
+    }catch(e){
+      console.error(table + ' submit error:', e);
+      const emsg=(e&&e.message)||''; const ecode=e&&e.code;
+      if(ecode && !/fetch|network|timeout/i.test(emsg)){
+        hardError = 'Could not be saved — the server rejected it (' + ecode + ').\n\nYour entries are kept. Details: ' + emsg;
+      } else {
+        isOnline = false; updateConnBar();
+        queueFn(payload); anyOffline = true;
+      }
+    }
+  }
+
+  if(hardError){
+    if(btn){ btn.disabled = false; btn.textContent = btnLabel; }
+    alert(hardError);
+    return;
+  }
+
+  const savedMsg = document.getElementById(savedMsgId);
+  if(btn){
+    btn.textContent = anyOffline ? '✓ Saved offline — will sync' : '✓ Submitted';
+    btn.style.background = anyOffline ? 'var(--amber, #b8860b)' : 'var(--green)';
+  }
+  if(savedMsg){
+    savedMsg.textContent = anyOffline
+      ? '⚡ Saved offline — will sync when signal returns'
+      : '✓ Saved — will appear on the dashboard';
+    savedMsg.classList.add('show');
+  }
+  setTimeout(() => {
+    if(closeFn) closeFn();
+    if(resetFn) resetFn();
+    if(btn){ btn.disabled = false; btn.textContent = btnLabel; btn.style.background = ''; }
+    if(savedMsg) savedMsg.classList.remove('show');
+  }, 1600);
+}
+
+// ── PRODUCTION SHIFT PERFORMANCE ──
+function openProdPerf(){
+  populateFeatBordSelect('pp-bord');
+  document.getElementById('pp-ov').classList.add('show');
+}
+function closeProdPerf(){
+  document.getElementById('pp-ov').classList.remove('show');
+}
+
+const PRODPERF_QUEUE_KEY = 'valterra_prodperf_queue';
+function getProdPerfQueue(){ try{ return JSON.parse(localStorage.getItem(PRODPERF_QUEUE_KEY)||'[]'); }catch(e){ return []; } }
+function saveProdPerfQueue(q){ try{ localStorage.setItem(PRODPERF_QUEUE_KEY, JSON.stringify(q)); }catch(e){ console.error('Production performance queue save failed:', e); } }
+function queueProdPerf(payload){
+  const q = getProdPerfQueue();
+  q.push({ payload, retries: 0, queued_at: new Date().toISOString() });
+  saveProdPerfQueue(q);
+}
+async function syncProdPerfQueue(){
+  if(!db || !navigator.onLine || prodPerfSyncing) return;
+  const q = getProdPerfQueue();
+  if(!q.length) return;
+  prodPerfSyncing = true;
+  try{
+    const originalSnapshot = q.map(it => ({...it}));
+    const remaining = [];
+    for(const item of q){
+      try{
+        const { error } = await db.from('production_performance').insert(item.payload);
+        if(error) throw error;
+      }catch(e){
+        item.retries = (item.retries||0) + 1;
+        if(item.retries < 5){ remaining.push(item); }
+        else{
+          console.error('Production performance record dropped after 5 retries:', (e&&e.message)||e);
+          try{
+            const fq=JSON.parse(localStorage.getItem('valterra_failed_queue')||'[]');
+            fq.push({...item, type:'production_performance', failed_at:new Date().toISOString(), reason:(e&&e.message)||String(e)});
+            localStorage.setItem('valterra_failed_queue',JSON.stringify(fq));
+            updateFailedQueueBar();
+          }catch(fe){}
+        }
+      }
+    }
+    raceSafeDrain(PRODPERF_QUEUE_KEY, originalSnapshot, remaining);
+  } finally { prodPerfSyncing = false; }
+}
+
+function resetProdPerfForm(){
+  ['pp-drill-exp','pp-drill-act','pp-supp-exp','pp-supp-act','pp-blast-notes'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  ['pp-hoisted','pp-charging'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.checked=false;
+  });
+}
+
+async function submitProdPerf(){
+  const bord = document.getElementById('pp-bord')?.value;
+  if(!bord){ alert('Select a bord before submitting.'); return; }
+
+  const payload = {
+    user_id:                      userData.uid     || null,
+    officer_name:                 userData.name    || null,
+    officer_id:                   userData.id      || null,
+    section:                      userData.section || null,
+    shift_type:                   document.getElementById('pp-shift')?.value || 'A',
+    bord:                         bord,
+    drilled_expected_m2:          numOrNull(document.getElementById('pp-drill-exp')?.value),
+    drilled_actual_m2:            numOrNull(document.getElementById('pp-drill-act')?.value),
+    support_expected_m2:          numOrNull(document.getElementById('pp-supp-exp')?.value),
+    support_actual_m2:            numOrNull(document.getElementById('pp-supp-act')?.value),
+    hoisted:                      !!document.getElementById('pp-hoisted')?.checked,
+    ends_available_for_charging:  !!document.getElementById('pp-charging')?.checked,
+    blast_plan_notes:             document.getElementById('pp-blast-notes')?.value?.trim() || null,
+    session_id:                   sessionId || null,
+  };
+
+  await submitFeatRecord({
+    table: 'production_performance',
+    payload,
+    queueFn: queueProdPerf,
+    btnId: 'btn-submit-pp',
+    btnLabel: 'Submit Production Data →',
+    savedMsgId: 'pp-saved-msg',
+    closeFn: closeProdPerf,
+    resetFn: resetProdPerfForm,
+  });
+}
+
+// ── MACHINERY AVAILABILITY & UTILIZATION ──
+let machSelectedBords = new Set();
+let machStatus = 'running';
+
+function openMachinery(){
+  populateFeatBordSelect('mach-location');
+  renderMachBordList();
+  machSetStatus('running');
+  document.getElementById('mach-ov').classList.add('show');
+}
+function closeMachinery(){
+  document.getElementById('mach-ov').classList.remove('show');
+}
+
+function renderMachBordList(){
+  const container = document.getElementById('mach-bord-list');
+  if(!container) return;
+  let html = '';
+  Object.entries(BCT_ZONES).forEach(([zoneName, bords]) => {
+    html += `<div class="feat-zone-hd">${zoneName}</div>`;
+    bords.forEach(b => {
+      const key = b.value.replace(/\s/g,'_');
+      const checked = machSelectedBords.has(b.value) ? 'checked' : '';
+      html += `
+        <div class="feat-bord-check">
+          <input type="checkbox" id="mach-bord-${key}" ${checked} onchange="machToggleBord('${b.value}')"/>
+          <label for="mach-bord-${key}">${b.label}</label>
+        </div>`;
+    });
+  });
+  container.innerHTML = html;
+}
+function machToggleBord(bordValue){
+  if(machSelectedBords.has(bordValue)) machSelectedBords.delete(bordValue);
+  else machSelectedBords.add(bordValue);
+}
+
+function machSetStatus(status){
+  machStatus = status;
+  document.querySelectorAll('#mach-status-row .status-chip').forEach(chip=>{
+    chip.classList.toggle('sel', chip.dataset.status === status);
+  });
+  const bdRow = document.getElementById('mach-breakdown-row');
+  if(bdRow) bdRow.style.display = (status === 'breakdown') ? 'flex' : 'none';
+}
+
+function machToggleOtherType(){
+  const sel = document.getElementById('mach-type');
+  const wrap = document.getElementById('mach-type-other-wrap');
+  if(wrap) wrap.style.display = (sel && sel.value === 'Other') ? 'block' : 'none';
+}
+
+const MACHINERY_QUEUE_KEY = 'valterra_machinery_queue';
+function getMachineryQueue(){ try{ return JSON.parse(localStorage.getItem(MACHINERY_QUEUE_KEY)||'[]'); }catch(e){ return []; } }
+function saveMachineryQueue(q){ try{ localStorage.setItem(MACHINERY_QUEUE_KEY, JSON.stringify(q)); }catch(e){ console.error('Machinery queue save failed:', e); } }
+function queueMachinery(payload){
+  const q = getMachineryQueue();
+  q.push({ payload, retries: 0, queued_at: new Date().toISOString() });
+  saveMachineryQueue(q);
+}
+async function syncMachineryQueue(){
+  if(!db || !navigator.onLine || machinerySyncing) return;
+  const q = getMachineryQueue();
+  if(!q.length) return;
+  machinerySyncing = true;
+  try{
+    const originalSnapshot = q.map(it => ({...it}));
+    const remaining = [];
+    for(const item of q){
+      try{
+        const { error } = await db.from('machinery_log').insert(item.payload);
+        if(error) throw error;
+      }catch(e){
+        item.retries = (item.retries||0) + 1;
+        if(item.retries < 5){ remaining.push(item); }
+        else{
+          console.error('Machinery record dropped after 5 retries:', (e&&e.message)||e);
+          try{
+            const fq=JSON.parse(localStorage.getItem('valterra_failed_queue')||'[]');
+            fq.push({...item, type:'machinery_log', failed_at:new Date().toISOString(), reason:(e&&e.message)||String(e)});
+            localStorage.setItem('valterra_failed_queue',JSON.stringify(fq));
+            updateFailedQueueBar();
+          }catch(fe){}
+        }
+      }
+    }
+    raceSafeDrain(MACHINERY_QUEUE_KEY, originalSnapshot, remaining);
+  } finally { machinerySyncing = false; }
+}
+
+function resetMachineryForm(){
+  ['mach-number','mach-type-other','mach-startup','mach-bd-start','mach-bd-end','mach-comments'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  const typeSel = document.getElementById('mach-type');
+  if(typeSel) typeSel.value = 'LHD';
+  const otherWrap = document.getElementById('mach-type-other-wrap');
+  if(otherWrap) otherWrap.style.display = 'none';
+  machSelectedBords = new Set();
+  renderMachBordList();
+  machSetStatus('running');
+}
+
+async function submitMachinery(){
+  const typeSel = document.getElementById('mach-type')?.value;
+  const machType = typeSel === 'Other'
+    ? (document.getElementById('mach-type-other')?.value?.trim() || 'Other')
+    : typeSel;
+  const machNumber = document.getElementById('mach-number')?.value?.trim();
+  if(!machType || !machNumber){ alert('Enter the machine type and number before submitting.'); return; }
+  if(machStatus === 'breakdown' && !document.getElementById('mach-bd-start')?.value){
+    alert('Enter a breakdown start time.'); return;
+  }
+
+  const payload = {
+    user_id:          userData.uid     || null,
+    officer_name:     userData.name    || null,
+    officer_id:        userData.id      || null,
+    section:            userData.section || null,
+    shift_type:        document.getElementById('mach-shift')?.value || 'A',
+    machine_type:      machType,
+    machine_number:    machNumber,
+    status:            machStatus,
+    startup_time:      document.getElementById('mach-startup')?.value || null,
+    breakdown_start:   machStatus === 'breakdown' ? (document.getElementById('mach-bd-start')?.value || null) : null,
+    breakdown_end:     machStatus === 'breakdown' ? (document.getElementById('mach-bd-end')?.value || null) : null,
+    assigned_bords:    machSelectedBords.size ? Array.from(machSelectedBords).join(', ') : null,
+    location:          document.getElementById('mach-location')?.value || null,
+    comments:          document.getElementById('mach-comments')?.value?.trim() || null,
+  };
+
+  await submitFeatRecord({
+    table: 'machinery_log',
+    payload,
+    queueFn: queueMachinery,
+    btnId: 'btn-submit-mach',
+    btnLabel: 'Submit Machinery Log →',
+    savedMsgId: 'mach-saved-msg',
+    closeFn: closeMachinery,
+    resetFn: resetMachineryForm,
+  });
+}
+
+// ── HOURLY TONNAGE TRACKER ──
+function openTonnage(){
+  populateFeatBordSelect('ton-bord');
+  populateHourSelect('ton-hour');
+  document.getElementById('ton-ov').classList.add('show');
+}
+function closeTonnage(){
+  document.getElementById('ton-ov').classList.remove('show');
+}
+
+const TONNAGE_QUEUE_KEY = 'valterra_tonnage_queue';
+function getTonnageQueue(){ try{ return JSON.parse(localStorage.getItem(TONNAGE_QUEUE_KEY)||'[]'); }catch(e){ return []; } }
+function saveTonnageQueue(q){ try{ localStorage.setItem(TONNAGE_QUEUE_KEY, JSON.stringify(q)); }catch(e){ console.error('Tonnage queue save failed:', e); } }
+function queueTonnage(payload){
+  const q = getTonnageQueue();
+  q.push({ payload, retries: 0, queued_at: new Date().toISOString() });
+  saveTonnageQueue(q);
+}
+async function syncTonnageQueue(){
+  if(!db || !navigator.onLine || tonnageSyncing) return;
+  const q = getTonnageQueue();
+  if(!q.length) return;
+  tonnageSyncing = true;
+  try{
+    const originalSnapshot = q.map(it => ({...it}));
+    const remaining = [];
+    for(const item of q){
+      try{
+        const { error } = await db.from('hourly_tonnage').insert(item.payload);
+        if(error) throw error;
+      }catch(e){
+        item.retries = (item.retries||0) + 1;
+        if(item.retries < 5){ remaining.push(item); }
+        else{
+          console.error('Hourly tonnage record dropped after 5 retries:', (e&&e.message)||e);
+          try{
+            const fq=JSON.parse(localStorage.getItem('valterra_failed_queue')||'[]');
+            fq.push({...item, type:'hourly_tonnage', failed_at:new Date().toISOString(), reason:(e&&e.message)||String(e)});
+            localStorage.setItem('valterra_failed_queue',JSON.stringify(fq));
+            updateFailedQueueBar();
+          }catch(fe){}
+        }
+      }
+    }
+    raceSafeDrain(TONNAGE_QUEUE_KEY, originalSnapshot, remaining);
+  } finally { tonnageSyncing = false; }
+}
+
+function resetTonnageForm(){
+  ['ton-actual','ton-target'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+}
+
+async function submitTonnage(){
+  const bord = document.getElementById('ton-bord')?.value;
+  const hour = document.getElementById('ton-hour')?.value;
+  if(!bord || !hour){ alert('Select a bord and hour before submitting.'); return; }
+
+  const payload = {
+    user_id:          userData.uid     || null,
+    officer_name:     userData.name    || null,
+    officer_id:        userData.id      || null,
+    section:            userData.section || null,
+    shift_type:        document.getElementById('ton-shift')?.value || 'A',
+    bord:               bord,
+    hour_slot:          hour,
+    tonnage_actual:     numOrNull(document.getElementById('ton-actual')?.value),
+    tonnage_target:     numOrNull(document.getElementById('ton-target')?.value),
+  };
+
+  await submitFeatRecord({
+    table: 'hourly_tonnage',
+    payload,
+    queueFn: queueTonnage,
+    btnId: 'btn-submit-ton',
+    btnLabel: 'Log Tonnage →',
+    savedMsgId: 'ton-saved-msg',
+    closeFn: closeTonnage,
+    resetFn: resetTonnageForm,
+  });
 }
 
 </script>
