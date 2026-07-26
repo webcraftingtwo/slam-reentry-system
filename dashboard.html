@@ -574,6 +574,67 @@
   }
   .bord-zone-hd::after { content:'';flex:1;height:1px;background:var(--border); }
 
+  /* Machinery card grid — same idiom as .bord-grid/.bord-card, keyed to status
+     (running/breakdown/idle) instead of cycle stage. */
+  .mach-zone-hd {
+    font-size:0.72rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;
+    color:var(--teal);margin:1.2rem 0 0.5rem;
+    display:flex;align-items:center;gap:0.5rem;
+  }
+  .mach-zone-hd::after { content:'';flex:1;height:1px;background:var(--border); }
+  .mach-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    gap:0.7rem;
+    margin-top:0.5rem;
+  }
+  .mach-card {
+    background:var(--white);border:1.5px solid var(--border);border-left:4px solid var(--border);
+    border-radius:4px;padding:0.85rem 0.95rem;box-shadow:0 1px 4px rgba(0,0,0,0.04);
+  }
+  .mach-card.running   { border-left-color:var(--green); }
+  .mach-card.breakdown { border-left-color:var(--red); }
+  .mach-card.idle      { border-left-color:var(--amber); }
+  .mach-card-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem; }
+  .mach-name { font-size:0.88rem;font-weight:800;color:var(--text); }
+  .mach-status-badge {
+    font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+    padding:0.18rem 0.5rem;border-radius:2px;
+  }
+  .mach-status-badge.running   { background:rgba(14,124,63,0.12);color:var(--green); }
+  .mach-status-badge.breakdown { background:rgba(192,57,43,0.12);color:var(--red); }
+  .mach-status-badge.idle      { background:rgba(243,156,18,0.15);color:var(--amber-ink); }
+  .mach-meta { font-size:0.72rem;color:var(--muted);line-height:1.5; }
+  .mach-notes { font-size:0.76rem;color:var(--mid);margin-top:0.3rem;line-height:1.5;font-style:italic; }
+
+  /* Bar/Gap view toggle — used on the Production Performance chart */
+  .chip-toggle{ display:inline-flex;border:1.5px solid var(--border);border-radius:20px;overflow:hidden; }
+  .chip-toggle-opt{
+    padding:0.4rem 0.75rem;font-size:0.74rem;font-weight:700;color:var(--muted);cursor:pointer;
+    text-transform:uppercase;letter-spacing:0.05em;
+  }
+  .chip-toggle-opt.active{ background:var(--teal);color:#fff; }
+
+  /* Production records table columns: bord / shift / drilled / support / tonnage / ends / notes / officer / date */
+  .prod-grid{ grid-template-columns:0.8fr 0.9fr 1.1fr 1.1fr 0.9fr 1.3fr 1.4fr 1fr 1fr; }
+
+  /* Hourly tonnage heatmap — plain HTML table, no chart plugin. Sequential
+     single-hue ramp built from the app's own teal tokens; the numeric value
+     is always in the cell (never color-alone). */
+  .heatmap-table{ border-collapse:collapse;font-size:0.76rem;min-width:100%; }
+  .heatmap-table th, .heatmap-table td{ padding:0.4rem 0.55rem;text-align:center;border:1px solid var(--white); }
+  .heatmap-table thead th{
+    background:var(--offwhite);color:var(--muted);font-weight:700;font-size:0.68rem;
+    text-transform:uppercase;letter-spacing:0.05em;position:sticky;top:0;
+  }
+  .heatmap-bord-hd{
+    text-align:left;font-weight:700;color:var(--teal);cursor:pointer;white-space:nowrap;
+    background:var(--white);position:sticky;left:0;
+  }
+  .heatmap-bord-hd:hover{ text-decoration:underline; }
+  .heatmap-cell{ font-variant-numeric:tabular-nums;font-weight:600;color:var(--text); }
+  .heatmap-cell.empty{ color:var(--border);font-weight:400; }
+
   /* ══════ QUALITY FLOOR — matches the field app ══════ */
   /* Tap targets: supervisors use phones underground too */
   .dnav,.preset-btn,.btn-filter,.btn-export,.btn-signout,.btn-approve,
@@ -693,6 +754,15 @@
     </div>
     <div class="dnav" id="dnav-bord" onclick="switchPanel('bord')">
       ⛏ Bord Tracker <span class="dnav-count" id="cnt-bord" style="background:var(--teal);">0</span>
+    </div>
+    <div class="dnav" id="dnav-production" onclick="switchPanel('production')">
+      📈 Production <span class="dnav-count" id="cnt-production" style="background:var(--teal);">0</span>
+    </div>
+    <div class="dnav" id="dnav-machinery" onclick="switchPanel('machinery')">
+      🚜 Machinery <span class="dnav-count" id="cnt-machinery" style="background:var(--red);">0</span>
+    </div>
+    <div class="dnav" id="dnav-hourly" onclick="switchPanel('hourly')">
+      ⚖ Hourly Tonnage <span class="dnav-count" id="cnt-hourly" style="background:var(--teal);">0</span>
     </div>
     <div class="dnav" id="dnav-accounts" onclick="switchPanel('accounts')">
       👤 Recent Accounts <span class="dnav-count" id="cnt-accounts">0</span>
@@ -937,6 +1007,209 @@
 
       <div id="bord-table">
         <div class="loading">Loading bord status...</div>
+      </div>
+    </div>
+
+    <!-- PRODUCTION PERFORMANCE PANEL -->
+    <div class="dash-panel" id="panel-production">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
+        <div>
+          <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Production Shift Performance</div>
+          <div style="font-size:0.78rem;color:var(--muted);">Drilled/support metres vs plan, tonnage hoisted, charging/blasting status per bord.</div>
+        </div>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+          <select class="f-select" id="f-prod-section" onchange="loadProduction()" style="max-width:160px;">
+            <option value="">All Sections</option>
+            <option value="14 South">14 South — Challengers</option>
+            <option value="16 North">16 North — Pioneers</option>
+          </select>
+          <select class="f-select" id="f-prod-period" onchange="loadProduction()" style="max-width:130px;">
+            <option value="">All Shifts</option>
+            <option value="day">☀ Day Shift</option>
+            <option value="night">🌙 Night Shift</option>
+          </select>
+          <input type="date" class="f-input" id="f-prod-date" onchange="loadProduction()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+          <button class="btn-filter" onclick="clearDateFilter('f-prod-date', loadProduction)">Clear date</button>
+          <button class="btn-filter" onclick="loadProduction()">↺ Refresh</button>
+          <button class="btn-export" onclick="exportProductionCSV()">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Tonnage Hoisted</div>
+          <div class="stat-val" id="prod-stat-tonnage">—</div>
+          <div class="stat-sub">Selected range</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Drilled vs Plan</div>
+          <div class="stat-val" id="prod-stat-drilled">—</div>
+          <div class="stat-sub">Actual / expected metres</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Support vs Plan</div>
+          <div class="stat-val" id="prod-stat-support">—</div>
+          <div class="stat-sub">Actual / expected metres</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Bords Needing Charging/Blasting</div>
+          <div class="stat-val amber" id="prod-stat-ends">—</div>
+          <div class="stat-sub">Latest report per bord</div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <div>
+            <div class="chart-title">Expected vs Actual, per Bord</div>
+            <div class="chart-sub">Toggle between paired bars and a gap (dumbbell) view.</div>
+          </div>
+          <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+            <select class="f-select" id="prod-metric" onchange="renderProductionChart()" style="max-width:130px;">
+              <option value="drilled">Drilled (m)</option>
+              <option value="support">Support (m)</option>
+            </select>
+            <div class="chip-toggle" id="prod-view-toggle">
+              <span class="chip-toggle-opt active" data-view="bar" onclick="setProdView('bar')">Bar</span>
+              <span class="chip-toggle-opt" data-view="gap" onclick="setProdView('gap')">Gap View</span>
+            </div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="prod-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="slbl" style="margin-top:1.2rem;">Production Records</div>
+      <div class="tbl-wrap" id="prod-table">
+        <div class="loading">Loading production data...</div>
+      </div>
+    </div>
+
+    <!-- MACHINERY PANEL -->
+    <div class="dash-panel" id="panel-machinery">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
+        <div>
+          <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Machinery Availability &amp; Utilization</div>
+          <div style="font-size:0.78rem;color:var(--muted);">Live machine status, startup/breakdown log, bord assignment.</div>
+        </div>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+          <select class="f-select" id="f-mach-section" onchange="loadMachinery()" style="max-width:160px;">
+            <option value="">All Sections</option>
+            <option value="14 South">14 South — Challengers</option>
+            <option value="16 North">16 North — Pioneers</option>
+          </select>
+          <select class="f-select" id="f-mach-status" onchange="loadMachinery()" style="max-width:140px;">
+            <option value="">All Statuses</option>
+            <option value="running">Running</option>
+            <option value="breakdown">Breakdown</option>
+            <option value="idle">Idle</option>
+          </select>
+          <input type="date" class="f-input" id="f-mach-date" onchange="loadMachinery()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+          <button class="btn-filter" onclick="clearDateFilter('f-mach-date', loadMachinery)">Clear date</button>
+          <button class="btn-filter" onclick="loadMachinery()">↺ Refresh</button>
+          <button class="btn-export" onclick="exportMachineryCSV()">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Currently Running</div>
+          <div class="stat-val green" id="mach-stat-running">—</div>
+          <div class="stat-sub">Latest status per machine</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Currently Breakdown</div>
+          <div class="stat-val red" id="mach-stat-breakdown">—</div>
+          <div class="stat-sub">Needs attention</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Currently Idle</div>
+          <div class="stat-val amber" id="mach-stat-idle">—</div>
+          <div class="stat-sub">Latest status per machine</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Downtime</div>
+          <div class="stat-val" id="mach-stat-downtime">—</div>
+          <div class="stat-sub">Selected range</div>
+        </div>
+      </div>
+
+      <div id="mach-board">
+        <div class="loading">Loading machinery status...</div>
+      </div>
+
+      <div class="chart-card" style="margin-top:1.2rem;">
+        <div class="chart-head">
+          <div>
+            <div class="chart-title">Downtime by Machine</div>
+            <div class="chart-sub">Total breakdown minutes, selected range (open breakdowns not yet counted).</div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="mach-downtime-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOURLY TONNAGE PANEL -->
+    <div class="dash-panel" id="panel-hourly">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
+        <div>
+          <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Hourly Tonnage Tracker</div>
+          <div style="font-size:0.78rem;color:var(--muted);">Tonnage hoisted per bord, per hour.</div>
+        </div>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+          <select class="f-select" id="f-ton-section" onchange="loadHourly()" style="max-width:160px;">
+            <option value="">All Sections</option>
+            <option value="14 South">14 South — Challengers</option>
+            <option value="16 North">16 North — Pioneers</option>
+          </select>
+          <select class="f-select" id="f-ton-period" onchange="loadHourly()" style="max-width:130px;">
+            <option value="">All Shifts</option>
+            <option value="day">☀ Day Shift</option>
+            <option value="night">🌙 Night Shift</option>
+          </select>
+          <input type="date" class="f-input" id="f-ton-date" onchange="loadHourly()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+          <button class="btn-filter" onclick="clearDateFilter('f-ton-date', loadHourly)">Clear date</button>
+          <button class="btn-filter" onclick="loadHourly()">↺ Refresh</button>
+          <button class="btn-export" onclick="exportHourlyCSV()">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Tonnage</div>
+          <div class="stat-val" id="ton-stat-total">—</div>
+          <div class="stat-sub">Selected range</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Tonnage / Hour</div>
+          <div class="stat-val" id="ton-stat-avg">—</div>
+          <div class="stat-sub">Across reporting hours</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Peak Hour</div>
+          <div class="stat-val" id="ton-stat-peak" style="font-size:1.05rem;">—</div>
+          <div class="stat-sub">Bord · hour</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Bords Reporting</div>
+          <div class="stat-val" id="ton-stat-bords">—</div>
+          <div class="stat-sub">Distinct bords logged</div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <div>
+            <div class="chart-title">Tonnage Heatmap</div>
+            <div class="chart-sub">Click a bord to see its hourly detail.</div>
+          </div>
+        </div>
+        <div id="ton-heatmap-wrap" style="overflow-x:auto;">
+          <div class="loading">Loading hourly tonnage...</div>
+        </div>
       </div>
     </div>
 
@@ -1218,7 +1491,8 @@ async function verifyAndLaunch(user){
   }
   if(sectionScope){
     // Lock every section filter to the user's own section.
-    ['f-section','f-nm-section','f-ho-section','f-bord-section','f-sn-section','f-acc-section','analytics-section']
+    ['f-section','f-nm-section','f-ho-section','f-bord-section','f-sn-section','f-acc-section','analytics-section',
+     'f-prod-section','f-mach-section','f-ton-section']
       .forEach(id => {
         const el = document.getElementById(id);
         if(!el) return;
@@ -2110,17 +2384,21 @@ function closeDetail(){
 //  PANEL SWITCHING
 // ══════════════════════════════════════════
 function switchPanel(name){
-  ['overview','submissions','nearmiss','sos','live','ground','analytics','handovers','notes','bord'].forEach(p => {
+  ['overview','submissions','nearmiss','sos','live','ground','analytics','handovers','notes','bord',
+   'production','machinery','hourly'].forEach(p => {
     document.getElementById('panel-'+p)?.classList.toggle('active', p===name);
     document.getElementById('dnav-'+p)?.classList.toggle('active', p===name);
   });
-  if(name === 'live')      loadLiveTracking();
-  if(name === 'ground')    loadGroundAlerts();
-  if(name === 'analytics') loadAnalytics();
-  if(name === 'handovers') loadHandovers();
-  if(name === 'notes')     loadShiftNotes();
-  if(name === 'bord')      loadBordTracker();
-  if(name === 'accounts')  loadRecentAccounts();
+  if(name === 'live')       loadLiveTracking();
+  if(name === 'ground')     loadGroundAlerts();
+  if(name === 'analytics')  loadAnalytics();
+  if(name === 'handovers')  loadHandovers();
+  if(name === 'notes')      loadShiftNotes();
+  if(name === 'bord')       loadBordTracker();
+  if(name === 'accounts')   loadRecentAccounts();
+  if(name === 'production') loadProduction();
+  if(name === 'machinery')  loadMachinery();
+  if(name === 'hourly')     loadHourly();
 }
 
 // ── Date filtering helpers ──────────────────────────────────────────────
@@ -3222,6 +3500,537 @@ function exportBordCSV(){
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href=url; a.download='valterra_bord_tracker.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════
+//  PRODUCTION SHIFT PERFORMANCE
+// ══════════════════════════════════════════
+let allProductionRows = [];
+let prodChart = null;
+let prodView = 'bar'; // 'bar' | 'gap'
+
+async function loadProduction(){
+  const tableEl = document.getElementById('prod-table');
+  tableEl.innerHTML = '<div class="loading">Loading production data...</div>';
+
+  const sectionFilter = document.getElementById('f-prod-section')?.value || '';
+  const periodFilter   = document.getElementById('f-prod-period')?.value  || '';
+  const range = dayRange(document.getElementById('f-prod-date')?.value || '');
+
+  try{
+    let query = scoped(db.from('production_performance').select('*'))
+      .order('created_at', { ascending:false })
+      .limit(500);
+
+    if(sectionFilter) query = query.eq('section', sectionFilter);
+    if(periodFilter)  query = query.eq('shift_period', periodFilter);
+    if(range){
+      query = query.gte('created_at', range.startIso).lt('created_at', range.endIso);
+    } else {
+      const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
+      query = query.gte('created_at', cutoff.toISOString());
+    }
+
+    const { data, error } = await query;
+    if(error) throw error;
+    allProductionRows = scrub(data || []);
+
+    const cntEl = document.getElementById('cnt-production');
+    if(cntEl) cntEl.textContent = allProductionRows.length;
+
+    renderProductionStats(allProductionRows);
+    renderProductionChart();
+    tableEl.innerHTML = allProductionRows.length
+      ? `<div class="tbl-wrap">${prodTableHtml(allProductionRows)}</div>`
+      : '<div class="empty"><div class="empty-icon">📈</div>No production records for this filter.</div>';
+  } catch(e){
+    console.error('Production load error:', e);
+    tableEl.innerHTML = '<div class="empty">⚠ Failed to load production data: ' + e.message + '</div>';
+  }
+}
+
+function renderProductionStats(rows){
+  const tonnage = rows.reduce((s,r) => s + (r.tonnage_hoisted||0), 0);
+  document.getElementById('prod-stat-tonnage').textContent = tonnage.toLocaleString();
+
+  const sumRatio = (expKey, actKey) => {
+    const exp = rows.reduce((s,r) => s + (parseFloat(r[expKey])||0), 0);
+    const act = rows.reduce((s,r) => s + (parseFloat(r[actKey])||0), 0);
+    return exp > 0 ? Math.round((act/exp)*100) : null;
+  };
+  const drilledPct = sumRatio('drilled_expected_m','drilled_actual_m');
+  const supportPct = sumRatio('support_expected_m','support_actual_m');
+  document.getElementById('prod-stat-drilled').textContent = drilledPct===null ? '—' : drilledPct + '%';
+  document.getElementById('prod-stat-support').textContent = supportPct===null ? '—' : supportPct + '%';
+
+  // Latest report per bord that still has an unresolved ends-available list.
+  const latestPerBord = {};
+  rows.forEach(r => {
+    if(!latestPerBord[r.bord] || r.created_at > latestPerBord[r.bord].created_at) latestPerBord[r.bord] = r;
+  });
+  const endsCount = Object.values(latestPerBord).filter(r => r.ends_available_bords).length;
+  document.getElementById('prod-stat-ends').textContent = endsCount;
+}
+
+function setProdView(view){
+  prodView = view;
+  document.querySelectorAll('#prod-view-toggle .chip-toggle-opt').forEach(el=>{
+    el.classList.toggle('active', el.dataset.view === view);
+  });
+  renderProductionChart();
+}
+
+function renderProductionChart(){
+  const canvas = document.getElementById('prod-chart');
+  if(!canvas) return;
+  if(prodChart){ prodChart.destroy(); prodChart = null; }
+
+  const metric = document.getElementById('prod-metric')?.value || 'drilled';
+  const expKey = metric==='drilled' ? 'drilled_expected_m' : 'support_expected_m';
+  const actKey = metric==='drilled' ? 'drilled_actual_m'   : 'support_actual_m';
+
+  // One bar/dumbbell per bord, from that bord's most recent record.
+  const latestPerBord = {};
+  allProductionRows.forEach(r => {
+    if(!latestPerBord[r.bord] || r.created_at > latestPerBord[r.bord].created_at) latestPerBord[r.bord] = r;
+  });
+  const bords = Object.keys(latestPerBord).sort();
+  const ctx = canvas.getContext('2d');
+  if(!bords.length){ ctx.clearRect(0,0,canvas.width,canvas.height); return; }
+
+  const expected = bords.map(b => parseFloat(latestPerBord[b][expKey]) || 0);
+  const actual   = bords.map(b => parseFloat(latestPerBord[b][actKey])   || 0);
+
+  if(prodView === 'bar'){
+    prodChart = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels: bords,
+        datasets:[
+          { label:'Expected', data:expected, backgroundColor:'rgba(115,146,155,0.55)', borderRadius:2 },
+          { label:'Actual',   data:actual,   backgroundColor:'rgba(0,113,121,0.75)',  borderRadius:2 },
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ labels:{ font:{family:'Montserrat',size:10}, color:'#4A5550' } } },
+        scales:{
+          x:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{display:false} },
+          y:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'metres',font:{family:'Montserrat',size:9}} },
+        }
+      }
+    });
+  } else {
+    // Gap view — a thin, rounded-end floating bar per bord spanning
+    // expected→actual (Chart.js's native [min,max] floating-bar support, no
+    // plugin). Reads the gap directly as bar length; colour shows whether
+    // actual met or missed the plan.
+    const data   = bords.map((b,i) => [expected[i], actual[i]]);
+    const colors = bords.map((b,i) => actual[i] >= expected[i] ? 'rgba(14,124,63,0.75)' : 'rgba(243,156,18,0.75)');
+    prodChart = new Chart(ctx, {
+      type:'bar',
+      data:{ labels: bords, datasets:[{ label:'Expected → Actual', data, backgroundColor:colors, barThickness:14, borderRadius:7 }] },
+      options:{
+        indexAxis:'y',
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{ display:false },
+          tooltip:{ callbacks:{ label:(c) => `Expected ${expected[c.dataIndex]} m → Actual ${actual[c.dataIndex]} m` } },
+        },
+        scales:{
+          x:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'metres',font:{family:'Montserrat',size:9}} },
+          y:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{display:false} },
+        }
+      }
+    });
+  }
+}
+
+function prodTableHtml(rows){
+  const head = `<div class="tbl-head prod-grid">
+    <div class="th">Bord</div>
+    <div class="th">Shift</div>
+    <div class="th">Drilled Act/Exp (m)</div>
+    <div class="th">Support Act/Exp (m)</div>
+    <div class="th">Tonnage</div>
+    <div class="th">Ends Available</div>
+    <div class="th">Blast Notes</div>
+    <div class="th">Officer</div>
+    <div class="th">Date</div>
+  </div>`;
+
+  const body = rows.map(r => {
+    const endsLabel = r.shift_period === 'night' ? 'Blasting' : 'Charging';
+    return `
+    <div class="tbl-row prod-grid">
+      <div class="td bold">${r.bord||'—'}</div>
+      <div class="td">${r.shift_period==='night' ? '🌙 Night' : '☀ Day'}</div>
+      <div class="td">${r.drilled_actual_m ?? '—'} / ${r.drilled_expected_m ?? '—'}</div>
+      <div class="td">${r.support_actual_m ?? '—'} / ${r.support_expected_m ?? '—'}</div>
+      <div class="td">${r.tonnage_hoisted ?? '—'}</div>
+      <div class="td">${r.ends_available_bords ? (endsLabel + ': ' + r.ends_available_bords) : '—'}</div>
+      <div class="td" title="${r.blast_plan_notes||''}">${r.blast_plan_notes||'—'}</div>
+      <div class="td">${r.officer_name||'—'}</div>
+      <div class="td">${fmtDate(r.created_at)}</div>
+    </div>`;
+  }).join('');
+
+  return head + body;
+}
+
+function exportProductionCSV(){
+  const rows = [
+    ['Bord','Shift','Section','Drilled Expected (m)','Drilled Actual (m)','Support Expected (m)','Support Actual (m)','Tonnage Hoisted','Ends Available','Blast Plan Notes','Officer','Badge','Date'],
+    ...allProductionRows.map(r => [
+      r.bord, r.shift_period||'', r.section||'',
+      r.drilled_expected_m??'', r.drilled_actual_m??'',
+      r.support_expected_m??'', r.support_actual_m??'',
+      r.tonnage_hoisted??'',
+      (r.ends_available_bords||'').replace(/,/g,';'),
+      (r.blast_plan_notes||'').replace(/,/g,' '),
+      r.officer_name||'', r.officer_id||'',
+      fmtDate(r.created_at)
+    ])
+  ];
+  const csv  = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download='valterra_production_performance.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════
+//  MACHINERY AVAILABILITY & UTILIZATION
+// ══════════════════════════════════════════
+let allMachineryRows = [];
+let machDowntimeChart = null;
+const MACH_STATUS_LABELS = { running:'🟢 Running', breakdown:'🔴 Breakdown', idle:'🟡 Idle' };
+
+function hhmmToMinutes(t){
+  if(!t) return null;
+  const m = /^(\d{1,2}):(\d{2})$/.exec(String(t).trim());
+  if(!m) return null;
+  return parseInt(m[1],10)*60 + parseInt(m[2],10);
+}
+// Minutes between breakdown_start/breakdown_end (both 'HH:MM' text), handling
+// a breakdown that spans midnight. Returns 0 if either end is missing —
+// an open (unresolved) breakdown isn't counted here, it shows on the board.
+function breakdownMinutes(r){
+  const s = hhmmToMinutes(r.breakdown_start);
+  const e = hhmmToMinutes(r.breakdown_end);
+  if(s===null || e===null) return 0;
+  let diff = e - s;
+  if(diff < 0) diff += 24*60;
+  return diff;
+}
+
+async function loadMachinery(){
+  const boardEl = document.getElementById('mach-board');
+  boardEl.innerHTML = '<div class="loading">Loading machinery status...</div>';
+
+  const sectionFilter = document.getElementById('f-mach-section')?.value || '';
+  const statusFilter  = document.getElementById('f-mach-status')?.value  || '';
+  const range = dayRange(document.getElementById('f-mach-date')?.value || '');
+
+  try{
+    let query = scoped(db.from('machinery_log').select('*'))
+      .order('created_at', { ascending:false })
+      .limit(500);
+
+    if(sectionFilter) query = query.eq('section', sectionFilter);
+    if(range){
+      query = query.gte('created_at', range.startIso).lt('created_at', range.endIso);
+    } else {
+      const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
+      query = query.gte('created_at', cutoff.toISOString());
+    }
+
+    const { data, error } = await query;
+    if(error) throw error;
+    allMachineryRows = scrub(data || []);
+
+    // Dedupe to the latest row per machine for the live board + status KPIs.
+    const latestPerMachine = {};
+    allMachineryRows.forEach(r => {
+      const key = (r.machine_type||'') + ' ' + (r.machine_number||'');
+      if(!latestPerMachine[key] || r.created_at > latestPerMachine[key].created_at) latestPerMachine[key] = r;
+    });
+    const latestList = Object.values(latestPerMachine);
+    const machines = statusFilter ? latestList.filter(m => m.status === statusFilter) : latestList;
+
+    // Breakdown badge always reflects the true current count, independent of
+    // the local status filter — same idiom as the live/ground alert badges.
+    const breakdownCount = latestList.filter(m => m.status === 'breakdown').length;
+    const cntEl = document.getElementById('cnt-machinery');
+    if(cntEl) cntEl.textContent = breakdownCount;
+
+    document.getElementById('mach-stat-running').textContent   = latestList.filter(m=>m.status==='running').length;
+    document.getElementById('mach-stat-breakdown').textContent = breakdownCount;
+    document.getElementById('mach-stat-idle').textContent      = latestList.filter(m=>m.status==='idle').length;
+
+    const totalDowntime = allMachineryRows.reduce((s,r) => s + breakdownMinutes(r), 0);
+    document.getElementById('mach-stat-downtime').textContent = totalDowntime >= 60
+      ? (totalDowntime/60).toFixed(1) + 'h' : totalDowntime + 'm';
+
+    boardEl.innerHTML = machines.length
+      ? machBoardHtml(machines)
+      : '<div class="empty"><div class="empty-icon">🚜</div>No machinery logged for this filter.</div>';
+    renderDowntimeChart(allMachineryRows);
+  } catch(e){
+    console.error('Machinery load error:', e);
+    boardEl.innerHTML = '<div class="empty">⚠ Failed to load machinery data: ' + e.message + '</div>';
+  }
+}
+
+function machBoardHtml(machines){
+  const groups = {};
+  machines.forEach(r => {
+    const sec  = r.section || '';
+    const zone = sec ? sec + ' — ' + crewName(sec) : 'Other';
+    if(!groups[zone]) groups[zone] = [];
+    groups[zone].push(r);
+  });
+  Object.values(groups).forEach(g => g.sort((a,b) =>
+    ((a.machine_type||'')+(a.machine_number||'')).localeCompare((b.machine_type||'')+(b.machine_number||''))));
+
+  let html = '';
+  Object.entries(groups).forEach(([zoneName, rows]) => {
+    html += `<div class="mach-zone-hd">${zoneName}</div><div class="mach-grid">`;
+    rows.forEach(r => {
+      const status = r.status || 'idle';
+      const label  = MACH_STATUS_LABELS[status] || status;
+      html += `
+        <div class="mach-card ${status}">
+          <div class="mach-card-head">
+            <div class="mach-name">${r.machine_type||'—'} ${r.machine_number||''}</div>
+            <span class="mach-status-badge ${status}">${label}</span>
+          </div>
+          <div class="mach-meta">Startup: ${r.startup_time||'—'}${status==='breakdown' ? (' · Breakdown: '+(r.breakdown_start||'—')+'–'+(r.breakdown_end||'ongoing')) : ''}</div>
+          <div class="mach-meta">Assigned: ${r.assigned_bords||'—'} · Location: ${r.location||'—'}</div>
+          <div class="mach-meta" style="margin-top:0.15rem;">By: ${r.officer_name||'—'} · ${r.section||'—'} · ${fmtDate(r.created_at)}</div>
+          ${r.comments ? `<div class="mach-notes">${r.comments.substring(0,80)}${r.comments.length>80?'…':''}</div>` : ''}
+        </div>`;
+    });
+    html += '</div>';
+  });
+  return html;
+}
+
+function renderDowntimeChart(rows){
+  const canvas = document.getElementById('mach-downtime-chart');
+  if(!canvas) return;
+  if(machDowntimeChart){ machDowntimeChart.destroy(); machDowntimeChart = null; }
+
+  const totals = {};
+  rows.forEach(r => {
+    const mins = breakdownMinutes(r);
+    if(mins <= 0) return;
+    const key = (r.machine_type||'') + ' ' + (r.machine_number||'');
+    totals[key] = (totals[key]||0) + mins;
+  });
+  const machines = Object.keys(totals).sort((a,b) => totals[b]-totals[a]);
+  const ctx = canvas.getContext('2d');
+  if(!machines.length){ ctx.clearRect(0,0,canvas.width,canvas.height); return; }
+
+  machDowntimeChart = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: machines,
+      datasets:[{ label:'Downtime (minutes)', data:machines.map(m=>totals[m]), backgroundColor:'rgba(192,57,43,0.7)', borderRadius:2 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{display:false} },
+        y:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'minutes',font:{family:'Montserrat',size:9}} },
+      }
+    }
+  });
+}
+
+function exportMachineryCSV(){
+  const rows = [
+    ['Machine Type','Machine Number','Status','Section','Startup Time','Breakdown Start','Breakdown End','Assigned Bords','Location','Comments','Officer','Badge','Date'],
+    ...allMachineryRows.map(r => [
+      r.machine_type||'', r.machine_number||'', r.status||'', r.section||'',
+      r.startup_time||'', r.breakdown_start||'', r.breakdown_end||'',
+      (r.assigned_bords||'').replace(/,/g,';'), r.location||'',
+      (r.comments||'').replace(/,/g,' '),
+      r.officer_name||'', r.officer_id||'',
+      fmtDate(r.created_at)
+    ])
+  ];
+  const csv  = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download='valterra_machinery_log.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════
+//  HOURLY TONNAGE TRACKER
+// ══════════════════════════════════════════
+let allHourlyRows = [];
+let tonDetailChart = null;
+
+// Sequential ramp built from the app's own teal tokens (light→dark) rather
+// than an invented palette — the "safe default" per the dataviz method.
+const TON_RAMP = ['#F5FAFA', '#E3F0F1', '#2E8C93', '#007179', '#00494F'];
+function tonColorFor(value, max){
+  if(!max || value <= 0) return null;
+  const idx = Math.min(TON_RAMP.length - 1, Math.ceil((value / max) * (TON_RAMP.length - 1)));
+  return TON_RAMP[idx];
+}
+
+async function loadHourly(){
+  const wrapEl = document.getElementById('ton-heatmap-wrap');
+  wrapEl.innerHTML = '<div class="loading">Loading hourly tonnage...</div>';
+
+  const sectionFilter = document.getElementById('f-ton-section')?.value || '';
+  const periodFilter  = document.getElementById('f-ton-period')?.value  || '';
+  const range = dayRange(document.getElementById('f-ton-date')?.value || '');
+
+  try{
+    let query = scoped(db.from('hourly_tonnage').select('*'))
+      .order('created_at', { ascending:false })
+      .limit(1000);
+
+    if(sectionFilter) query = query.eq('section', sectionFilter);
+    if(periodFilter)  query = query.eq('shift_period', periodFilter);
+    if(range){
+      query = query.gte('created_at', range.startIso).lt('created_at', range.endIso);
+    } else {
+      const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 7);
+      query = query.gte('created_at', cutoff.toISOString());
+    }
+
+    const { data, error } = await query;
+    if(error) throw error;
+    allHourlyRows = scrub(data || []);
+
+    const cntEl = document.getElementById('cnt-hourly');
+    if(cntEl) cntEl.textContent = allHourlyRows.length;
+
+    renderHourlyStats(allHourlyRows);
+    wrapEl.innerHTML = allHourlyRows.length
+      ? hourlyHeatmapHtml(allHourlyRows)
+      : '<div class="empty"><div class="empty-icon">⚖</div>No hourly tonnage logged for this filter.</div>';
+  } catch(e){
+    console.error('Hourly tonnage load error:', e);
+    wrapEl.innerHTML = '<div class="empty">⚠ Failed to load hourly tonnage: ' + e.message + '</div>';
+  }
+}
+
+function renderHourlyStats(rows){
+  const total = rows.reduce((s,r) => s + (parseFloat(r.tonnage_actual)||0), 0);
+  document.getElementById('ton-stat-total').textContent = total.toLocaleString(undefined,{maximumFractionDigits:1});
+
+  const hoursWithData = new Set(rows.map(r => r.hour_slot)).size;
+  document.getElementById('ton-stat-avg').textContent = hoursWithData ? (total / hoursWithData).toFixed(1) : '—';
+
+  let peak = null;
+  rows.forEach(r => {
+    const v = parseFloat(r.tonnage_actual) || 0;
+    if(!peak || v > peak.v) peak = { v, bord:r.bord, hour:r.hour_slot };
+  });
+  document.getElementById('ton-stat-peak').textContent = peak ? `${peak.bord} · ${peak.hour}` : '—';
+
+  document.getElementById('ton-stat-bords').textContent = new Set(rows.map(r => r.bord)).size;
+}
+
+function hourlyHeatmapHtml(rows){
+  // Sum tonnage per (bord, hour) in case of more than one entry for the slot.
+  const cellMap = {};
+  const hoursSeen = new Set();
+  rows.forEach(r => {
+    if(!cellMap[r.bord]) cellMap[r.bord] = {};
+    cellMap[r.bord][r.hour_slot] = (cellMap[r.bord][r.hour_slot] || 0) + (parseFloat(r.tonnage_actual) || 0);
+    hoursSeen.add(r.hour_slot);
+  });
+  const bords = Object.keys(cellMap).sort();
+  const hours = Array.from(hoursSeen).sort();
+  const max = Math.max(0, ...bords.flatMap(b => Object.values(cellMap[b])));
+
+  let html = '<table class="heatmap-table"><thead><tr><th></th>';
+  hours.forEach(h => { html += `<th>${h}</th>`; });
+  html += '</tr></thead><tbody>';
+  bords.forEach(b => {
+    html += `<tr><th class="heatmap-bord-hd" onclick="openTonBordDetail('${b}')">${b}</th>`;
+    hours.forEach(h => {
+      const v = cellMap[b][h];
+      if(v === undefined){
+        html += '<td class="heatmap-cell empty">—</td>';
+      } else {
+        const bg = tonColorFor(v, max);
+        const textColor = (bg === TON_RAMP[3] || bg === TON_RAMP[4]) ? '#fff' : 'var(--text)';
+        html += `<td class="heatmap-cell" style="background:${bg};color:${textColor};">${v.toFixed(1)}</td>`;
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+function openTonBordDetail(bordValue){
+  const history = allHourlyRows
+    .filter(r => r.bord === bordValue)
+    .sort((a,b) => (a.hour_slot||'').localeCompare(b.hour_slot||''));
+  if(!history.length){ closeDetail(); return; }
+
+  document.getElementById('detail-title').textContent = 'Hourly Tonnage — ' + bordValue;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="chart-wrap" style="height:200px;">
+      <canvas id="ton-detail-chart"></canvas>
+    </div>
+    <div class="slbl" style="margin-top:1rem;">Logged Hours</div>
+    <div style="display:flex;flex-direction:column;gap:0.35rem;">
+      ${history.map(r => `
+        <div style="background:var(--offwhite);border:1px solid var(--border);border-radius:3px;padding:0.5rem 0.75rem;font-size:0.78rem;display:flex;justify-content:space-between;">
+          <span>${r.hour_slot} · ${r.shift_period==='night'?'🌙':'☀'} · ${r.officer_name||'—'}</span>
+          <span style="font-weight:700;">${r.tonnage_actual ?? '—'} t</span>
+        </div>`).join('')}
+    </div>
+  `;
+  document.getElementById('detail-ov').classList.add('show');
+
+  if(tonDetailChart){ tonDetailChart.destroy(); tonDetailChart = null; }
+  const ctx = document.getElementById('ton-detail-chart').getContext('2d');
+  tonDetailChart = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: history.map(r => r.hour_slot),
+      datasets:[{ label:'Tonnage', data: history.map(r => parseFloat(r.tonnage_actual)||0), backgroundColor:'rgba(0,113,121,0.75)', borderRadius:2 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{display:false} },
+        y:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'tonnes',font:{family:'Montserrat',size:9}} },
+      }
+    }
+  });
+}
+
+function exportHourlyCSV(){
+  const rows = [
+    ['Bord','Hour','Shift','Section','Tonnage Actual','Officer','Badge','Date'],
+    ...allHourlyRows.map(r => [
+      r.bord, r.hour_slot||'', r.shift_period||'', r.section||'',
+      r.tonnage_actual??'', r.officer_name||'', r.officer_id||'',
+      fmtDate(r.created_at)
+    ])
+  ];
+  const csv  = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download='valterra_hourly_tonnage.csv'; a.click();
   URL.revokeObjectURL(url);
 }
 
