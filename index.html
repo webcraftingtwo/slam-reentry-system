@@ -2506,9 +2506,15 @@
         </div>
       </div>
 
-      <div class="feat-section">
-        <label>Total Tonnage Hoisted</label>
-        <input type="number" step="1" min="0" id="pp-tonnage-hoisted" placeholder="0"/>
+      <div class="feat-row">
+        <div class="feat-section">
+          <label>Tonnage Expected</label>
+          <input type="number" step="1" min="0" id="pp-tonnage-exp" placeholder="0"/>
+        </div>
+        <div class="feat-section">
+          <label>Tonnage Hoisted (Actual)</label>
+          <input type="number" step="1" min="0" id="pp-tonnage-hoisted" placeholder="0"/>
+        </div>
       </div>
 
       <div class="feat-section">
@@ -6778,7 +6784,7 @@ async function syncProdPerfQueue(){
 }
 
 function resetProdPerfForm(){
-  ['pp-drill-exp','pp-drill-act','pp-supp-exp','pp-supp-act','pp-tonnage-hoisted','pp-blast-notes'].forEach(id=>{
+  ['pp-drill-exp','pp-drill-act','pp-supp-exp','pp-supp-act','pp-tonnage-exp','pp-tonnage-hoisted','pp-blast-notes'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   ppEndsBords = new Set();
@@ -6801,6 +6807,7 @@ async function submitProdPerf(){
     drilled_actual_m:        numOrNull(document.getElementById('pp-drill-act')?.value),
     support_expected_m:      numOrNull(document.getElementById('pp-supp-exp')?.value),
     support_actual_m:        numOrNull(document.getElementById('pp-supp-act')?.value),
+    tonnage_expected:        intOrNull(document.getElementById('pp-tonnage-exp')?.value),
     tonnage_hoisted:         intOrNull(document.getElementById('pp-tonnage-hoisted')?.value),
     ends_available_bords:    ppEndsBords.size ? Array.from(ppEndsBords).join(', ') : null,
     blast_plan_notes:        document.getElementById('pp-blast-notes')?.value?.trim() || null,

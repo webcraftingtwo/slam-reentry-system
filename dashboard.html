@@ -607,14 +607,6 @@
   .mach-meta { font-size:0.72rem;color:var(--muted);line-height:1.5; }
   .mach-notes { font-size:0.76rem;color:var(--mid);margin-top:0.3rem;line-height:1.5;font-style:italic; }
 
-  /* Bar/Gap view toggle — used on the Production Performance chart */
-  .chip-toggle{ display:inline-flex;border:1.5px solid var(--border);border-radius:20px;overflow:hidden; }
-  .chip-toggle-opt{
-    padding:0.4rem 0.75rem;font-size:0.74rem;font-weight:700;color:var(--muted);cursor:pointer;
-    text-transform:uppercase;letter-spacing:0.05em;
-  }
-  .chip-toggle-opt.active{ background:var(--teal);color:#fff; }
-
   /* Production records table columns: bord / shift / drilled / support / tonnage / ends / notes / officer / date */
   .prod-grid{ grid-template-columns:0.8fr 0.9fr 1.1fr 1.1fr 0.9fr 1.3fr 1.4fr 1fr 1fr; }
 
@@ -1061,22 +1053,28 @@
       <div class="chart-card">
         <div class="chart-head">
           <div>
-            <div class="chart-title">Expected vs Actual, per Bord</div>
-            <div class="chart-sub">Toggle between paired bars and a gap (dumbbell) view.</div>
+            <div class="chart-title">Daily Production Performance</div>
+            <div class="chart-sub">Day / Night / Total Actual / Total Expected, selected range.</div>
           </div>
-          <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-            <select class="f-select" id="prod-metric" onchange="renderProductionChart()" style="max-width:130px;">
-              <option value="drilled">Drilled (m)</option>
-              <option value="support">Support (m)</option>
-            </select>
-            <div class="chip-toggle" id="prod-view-toggle">
-              <span class="chip-toggle-opt active" data-view="bar" onclick="setProdView('bar')">Bar</span>
-              <span class="chip-toggle-opt" data-view="gap" onclick="setProdView('gap')">Gap View</span>
-            </div>
-          </div>
+          <select class="f-select" id="prod-metric" onchange="renderProductionChart()" style="max-width:130px;">
+            <option value="drilled">Drilling</option>
+            <option value="support">Support</option>
+          </select>
         </div>
         <div class="chart-wrap">
           <canvas id="prod-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-top:1.2rem;">
+        <div class="chart-head">
+          <div>
+            <div class="chart-title">Total Tonnage Hoisted</div>
+            <div class="chart-sub">Actual vs expected, selected range.</div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="prod-tonnage-chart"></canvas>
         </div>
       </div>
 
@@ -1142,12 +1140,12 @@
       <div class="chart-card" style="margin-top:1.2rem;">
         <div class="chart-head">
           <div>
-            <div class="chart-title">Downtime by Machine</div>
-            <div class="chart-sub">Total breakdown minutes, selected range (open breakdowns not yet counted).</div>
+            <div class="chart-title">Machinery Utilization</div>
+            <div class="chart-sub">Status across the day — 0% Breakdown · 50% Idle · 100% Running. Point shape = machine type (★ LHD · ▭ Rig · ▲ Bolter). Uses the date filter above, or today if none is set.</div>
           </div>
         </div>
-        <div class="chart-wrap">
-          <canvas id="mach-downtime-chart"></canvas>
+        <div class="chart-wrap" style="height:280px;">
+          <canvas id="mach-util-chart"></canvas>
         </div>
       </div>
     </div>
@@ -3508,7 +3506,7 @@ function exportBordCSV(){
 // ══════════════════════════════════════════
 let allProductionRows = [];
 let prodChart = null;
-let prodView = 'bar'; // 'bar' | 'gap'
+let prodTonnageChart = null;
 
 async function loadProduction(){
   const tableEl = document.getElementById('prod-table');
@@ -3541,6 +3539,7 @@ async function loadProduction(){
 
     renderProductionStats(allProductionRows);
     renderProductionChart();
+    renderTonnageChart();
     tableEl.innerHTML = allProductionRows.length
       ? `<div class="tbl-wrap">${prodTableHtml(allProductionRows)}</div>`
       : '<div class="empty"><div class="empty-icon">📈</div>No production records for this filter.</div>';
@@ -3573,14 +3572,9 @@ function renderProductionStats(rows){
   document.getElementById('prod-stat-ends').textContent = endsCount;
 }
 
-function setProdView(view){
-  prodView = view;
-  document.querySelectorAll('#prod-view-toggle .chip-toggle-opt').forEach(el=>{
-    el.classList.toggle('active', el.dataset.view === view);
-  });
-  renderProductionChart();
-}
-
+// Day / Night / Total Actual / Total Expected summary, for whichever metric
+// (Drilling or Support) is selected — an aggregate rollup across the current
+// filter, not a per-bord comparison (that detail lives in the table below).
 function renderProductionChart(){
   const canvas = document.getElementById('prod-chart');
   if(!canvas) return;
@@ -3589,62 +3583,65 @@ function renderProductionChart(){
   const metric = document.getElementById('prod-metric')?.value || 'drilled';
   const expKey = metric==='drilled' ? 'drilled_expected_m' : 'support_expected_m';
   const actKey = metric==='drilled' ? 'drilled_actual_m'   : 'support_actual_m';
+  const metricLabel = metric==='drilled' ? 'Drilled (m)' : 'Support (m)';
 
-  // One bar/dumbbell per bord, from that bord's most recent record.
-  const latestPerBord = {};
-  allProductionRows.forEach(r => {
-    if(!latestPerBord[r.bord] || r.created_at > latestPerBord[r.bord].created_at) latestPerBord[r.bord] = r;
-  });
-  const bords = Object.keys(latestPerBord).sort();
   const ctx = canvas.getContext('2d');
-  if(!bords.length){ ctx.clearRect(0,0,canvas.width,canvas.height); return; }
+  if(!allProductionRows.length){ ctx.clearRect(0,0,canvas.width,canvas.height); return; }
 
-  const expected = bords.map(b => parseFloat(latestPerBord[b][expKey]) || 0);
-  const actual   = bords.map(b => parseFloat(latestPerBord[b][actKey])   || 0);
+  const sum = (rows, key) => rows.reduce((s,r) => s + (parseFloat(r[key])||0), 0);
+  const dayActual    = sum(allProductionRows.filter(r => r.shift_period === 'day'),   actKey);
+  const nightActual  = sum(allProductionRows.filter(r => r.shift_period === 'night'), actKey);
+  const totalActual   = dayActual + nightActual;
+  const totalExpected = sum(allProductionRows, expKey);
 
-  if(prodView === 'bar'){
-    prodChart = new Chart(ctx, {
-      type:'bar',
-      data:{
-        labels: bords,
-        datasets:[
-          { label:'Expected', data:expected, backgroundColor:'rgba(115,146,155,0.55)', borderRadius:2 },
-          { label:'Actual',   data:actual,   backgroundColor:'rgba(0,113,121,0.75)',  borderRadius:2 },
-        ]
-      },
-      options:{
-        responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{ labels:{ font:{family:'Montserrat',size:10}, color:'#4A5550' } } },
-        scales:{
-          x:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{display:false} },
-          y:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'metres',font:{family:'Montserrat',size:9}} },
-        }
+  prodChart = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['Day','Night','Total Actual','Total Expected'],
+      datasets:[{
+        label: metricLabel,
+        data:[dayActual, nightActual, totalActual, totalExpected],
+        backgroundColor:['rgba(0,113,121,0.55)','rgba(0,73,79,0.7)','rgba(0,113,121,0.85)','rgba(115,146,155,0.6)'],
+        borderRadius:2,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{display:false} },
+        y:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'metres',font:{family:'Montserrat',size:9}} },
       }
-    });
-  } else {
-    // Gap view — a thin, rounded-end floating bar per bord spanning
-    // expected→actual (Chart.js's native [min,max] floating-bar support, no
-    // plugin). Reads the gap directly as bar length; colour shows whether
-    // actual met or missed the plan.
-    const data   = bords.map((b,i) => [expected[i], actual[i]]);
-    const colors = bords.map((b,i) => actual[i] >= expected[i] ? 'rgba(14,124,63,0.75)' : 'rgba(243,156,18,0.75)');
-    prodChart = new Chart(ctx, {
-      type:'bar',
-      data:{ labels: bords, datasets:[{ label:'Expected → Actual', data, backgroundColor:colors, barThickness:14, borderRadius:7 }] },
-      options:{
-        indexAxis:'y',
-        responsive:true, maintainAspectRatio:false,
-        plugins:{
-          legend:{ display:false },
-          tooltip:{ callbacks:{ label:(c) => `Expected ${expected[c.dataIndex]} m → Actual ${actual[c.dataIndex]} m` } },
-        },
-        scales:{
-          x:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'metres',font:{family:'Montserrat',size:9}} },
-          y:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{display:false} },
-        }
+    }
+  });
+}
+
+function renderTonnageChart(){
+  const canvas = document.getElementById('prod-tonnage-chart');
+  if(!canvas) return;
+  if(prodTonnageChart){ prodTonnageChart.destroy(); prodTonnageChart = null; }
+
+  const ctx = canvas.getContext('2d');
+  if(!allProductionRows.length){ ctx.clearRect(0,0,canvas.width,canvas.height); return; }
+
+  const actual   = allProductionRows.reduce((s,r) => s + (r.tonnage_hoisted||0), 0);
+  const expected = allProductionRows.reduce((s,r) => s + (r.tonnage_expected||0), 0);
+
+  prodTonnageChart = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['Actual','Expected'],
+      datasets:[{ label:'Tonnage', data:[actual, expected], backgroundColor:['rgba(0,113,121,0.85)','rgba(115,146,155,0.6)'], borderRadius:2 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{display:false} },
+        y:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'tonnes',font:{family:'Montserrat',size:9}} },
       }
-    });
-  }
+    }
+  });
 }
 
 function prodTableHtml(rows){
@@ -3681,12 +3678,12 @@ function prodTableHtml(rows){
 
 function exportProductionCSV(){
   const rows = [
-    ['Bord','Shift','Section','Drilled Expected (m)','Drilled Actual (m)','Support Expected (m)','Support Actual (m)','Tonnage Hoisted','Ends Available','Blast Plan Notes','Officer','Badge','Date'],
+    ['Bord','Shift','Section','Drilled Expected (m)','Drilled Actual (m)','Support Expected (m)','Support Actual (m)','Tonnage Expected','Tonnage Hoisted','Ends Available','Blast Plan Notes','Officer','Badge','Date'],
     ...allProductionRows.map(r => [
       r.bord, r.shift_period||'', r.section||'',
       r.drilled_expected_m??'', r.drilled_actual_m??'',
       r.support_expected_m??'', r.support_actual_m??'',
-      r.tonnage_hoisted??'',
+      r.tonnage_expected??'', r.tonnage_hoisted??'',
       (r.ends_available_bords||'').replace(/,/g,';'),
       (r.blast_plan_notes||'').replace(/,/g,' '),
       r.officer_name||'', r.officer_id||'',
@@ -3705,7 +3702,9 @@ function exportProductionCSV(){
 //  MACHINERY AVAILABILITY & UTILIZATION
 // ══════════════════════════════════════════
 let allMachineryRows = [];
-let machDowntimeChart = null;
+let machUtilChart = null;
+const MACH_TYPE_SHAPE = { LHD:'star', Rig:'rect', Bolter:'triangle' };
+const MACH_STATUS_Y = { breakdown:0, idle:50, running:100 };
 const MACH_STATUS_LABELS = { running:'🟢 Running', breakdown:'🔴 Breakdown', idle:'🟡 Idle' };
 
 function hhmmToMinutes(t){
@@ -3777,7 +3776,7 @@ async function loadMachinery(){
     boardEl.innerHTML = machines.length
       ? machBoardHtml(machines)
       : '<div class="empty"><div class="empty-icon">🚜</div>No machinery logged for this filter.</div>';
-    renderDowntimeChart(allMachineryRows);
+    renderMachUtilChart();
   } catch(e){
     console.error('Machinery load error:', e);
     boardEl.innerHTML = '<div class="empty">⚠ Failed to load machinery data: ' + e.message + '</div>';
@@ -3818,34 +3817,89 @@ function machBoardHtml(machines){
   return html;
 }
 
-function renderDowntimeChart(rows){
-  const canvas = document.getElementById('mach-downtime-chart');
+function minutesSinceMidnight(iso){
+  const d = new Date(iso);
+  return d.getHours()*60 + d.getMinutes();
+}
+
+// Time-of-day step chart, one line per machine: every logged status update
+// that day is a point (x = time, y = 0/50/100 for breakdown/idle/running),
+// stepped so the line holds each status until the next logged change. Not
+// deduped to latest-per-machine like the board — this needs the whole day's
+// history to show the trajectory, which is exactly what the append-only
+// machinery_log rows already give us. No 'time' scale (no date-adapter
+// vendored) — x is plain minutes-since-midnight with a formatting callback.
+function renderMachUtilChart(){
+  const canvas = document.getElementById('mach-util-chart');
   if(!canvas) return;
-  if(machDowntimeChart){ machDowntimeChart.destroy(); machDowntimeChart = null; }
+  if(machUtilChart){ machUtilChart.destroy(); machUtilChart = null; }
 
-  const totals = {};
-  rows.forEach(r => {
-    const mins = breakdownMinutes(r);
-    if(mins <= 0) return;
+  const dateVal = document.getElementById('f-mach-date')?.value || new Date().toISOString().slice(0,10);
+  const range = dayRange(dateVal);
+  const dayRows = allMachineryRows.filter(r => r.created_at >= range.startIso && r.created_at < range.endIso);
+
+  const byMachine = {};
+  dayRows.forEach(r => {
     const key = (r.machine_type||'') + ' ' + (r.machine_number||'');
-    totals[key] = (totals[key]||0) + mins;
+    if(!byMachine[key]) byMachine[key] = [];
+    byMachine[key].push(r);
   });
-  const machines = Object.keys(totals).sort((a,b) => totals[b]-totals[a]);
-  const ctx = canvas.getContext('2d');
-  if(!machines.length){ ctx.clearRect(0,0,canvas.width,canvas.height); return; }
+  Object.values(byMachine).forEach(list => list.sort((a,b) => a.created_at.localeCompare(b.created_at)));
 
-  machDowntimeChart = new Chart(ctx, {
-    type:'bar',
-    data:{
-      labels: machines,
-      datasets:[{ label:'Downtime (minutes)', data:machines.map(m=>totals[m]), backgroundColor:'rgba(192,57,43,0.7)', borderRadius:2 }]
-    },
+  const machines = Object.keys(byMachine).sort();
+  const ctx = canvas.getContext('2d');
+  if(!machines.length){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.font = '12px Montserrat'; ctx.fillStyle = '#73929B'; ctx.textAlign = 'center';
+    ctx.fillText('No machinery logged for ' + dateVal, canvas.width/2, canvas.height/2);
+    return;
+  }
+
+  const palette = ['#007179','#C0392B','#F39C12','#0E7C3F','#6c5ce7','#2980b9','#8A6100'];
+  // Hour-align the axis bounds so every tick Chart.js places lands exactly on
+  // the hour — otherwise the HH:00 tick-label callback below can mislabel an
+  // auto-picked non-hour tick (e.g. showing "05:00" for a tick actually at 05:24).
+  const allMinutes = machines.flatMap(m => byMachine[m].map(r => minutesSinceMidnight(r.created_at)));
+  const minX = Math.max(0, Math.floor((Math.min(...allMinutes) - 30) / 60) * 60);
+  const maxX = Math.min(1440, Math.ceil((Math.max(...allMinutes) + 30) / 60) * 60);
+
+  const datasets = machines.map((m,i) => {
+    const rows = byMachine[m];
+    const shape = MACH_TYPE_SHAPE[rows[0].machine_type] || 'circle';
+    const color = palette[i % palette.length];
+    return {
+      label: m,
+      data: rows.map(r => ({ x: minutesSinceMidnight(r.created_at), y: MACH_STATUS_Y[r.status] ?? 50 })),
+      borderColor: color, backgroundColor: color,
+      pointStyle: shape, pointRadius: 6, pointHoverRadius: 7,
+      stepped: 'after', fill: false, tension: 0,
+    };
+  });
+
+  machUtilChart = new Chart(ctx, {
+    type:'line',
+    data:{ datasets },
     options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ display:false } },
+      responsive:true, maintainAspectRatio:false, parsing:false,
+      plugins:{
+        legend:{ labels:{ font:{family:'Montserrat',size:10}, color:'#4A5550', usePointStyle:true } },
+        tooltip:{
+          callbacks:{
+            label:(c) => c.dataset.label + ': ' + ({0:'Breakdown',50:'Idle',100:'Running'}[c.parsed.y] || c.parsed.y+'%'),
+          }
+        },
+      },
       scales:{
-        x:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{display:false} },
-        y:{ ticks:{font:{family:'Montserrat',size:9}}, grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'minutes',font:{family:'Montserrat',size:9}} },
+        x:{
+          type:'linear', min:minX, max:maxX,
+          ticks:{ font:{family:'Montserrat',size:9}, stepSize:60, callback:(v)=>String(Math.floor(v/60)).padStart(2,'0')+':00' },
+          grid:{color:'rgba(0,0,0,0.04)'}, title:{display:true,text:'Time',font:{family:'Montserrat',size:9}},
+        },
+        y:{
+          min:0, max:100,
+          ticks:{ font:{family:'Montserrat',size:9}, stepSize:50, callback:(v)=>({0:'0% Breakdown',50:'50% Idle',100:'100% Running'}[v] ?? v+'%') },
+          grid:{color:'rgba(0,0,0,0.04)'},
+        },
       }
     }
   });
