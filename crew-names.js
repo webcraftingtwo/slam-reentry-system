@@ -8,8 +8,8 @@
    ========================================================================== */
 
 const CREW_NAMES = {
-  '14 South': 'Challengers',
-  '16 North': 'Pioneers',
+ '14 South': 'Challengers',
+ '16 North': 'Pioneers',
 };
 
 // Display name for a section: "Challengers", falling back to the raw value.

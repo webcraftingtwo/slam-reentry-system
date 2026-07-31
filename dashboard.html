@@ -85,18 +85,18 @@
 
   .login-logo{display:flex;align-items:center;gap:0.6rem;margin-bottom:1.5rem;}
   .login-logo svg{width:0px;height:0px;}
-  .login-name{font-size:1rem;font-weight:800;color:var(--teal);letter-spacing:0.08em;text-transform:uppercase;}
-  .login-plat{font-size:0.66rem;font-weight:600;color:var(--muted);letter-spacing:0.3em;text-transform:uppercase;}
+  .login-name{font-size:1rem;font-weight:700;color:var(--teal);letter-spacing:0;}
+  .login-plat{font-size:0.6875rem;font-weight:600;color:var(--muted);letter-spacing:0.3em;text-transform:uppercase;}
 
   .login-title{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:0.3rem;}
-  .login-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.5;}
+  .login-sub{font-size:0.9375rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.5;}
 
   .lg{margin-bottom:0.85rem;}
-  .lg label{display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;}
+  .lg label{display:block;font-size:var(--fs-micro);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;}
   .lg input{
     width:100%;background:var(--offwhite);border:1.5px solid var(--border);
     color:var(--text);padding:0.65rem 0.82rem;
-    font-family:'Montserrat',sans-serif;font-size:0.875rem;font-weight:500;
+    font-family:'Montserrat',sans-serif;font-size:0.9375rem;font-weight:500;
     border-radius:3px;outline:none;transition:border-color 0.18s;
     -webkit-appearance:none;
   }
@@ -105,8 +105,8 @@
   .btn-login{
     width:100%;background:var(--teal);color:#fff;border:none;
     padding:0.85rem;font-family:'Montserrat',sans-serif;
-    font-size:0.8rem;font-weight:800;letter-spacing:0.18em;
-    text-transform:uppercase;border-radius:3px;cursor:pointer;
+    font-size:0.9375rem;font-weight:700;letter-spacing:0;
+    border-radius:3px;cursor:pointer;
     margin-top:0.5rem;transition:background 0.18s;
   }
   .btn-login:hover{background:var(--teal-dark);}
@@ -115,14 +115,14 @@
   .login-err{
     background:#FEF0EE;border:1.5px solid var(--red);border-radius:3px;
     padding:0.6rem 0.8rem;margin-bottom:0.9rem;
-    font-size:0.78rem;font-weight:600;color:var(--red);
+    font-size:0.9375rem;font-weight:600;color:var(--red);
     display:none;
   }
   .login-err.show{display:block;}
 
   .login-access-note{
     text-align:center;margin-top:1rem;
-    font-size:0.72rem;color:var(--muted);line-height:1.5;
+    font-size:0.8125rem;color:var(--muted);line-height:1.5;
   }
 
   /* ══════════ DASHBOARD ══════════ */
@@ -138,11 +138,11 @@
   .tb-l{display:flex;align-items:center;gap:0.5rem;}
   .tb-logo{font-size:0.95rem;font-weight:800;color:#fff;letter-spacing:0.08em;text-transform:uppercase;}
   .tb-sep{width:1px;height:14px;background:rgba(255,255,255,0.22);margin:0 0.6rem;}
-  .tb-title{font-size:0.68rem;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.15em;text-transform:uppercase;}
+  .tb-title{font-size:0.6875rem;font-weight:600;color:rgba(255,255,255,0.55);letter-spacing:0.15em;text-transform:uppercase;}
   .tb-r{display:flex;align-items:center;gap:0.6rem;}
-  .tb-av{width:28px;height:28px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:var(--text);}
-  .tb-user{font-size:0.74rem;font-weight:600;color:rgba(255,255,255,0.78);}
-  .btn-signout{background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);padding:0.3rem 0.7rem;font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all 0.15s;}
+  .tb-av{width:28px;height:28px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8125rem;font-weight:800;color:var(--text);}
+  .tb-user{font-size:0.8125rem;font-weight:600;color:rgba(255,255,255,0.78);}
+  .btn-signout{background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);padding:0.3rem 0.7rem;font-family:'Montserrat',sans-serif;font-size:0.8125rem;font-weight:700;letter-spacing:0;border-radius:2px;cursor:pointer;transition:all 0.15s;}
   .btn-signout:hover{background:rgba(255,255,255,0.1);color:#fff;}
 
   /* NAV TABS */
@@ -154,7 +154,7 @@
   .dash-nav::-webkit-scrollbar{display:none;}
   .dnav{
     flex:0 0 auto;padding:0.8rem 1.2rem;
-    font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+    font-size:0.8125rem;font-weight:700;letter-spacing:0;
     color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;
     white-space:nowrap;transition:all 0.18s;
     display:flex;align-items:center;gap:0.4rem;
@@ -162,7 +162,7 @@
   .dnav.active{color:var(--teal);border-bottom-color:var(--teal);}
   .dnav-count{
     background:var(--teal);color:#fff;
-    font-size:0.66rem;font-weight:800;
+    font-size:0.6875rem;font-weight:800;
     padding:0.1rem 0.4rem;border-radius:100px;
     min-width:18px;text-align:center;
   }
@@ -181,12 +181,12 @@
     background:var(--white);border:1.5px solid var(--border);border-radius:4px;
     padding:1rem 1.1rem;box-shadow:0 1px 4px rgba(0,0,0,0.04);
   }
-  .stat-label{font-size:0.68rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
+  .stat-label{font-size:0.6875rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
   .stat-val{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.8rem;font-weight:700;color:var(--teal);line-height:1;margin-bottom:0.2rem;}
   .stat-val.red{color:var(--red);}
   .stat-val.amber{color:var(--amber-ink);}
   .stat-val.green{color:var(--green);}
-  .stat-sub{font-size:0.7rem;color:var(--muted);font-weight:500;}
+  .stat-sub{font-size:0.8125rem;color:var(--muted);font-weight:500;}
 
   /* FILTERS */
   .filters{
@@ -194,12 +194,12 @@
     padding:0.85rem 1rem;margin-bottom:1rem;
     display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;
   }
-  .filter-label{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
+  .filter-label{font-size:var(--fs-micro);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);}
 
   .f-select{
     background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);
     padding:0.42rem 1.6rem 0.42rem 0.65rem;
-    font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:600;
+    font-family:'Montserrat',sans-serif;font-size:0.9375rem;font-weight:600;
     border-radius:3px;outline:none;cursor:pointer;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23007179' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat:no-repeat;background-position:right 0.5rem center;
@@ -211,7 +211,7 @@
   .f-input{
     background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);
     padding:0.42rem 0.65rem;
-    font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:500;
+    font-family:'Montserrat',sans-serif;font-size:0.9375rem;font-weight:500;
     border-radius:3px;outline:none;flex:1;min-width:140px;
     transition:border-color 0.15s;
   }
@@ -220,7 +220,7 @@
   .btn-filter{
     background:var(--teal);color:#fff;border:none;
     padding:0.42rem 1rem;font-family:'Montserrat',sans-serif;
-    font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+    font-size:0.8125rem;font-weight:700;letter-spacing:0;
     border-radius:3px;cursor:pointer;transition:background 0.15s;white-space:nowrap;
   }
   .btn-filter:hover{background:var(--teal-dark);}
@@ -228,8 +228,8 @@
   .btn-export{
     background:transparent;color:var(--teal);
     border:1.5px solid var(--teal);padding:0.42rem 1rem;
-    font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:700;
-    letter-spacing:0.1em;text-transform:uppercase;border-radius:3px;cursor:pointer;
+    font-family:'Montserrat',sans-serif;font-size:0.8125rem;font-weight:700;
+    letter-spacing:0;border-radius:3px;cursor:pointer;
     transition:all 0.15s;white-space:nowrap;margin-left:auto;
   }
   .btn-export:hover{background:var(--teal);color:#fff;}
@@ -240,8 +240,8 @@
   .tbl-row{display:grid;padding:0.75rem 1rem;border-bottom:1px solid var(--offwhite);transition:background 0.12s;cursor:pointer;user-select:none;-webkit-user-select:none;}
   .tbl-row:last-child{border-bottom:none;}
   .tbl-row:hover{background:var(--teal-pale);}
-  .th{font-size:0.68rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);}
-  .td{font-size:0.8rem;font-weight:500;color:var(--mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .th{font-size:0.6875rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);}
+  .td{font-size:0.9375rem;font-weight:500;color:var(--mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .td.bold{font-weight:700;color:var(--text);}
 
   /* Submissions table columns */
@@ -268,7 +268,7 @@
 
   /* STATUS BADGES */
   .badge{
-    display:inline-block;font-size:0.68rem;font-weight:800;
+    display:inline-block;font-size:0.6875rem;font-weight:800;
     letter-spacing:0.1em;text-transform:uppercase;
     padding:0.18rem 0.5rem;border-radius:2px;
   }
@@ -276,14 +276,14 @@
   .badge.aborted{background:#FEF0EE;color:var(--red);}
   .badge.irt-badge{background:#FEF0EE;color:var(--red);margin-left:0.3rem;}
   .badge.nogas-badge{background:#FFF4E0;color:var(--amber-ink);margin-left:0.3rem;text-transform:none;letter-spacing:0.02em;}
-  .gas-verdict{margin-top:1rem;padding:0.6rem 0.85rem;border-radius:4px;font-size:0.8rem;font-weight:800;letter-spacing:0.02em;}
+  .gas-verdict{margin-top:1rem;padding:0.6rem 0.85rem;border-radius:4px;font-size:0.9375rem;font-weight:800;letter-spacing:0.02em;}
   .gas-verdict.safe{background:#E8F8EE;color:var(--green);border:1px solid var(--green);}
   .gas-verdict.danger{background:#FEF0EE;color:var(--red);border:1px solid var(--red);}
   .badge.incomplete{background:#FFF4E0;color:var(--amber-ink);}
   .badge.approved{background:#E8F8EE;color:var(--green);margin-left:0.3rem;}
-  .btn-approve{background:var(--teal);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;font-size:0.8rem;font-weight:700;cursor:pointer;}
+  .btn-approve{background:var(--teal);color:#fff;border:none;padding:0.5rem 1rem;border-radius:4px;font-size:0.9375rem;font-weight:700;cursor:pointer;}
   .btn-approve:hover{background:var(--teal-dark);}
-  .incomplete-note{background:#FFF8EC;border:1px solid var(--amber);color:var(--amber-ink);padding:0.7rem 0.9rem;border-radius:4px;font-size:0.8rem;font-weight:600;margin-bottom:1rem;line-height:1.5;}
+  .incomplete-note{background:#FFF8EC;border:1px solid var(--amber);color:var(--amber-ink);padding:0.7rem 0.9rem;border-radius:4px;font-size:0.9375rem;font-weight:600;margin-bottom:1rem;line-height:1.5;}
   .badge.low{background:#E8F8EE;color:var(--green);}
   .badge.medium{background:#FFF4E0;color:var(--amber-ink);}
   .badge.high{background:#FEF0EE;color:var(--red);}
@@ -303,8 +303,8 @@
   .detail-close{background:none;border:none;font-size:1.2rem;color:var(--muted);cursor:pointer;padding:0.2rem;}
   .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
   .detail-item{background:var(--offwhite);border:1px solid var(--border);border-radius:3px;padding:0.65rem 0.75rem;}
-  .detail-k{font-size:0.68rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.2rem;}
-  .detail-v{font-size:0.875rem;font-weight:700;color:var(--text);}
+  .detail-k{font-size:0.6875rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.2rem;}
+  .detail-v{font-size:0.9375rem;font-weight:700;color:var(--text);}
   .detail-v.ok{color:var(--green);}
   .detail-v.bad{color:var(--red);}
   .detail-full{grid-column:1/-1;}
@@ -314,28 +314,28 @@
   .gas-cell{background:var(--panel);border:1px solid var(--panel-edge);border-top:3px solid var(--panel-edge);border-radius:3px;padding:0.6rem;text-align:center;box-shadow:inset 0 2px 4px rgba(0,0,0,0.4);}
   .gas-cell.safe{border-top-color:var(--green);}
   .gas-cell.danger{border-top-color:var(--bad-hi);}
-  .gas-name{font-size:0.66rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.2rem;}
+  .gas-name{font-size:0.6875rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.2rem;}
   .gas-val{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.15rem;font-weight:600;color:#F2F7F7;}
   .gas-cell.safe .gas-val{color:var(--ok-hi);}
   .gas-cell.danger .gas-val{color:var(--bad-hi);}
-  .gas-lim{font-size:0.68rem;color:var(--grey);}
+  .gas-lim{font-size:0.6875rem;color:var(--grey);}
 
   /* EMPTY STATE */
   .empty{
     text-align:center;padding:3rem 1rem;
-    font-size:0.85rem;color:var(--muted);font-weight:500;
+    font-size:0.9375rem;color:var(--muted);font-weight:500;
   }
   .empty-icon{font-size:2.5rem;margin-bottom:0.6rem;}
 
   /* LOADING */
-  .loading{text-align:center;padding:2rem;color:var(--muted);font-size:0.82rem;font-weight:600;}
+  .loading{text-align:center;padding:2rem;color:var(--muted);font-size:0.9375rem;font-weight:600;}
 
   /* SECTION PANELS */
   .dash-panel{display:none;}
   .dash-panel.active{display:block;animation:fadeUp 0.2s ease both;}
 
   /* SECTION LABEL */
-  .slbl{font-size:0.7rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--teal);margin:0 0 0.6rem;display:flex;align-items:center;gap:0.45rem;}
+  .slbl{font-size:var(--fs-micro);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal);margin:0 0 0.6rem;display:flex;align-items:center;gap:0.45rem;}
   .slbl::after{content:'';flex:1;height:1px;background:var(--border);}
 
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
@@ -344,8 +344,8 @@
   .btn-resolve{
     width:100%;background:var(--green);color:#fff;border:none;
     padding:0.82rem;font-family:'Montserrat',sans-serif;
-    font-size:0.8rem;font-weight:800;letter-spacing:0.15em;
-    text-transform:uppercase;border-radius:3px;cursor:pointer;
+    font-size:0.9375rem;font-weight:700;letter-spacing:0;
+    border-radius:3px;cursor:pointer;
     margin-top:0.6rem;transition:background 0.15s;
     display:flex;align-items:center;justify-content:center;gap:0.5rem;
   }
@@ -354,8 +354,8 @@
   .resolved-badge{
     display:inline-flex;align-items:center;gap:0.4rem;
     background:#E8F8EE;border:1.5px solid var(--green);
-    color:var(--green);font-size:0.74rem;font-weight:800;
-    letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--green);font-size:0.8125rem;font-weight:700;
+    letter-spacing:0;
     padding:0.4rem 0.8rem;border-radius:3px;
     margin-top:0.6rem;width:100%;justify-content:center;
   }
@@ -366,7 +366,7 @@
   .preset-btn{
     background:var(--offwhite);border:1.5px solid var(--border);color:var(--mid);
     padding:0.32rem 0.65rem;font-family:'Montserrat',sans-serif;
-    font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+    font-size:0.8125rem;font-weight:700;letter-spacing:0;
     border-radius:3px;cursor:pointer;white-space:nowrap;transition:all 0.15s;
   }
   .preset-btn:hover,.preset-btn.active{background:var(--teal);border-color:var(--teal);color:#fff;}
@@ -375,7 +375,7 @@
   .btn-pdf{
     background:var(--red);color:#fff;border:none;
     padding:0.5rem 1rem;font-family:'Montserrat',sans-serif;
-    font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+    font-size:0.8125rem;font-weight:700;letter-spacing:0;
     border-radius:3px;cursor:pointer;transition:background 0.15s;white-space:nowrap;
     margin-top:0.8rem;width:100%;
   }
@@ -393,32 +393,32 @@
   }
   .dash-session-icon{font-size:2rem;margin-bottom:0.6rem;}
   .dash-session-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:0.4rem;}
-  .dash-session-desc{font-size:0.8rem;color:var(--mid);line-height:1.6;margin-bottom:1.2rem;}
+  .dash-session-desc{font-size:0.9375rem;color:var(--mid);line-height:1.6;margin-bottom:1.2rem;}
   .dash-session-pw{
     width:100%;background:var(--offwhite);border:1.5px solid var(--border);
     color:var(--text);padding:0.65rem 0.82rem;
-    font-family:'Montserrat',sans-serif;font-size:0.875rem;
+    font-family:'Montserrat',sans-serif;font-size:0.9375rem;
     border-radius:3px;outline:none;margin-bottom:0.7rem;-webkit-appearance:none;
   }
   .dash-session-pw:focus{border-color:var(--teal);}
   .btn-dash-reauth{
     width:100%;background:var(--teal);color:#fff;border:none;padding:0.82rem;
-    font-family:'Montserrat',sans-serif;font-size:0.8rem;font-weight:800;
-    letter-spacing:0.15em;text-transform:uppercase;border-radius:3px;cursor:pointer;
+    font-family:'Montserrat',sans-serif;font-size:0.9375rem;font-weight:700;
+    letter-spacing:0;border-radius:3px;cursor:pointer;
   }
-  .dash-session-err{font-size:0.76rem;color:var(--red);font-weight:600;margin-top:0.5rem;display:none;}
+  .dash-session-err{font-size:0.8125rem;color:var(--red);font-weight:600;margin-top:0.5rem;display:none;}
   .dash-session-err.show{display:block;}
 
   /* ══════ CREW IN DETAIL ══════ */
   .crew-tags{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.3rem;}
-  .crew-tag{background:var(--teal-pale);color:var(--teal-dark);font-size:0.74rem;font-weight:600;padding:0.2rem 0.55rem;border-radius:100px;}
+  .crew-tag{background:var(--teal-pale);color:var(--teal-dark);font-size:0.8125rem;font-weight:600;padding:0.2rem 0.55rem;border-radius:100px;}
 
 
   /* ══════ LIVE TRACKING ══════ */
   .live-badge {
     display:inline-flex;align-items:center;gap:0.35rem;
     background:#FEF0EE;border:1px solid var(--red);
-    color:var(--red);font-size:0.68rem;font-weight:800;
+    color:var(--red);font-size:0.6875rem;font-weight:800;
     letter-spacing:0.12em;text-transform:uppercase;
     padding:0.18rem 0.5rem;border-radius:2px;
   }
@@ -434,15 +434,15 @@
   }
   .active-card:hover { background:var(--teal-pale); }
   .active-phase {
-    display:inline-block;font-size:0.68rem;font-weight:800;
+    display:inline-block;font-size:0.6875rem;font-weight:800;
     letter-spacing:0.1em;text-transform:uppercase;
     padding:0.18rem 0.5rem;border-radius:2px;
     background:var(--teal);color:var(--accent);
   }
-  .active-time { font-size:0.74rem;color:var(--muted);font-weight:500; }
+  .active-time { font-size:0.8125rem;color:var(--muted);font-weight:500; }
   .gas-mini { display:flex;gap:0.3rem;flex-wrap:wrap; }
   .gas-chip {
-    font-size:0.68rem;font-weight:700;padding:0.12rem 0.4rem;border-radius:2px;
+    font-size:0.6875rem;font-weight:700;padding:0.12rem 0.4rem;border-radius:2px;
   }
   .gas-chip.safe   { background:#E8F8EE;color:var(--green); }
   .gas-chip.danger { background:#FEF0EE;color:var(--red); }
@@ -463,7 +463,7 @@
   }
   .chart-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem; }
   .chart-title { font-size:0.9rem;font-weight:800;color:var(--text); }
-  .chart-sub   { font-size:0.72rem;color:var(--muted);margin-top:0.1rem; }
+  .chart-sub   { font-size:0.8125rem;color:var(--muted);margin-top:0.1rem; }
   .chart-wrap  { position:relative;height:220px; }
 
   /* ══════ MISSED RE-ENTRY ══════ */
@@ -477,7 +477,7 @@
   .missed-item.ok      { border-left:4px solid var(--green); }
   .missed-count-badge {
     background:var(--amber);color:var(--text);
-    font-size:0.7rem;font-weight:800;letter-spacing:0.1em;
+    font-size:0.8125rem;font-weight:800;letter-spacing:0.1em;
     padding:0.2rem 0.5rem;border-radius:2px;
   }
   .missed-count-badge.ok { background:var(--green); }
@@ -490,9 +490,9 @@
   }
   .handover-item:hover { background:var(--teal-pale); }
   .handover-item-head  { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem; }
-  .handover-item-name  { font-size:0.875rem;font-weight:700;color:var(--text); }
-  .handover-item-time  { font-size:0.72rem;color:var(--muted); }
-  .handover-item-body  { font-size:0.8rem;color:var(--mid);line-height:1.55; }
+  .handover-item-name  { font-size:0.9375rem;font-weight:700;color:var(--text); }
+  .handover-item-time  { font-size:0.8125rem;color:var(--muted); }
+  .handover-item-body  { font-size:0.9375rem;color:var(--mid);line-height:1.55; }
 
 
   @media(max-width:600px){
@@ -500,9 +500,9 @@
     .tbl-head{display:none!important;}
     .tbl-row{display:block!important;padding:0.85rem 1rem;border:1.5px solid var(--border);border-radius:4px;margin-bottom:0.5rem;}
     .tbl-wrap{background:transparent!important;border:none!important;}
-    .td{display:flex;justify-content:space-between;align-items:center;padding:0.2rem 0;font-size:0.82rem;border-bottom:1px solid var(--offwhite);}
+    .td{display:flex;justify-content:space-between;align-items:center;padding:0.2rem 0;font-size:0.9375rem;border-bottom:1px solid var(--offwhite);}
     .td:last-child{border-bottom:none;}
-    .td::before{content:attr(data-label);font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0;margin-right:0.5rem;}
+    .td::before{content:attr(data-label);font-size:0.6875rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0;margin-right:0.5rem;}
     .stats-grid{grid-template-columns:1fr 1fr;}
     .filters{flex-direction:column;align-items:stretch;}
     .f-select,.f-input,.btn-filter,.btn-export{width:100%;}
@@ -511,7 +511,7 @@
 
   /* ══════ BORD CYCLE TRACKER ══════ */
   .bct-legend-pill {
-    font-size:0.72rem;font-weight:700;letter-spacing:0.06em;
+    font-size:0.8125rem;font-weight:700;letter-spacing:0.06em;
     padding:0.22rem 0.6rem;border-radius:100px;white-space:nowrap;
   }
   .bct-legend-pill.drilling { background:rgba(52,152,219,0.15);color:#2980b9; }
@@ -544,9 +544,9 @@
   .bord-card.no-data  { border-left-color:var(--border);opacity:0.6; }
 
   .bord-card-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem; }
-  .bord-name { font-size:0.88rem;font-weight:800;color:var(--text); }
+  .bord-name { font-size:0.9375rem;font-weight:800;color:var(--text); }
   .bord-stage-badge {
-    font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+    font-size:0.8125rem;font-weight:700;letter-spacing:0;
     padding:0.18rem 0.5rem;border-radius:2px;
   }
   .bord-stage-badge.drilling { background:rgba(52,152,219,0.15);color:#2980b9; }
@@ -563,12 +563,12 @@
   .bord-progress-fill {
     height:100%;border-radius:4px;background:var(--teal);transition:width 0.3s;
   }
-  .bord-meta { font-size:0.72rem;color:var(--muted);line-height:1.5; }
-  .bord-notes { font-size:0.76rem;color:var(--mid);margin-top:0.3rem;line-height:1.5;font-style:italic; }
+  .bord-meta { font-size:0.8125rem;color:var(--muted);line-height:1.5; }
+  .bord-notes { font-size:0.8125rem;color:var(--mid);margin-top:0.3rem;line-height:1.5;font-style:italic; }
 
   /* Zone group header in bord panel */
   .bord-zone-hd {
-    font-size:0.72rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;
+    font-size:var(--fs-micro);font-weight:800;letter-spacing:0.14em;text-transform:uppercase;
     color:var(--teal);margin:1.2rem 0 0.5rem;
     display:flex;align-items:center;gap:0.5rem;
   }
@@ -577,7 +577,7 @@
   /* Machinery card grid — same idiom as .bord-grid/.bord-card, keyed to status
      (running/breakdown/idle) instead of cycle stage. */
   .mach-zone-hd {
-    font-size:0.72rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;
+    font-size:var(--fs-micro);font-weight:800;letter-spacing:0.14em;text-transform:uppercase;
     color:var(--teal);margin:1.2rem 0 0.5rem;
     display:flex;align-items:center;gap:0.5rem;
   }
@@ -596,16 +596,16 @@
   .mach-card.breakdown { border-left-color:var(--red); }
   .mach-card.idle      { border-left-color:var(--amber); }
   .mach-card-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem; }
-  .mach-name { font-size:0.88rem;font-weight:800;color:var(--text); }
+  .mach-name { font-size:0.9375rem;font-weight:800;color:var(--text); }
   .mach-status-badge {
-    font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+    font-size:0.8125rem;font-weight:700;letter-spacing:0;
     padding:0.18rem 0.5rem;border-radius:2px;
   }
   .mach-status-badge.running   { background:rgba(14,124,63,0.12);color:var(--green); }
   .mach-status-badge.breakdown { background:rgba(192,57,43,0.12);color:var(--red); }
   .mach-status-badge.idle      { background:rgba(243,156,18,0.15);color:var(--amber-ink); }
-  .mach-meta { font-size:0.72rem;color:var(--muted);line-height:1.5; }
-  .mach-notes { font-size:0.76rem;color:var(--mid);margin-top:0.3rem;line-height:1.5;font-style:italic; }
+  .mach-meta { font-size:0.8125rem;color:var(--muted);line-height:1.5; }
+  .mach-notes { font-size:0.8125rem;color:var(--mid);margin-top:0.3rem;line-height:1.5;font-style:italic; }
 
   /* Production records table columns: bord / shift / drilled / support / tonnage / ends / notes / officer / date */
   .prod-grid{ grid-template-columns:0.8fr 0.9fr 1.1fr 1.1fr 0.9fr 1.3fr 1.4fr 1fr 1fr; }
@@ -613,10 +613,10 @@
   /* Hourly tonnage heatmap — plain HTML table, no chart plugin. Sequential
      single-hue ramp built from the app's own teal tokens; the numeric value
      is always in the cell (never color-alone). */
-  .heatmap-table{ border-collapse:collapse;font-size:0.76rem;min-width:100%; }
+  .heatmap-table{ border-collapse:collapse;font-size:0.8125rem;min-width:100%; }
   .heatmap-table th, .heatmap-table td{ padding:0.4rem 0.55rem;text-align:center;border:1px solid var(--white); }
   .heatmap-table thead th{
-    background:var(--offwhite);color:var(--muted);font-weight:700;font-size:0.68rem;
+    background:var(--offwhite);color:var(--muted);font-weight:700;font-size:0.6875rem;
     text-transform:uppercase;letter-spacing:0.05em;position:sticky;top:0;
   }
   .heatmap-bord-hd{
@@ -657,618 +657,618 @@
   background:linear-gradient(145deg,#00494F 0%,#007179 100%);
   flex-direction:column;gap:1rem;
 ">
-  <svg width="42" height="32" viewBox="0 0 34 26" fill="none">
-    <path d="M2 20 Q8 12 14 20 Q20 28 26 20 Q30 14 33 18" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
-    <path d="M2 13 Q8 5 14 13 Q20 21 26 13 Q30 7 33 11" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.65"/>
-    <path d="M2 6 Q8 -2 14 6 Q20 14 26 6 Q30 0 33 4" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
-  </svg>
-  <div style="font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:0.2em;text-transform:uppercase;">Loading...</div>
+ <svg width="42" height="32" viewBox="0 0 34 26" fill="none">
+   <path d="M2 20 Q8 12 14 20 Q20 28 26 20 Q30 14 33 18" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+   <path d="M2 13 Q8 5 14 13 Q20 21 26 13 Q30 7 33 11" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.65"/>
+   <path d="M2 6 Q8 -2 14 6 Q20 14 26 6 Q30 0 33 4" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
+ </svg>
+ <div style="font-family:'Montserrat',sans-serif;font-size:0.9375rem;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:0.2em;text-transform:uppercase;">Loading...</div>
 </div>
 
 <!-- ══════════════════ LOGIN ══════════════════ -->
 <div id="login-screen" style="display:none;">
-  <div class="login-card">
-    <div class="login-logo">
-      <svg viewBox="0 0 34 26" fill="none">
-        <path d="M2 20 Q8 12 14 20 Q20 28 26 20 Q30 14 33 18" stroke="#007179" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
-        <path d="M2 13 Q8 5 14 13 Q20 21 26 13 Q30 7 33 11" stroke="#007179" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.65"/>
-        <path d="M2 6 Q8 -2 14 6 Q20 14 26 6 Q30 0 33 4" stroke="#007179" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
-      </svg>
-      <div>
-        <div class="login-name">Valterra</div>
-        <div class="login-plat">Platinum</div>
-      </div>
-    </div>
-    <div class="login-title">Management Dashboard</div>
-    <div class="login-sub">Supervisor and Management access only. Sign in with your Employee ID and password.</div>
+ <div class="login-card">
+   <div class="login-logo">
+     <svg viewBox="0 0 34 26" fill="none">
+       <path d="M2 20 Q8 12 14 20 Q20 28 26 20 Q30 14 33 18" stroke="#007179" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+       <path d="M2 13 Q8 5 14 13 Q20 21 26 13 Q30 7 33 11" stroke="#007179" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.65"/>
+       <path d="M2 6 Q8 -2 14 6 Q20 14 26 6 Q30 0 33 4" stroke="#007179" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
+     </svg>
+     <div>
+       <div class="login-name">Valterra</div>
+       <div class="login-plat">Platinum</div>
+     </div>
+   </div>
+   <div class="login-title">Management Dashboard</div>
+   <div class="login-sub">Supervisor and Management access only. Sign in with your Employee ID and password.</div>
 
-    <div class="login-err" id="login-err"></div>
+   <div class="login-err" id="login-err"></div>
 
-    <div class="lg">
-      <label>Employee ID</label>
-      <input type="text" id="lg-badge" placeholder="e.g. 64217480" autocomplete="username"/>
-    </div>
-    <div class="lg">
-      <label>Password</label>
-      <input type="password" id="lg-pw" placeholder="Your password" autocomplete="current-password"/>
-    </div>
-    <button class="btn-login" id="btn-login" onclick="dashLogin()">Sign In →</button>
+   <div class="lg">
+     <label>Employee ID</label>
+     <input type="text" id="lg-badge" placeholder="e.g. 64217480" autocomplete="username"/>
+   </div>
+   <div class="lg">
+     <label>Password</label>
+     <input type="password" id="lg-pw" placeholder="Your password" autocomplete="current-password"/>
+   </div>
+   <button class="btn-login" id="btn-login" onclick="dashLogin()">Sign In</button>
 
-    <div class="login-access-note">
+   <div class="login-access-note">
       Access restricted to Supervisors, Managers, and Admins.<br>
       Contact your Manager if you need access.
-    </div>
-  </div>
+   </div>
+ </div>
 </div>
 
 <!-- ══════════════════ DASHBOARD ══════════════════ -->
 <div id="dashboard" style="display:none;">
 
-  <div class="topbar">
-    <div class="tb-l">
-      <span class="tb-logo">Valterra</span>
-      <div class="tb-sep"></div>
-      <span class="tb-title">Dashboard · Unki Mine</span>
-    </div>
-    <div class="tb-r">
-      <div class="tb-av" id="dash-av">SH</div>
-      <span class="tb-user" id="dash-user">Manager</span>
-      <button class="btn-signout" onclick="dashSignOut()">Sign Out</button>
-    </div>
-  </div>
+ <div class="topbar">
+   <div class="tb-l">
+     <span class="tb-logo">Valterra</span>
+     <div class="tb-sep"></div>
+     <span class="tb-title">Dashboard · Unki Mine</span>
+   </div>
+   <div class="tb-r">
+     <div class="tb-av" id="dash-av">SH</div>
+     <span class="tb-user" id="dash-user">Manager</span>
+     <button class="btn-signout" onclick="dashSignOut()">Sign Out</button>
+   </div>
+ </div>
 
-  <!-- NAV TABS -->
-  <div class="dash-nav">
-    <div class="dnav active" id="dnav-overview" onclick="switchPanel('overview')">📊 Overview</div>
-    <div class="dnav" id="dnav-submissions" onclick="switchPanel('submissions')">
-      📋 Submissions <span class="dnav-count" id="cnt-sub">0</span>
-    </div>
-    <div class="dnav" id="dnav-nearmiss" onclick="switchPanel('nearmiss')">
-      ⚠️ Near Misses <span class="dnav-count" id="cnt-nm">0</span>
-    </div>
-    <div class="dnav" id="dnav-sos" onclick="switchPanel('sos')">
-      🆘 SOS Alerts <span class="dnav-count" id="cnt-sos">0</span>
-    </div>
-    <div class="dnav" id="dnav-live" onclick="switchPanel('live')">
-      📡 Live <span class="dnav-count" id="cnt-live" style="background:var(--red);">0</span>
-    </div>
-    <div class="dnav" id="dnav-ground" onclick="switchPanel('ground')">
-      🪨 Ground Alerts <span class="dnav-count" id="cnt-ground" style="background:var(--red);">0</span>
-    </div>
-    <div class="dnav" id="dnav-analytics" onclick="switchPanel('analytics')">
-      📈 Analytics
-    </div>
-    <div class="dnav" id="dnav-handovers" onclick="switchPanel('handovers')">
-      📋 Handovers
-    </div>
-    <div class="dnav" id="dnav-notes" onclick="switchPanel('notes')">
-      📝 Shift Notes <span class="dnav-count" id="cnt-notes">0</span>
-    </div>
-    <div class="dnav" id="dnav-bord" onclick="switchPanel('bord')">
-      ⛏ Bord Tracker <span class="dnav-count" id="cnt-bord" style="background:var(--teal);">0</span>
-    </div>
-    <div class="dnav" id="dnav-production" onclick="switchPanel('production')">
-      📈 Production <span class="dnav-count" id="cnt-production" style="background:var(--teal);">0</span>
-    </div>
-    <div class="dnav" id="dnav-machinery" onclick="switchPanel('machinery')">
-      🚜 Machinery <span class="dnav-count" id="cnt-machinery" style="background:var(--red);">0</span>
-    </div>
-    <div class="dnav" id="dnav-hourly" onclick="switchPanel('hourly')">
-      ⚖ Hourly Tonnage <span class="dnav-count" id="cnt-hourly" style="background:var(--teal);">0</span>
-    </div>
-    <div class="dnav" id="dnav-accounts" onclick="switchPanel('accounts')">
-      👤 Recent Accounts <span class="dnav-count" id="cnt-accounts">0</span>
-    </div>
-  </div>
+ <!-- NAV TABS -->
+ <div class="dash-nav">
+   <div class="dnav active" id="dnav-overview" onclick="switchPanel('overview')">Overview</div>
+   <div class="dnav" id="dnav-submissions" onclick="switchPanel('submissions')">
+      Submissions <span class="dnav-count" id="cnt-sub">0</span>
+   </div>
+   <div class="dnav" id="dnav-nearmiss" onclick="switchPanel('nearmiss')">
+      Near Misses <span class="dnav-count" id="cnt-nm">0</span>
+   </div>
+   <div class="dnav" id="dnav-sos" onclick="switchPanel('sos')">
+      SOS Alerts <span class="dnav-count" id="cnt-sos">0</span>
+   </div>
+   <div class="dnav" id="dnav-live" onclick="switchPanel('live')">
+      Live <span class="dnav-count" id="cnt-live" style="background:var(--red);">0</span>
+   </div>
+   <div class="dnav" id="dnav-ground" onclick="switchPanel('ground')">
+      Ground Alerts <span class="dnav-count" id="cnt-ground" style="background:var(--red);">0</span>
+   </div>
+   <div class="dnav" id="dnav-analytics" onclick="switchPanel('analytics')">
+      Analytics
+   </div>
+   <div class="dnav" id="dnav-handovers" onclick="switchPanel('handovers')">
+      Handovers
+   </div>
+   <div class="dnav" id="dnav-notes" onclick="switchPanel('notes')">
+      Shift Notes <span class="dnav-count" id="cnt-notes">0</span>
+   </div>
+   <div class="dnav" id="dnav-bord" onclick="switchPanel('bord')">
+      Bord Tracker <span class="dnav-count" id="cnt-bord" style="background:var(--teal);">0</span>
+   </div>
+   <div class="dnav" id="dnav-production" onclick="switchPanel('production')">
+      Production <span class="dnav-count" id="cnt-production" style="background:var(--teal);">0</span>
+   </div>
+   <div class="dnav" id="dnav-machinery" onclick="switchPanel('machinery')">
+      Machinery <span class="dnav-count" id="cnt-machinery" style="background:var(--red);">0</span>
+   </div>
+   <div class="dnav" id="dnav-hourly" onclick="switchPanel('hourly')">
+      Hourly Tonnage <span class="dnav-count" id="cnt-hourly" style="background:var(--teal);">0</span>
+   </div>
+   <div class="dnav" id="dnav-accounts" onclick="switchPanel('accounts')">
+      Recent Accounts <span class="dnav-count" id="cnt-accounts">0</span>
+   </div>
+ </div>
 
-  <div class="dash-main">
+ <div class="dash-main">
 
-    <!-- OVERVIEW PANEL -->
-    <div class="dash-panel active" id="panel-overview">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Submissions</div>
-          <div class="stat-val" id="stat-total">—</div>
-          <div class="stat-sub">All time</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Completed Today</div>
-          <div class="stat-val green" id="stat-today">—</div>
-          <div class="stat-sub">Successful re-entries</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Aborted Procedures</div>
-          <div class="stat-val red" id="stat-aborted">—</div>
-          <div class="stat-sub">Unsafe gas levels</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Near Misses</div>
-          <div class="stat-val amber" id="stat-nm">—</div>
-          <div class="stat-sub">Total reported</div>
-        </div>
-      </div>
+   <!-- OVERVIEW PANEL -->
+   <div class="dash-panel active" id="panel-overview">
+     <div class="stats-grid">
+       <div class="stat-card">
+         <div class="stat-label">Total Submissions</div>
+         <div class="stat-val" id="stat-total">—</div>
+         <div class="stat-sub">All time</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Completed Today</div>
+         <div class="stat-val green" id="stat-today">—</div>
+         <div class="stat-sub">Successful re-entries</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Aborted Procedures</div>
+         <div class="stat-val red" id="stat-aborted">—</div>
+         <div class="stat-sub">Unsafe gas levels</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Near Misses</div>
+         <div class="stat-val amber" id="stat-nm">—</div>
+         <div class="stat-sub">Total reported</div>
+       </div>
+     </div>
 
-      <div class="slbl">Recent Submissions</div>
-      <div class="tbl-wrap" id="overview-recent">
-        <div class="loading">Loading...</div>
-      </div>
+     <div class="slbl">Recent Submissions</div>
+     <div class="tbl-wrap" id="overview-recent">
+       <div class="loading">Loading...</div>
+     </div>
 
-      <div class="slbl" style="margin-top:1.2rem;">Recent Near Misses</div>
-      <div class="tbl-wrap" id="overview-nm">
-        <div class="loading">Loading...</div>
-      </div>
-    </div>
+     <div class="slbl" style="margin-top:1.2rem;">Recent Near Misses</div>
+     <div class="tbl-wrap" id="overview-nm">
+       <div class="loading">Loading...</div>
+     </div>
+   </div>
 
-    <!-- SUBMISSIONS PANEL -->
-    <div class="dash-panel" id="panel-submissions">
-      <div class="filters">
-        <span class="filter-label">Filter:</span>
-        <select class="f-select" id="f-section" onchange="loadSubmissions()">
-          <option value="">All Sections</option>
-          <option value="14 South">14 South — Challengers</option>
-          <option value="16 North">16 North — Pioneers</option>
-        </select>
-        <select class="f-select" id="f-status" onchange="loadSubmissions()">
-          <option value="">All Statuses</option>
-          <option value="completed">Completed</option>
-          <option value="aborted_unsafe_gas">Aborted</option>
-        </select>
-        <select class="f-select" id="f-reentry" onchange="renderSubmissionsTable()">
-          <option value="">All Types</option>
-          <option value="standard">Standard</option>
-          <option value="irt">IRT (Immediate)</option>
-        </select>
-        <span class="filter-label">Date:</span>
-        <input class="f-input" type="date" id="f-date-from" onchange="loadSubmissions()" title="From date"/>
-        <input class="f-input" type="date" id="f-date-to" onchange="loadSubmissions()" title="To date" style="max-width:140px;"/>
-        <input class="f-input" type="text" id="f-search" oninput="renderSubmissionsTable()" placeholder="Search miner, badge, zone…" title="Search loaded records" style="min-width:170px;flex:1;"/>
-        <button class="btn-export" onclick="exportCSV('submissions')">Export CSV</button>
-      </div>
-      <div class="filters" style="padding-top:0.5rem;border-top:none;margin-top:-0.5rem;">
-        <span class="filter-label">Quick:</span>
-        <div class="preset-btns">
-          <button class="preset-btn" onclick="setDatePreset('today')">Today</button>
-          <button class="preset-btn" onclick="setDatePreset('yesterday')">Yesterday</button>
-          <button class="preset-btn" onclick="setDatePreset('7days')">Last 7 Days</button>
-          <button class="preset-btn" onclick="setDatePreset('month')">This Month</button>
-          <button class="preset-btn" onclick="setDatePreset('all')">All Time</button>
-        </div>
-      </div>
+   <!-- SUBMISSIONS PANEL -->
+   <div class="dash-panel" id="panel-submissions">
+     <div class="filters">
+       <span class="filter-label">Filter:</span>
+       <select class="f-select" id="f-section" onchange="loadSubmissions()">
+         <option value="">All Sections</option>
+         <option value="14 South">14 South — Challengers</option>
+         <option value="16 North">16 North — Pioneers</option>
+       </select>
+       <select class="f-select" id="f-status" onchange="loadSubmissions()">
+         <option value="">All Statuses</option>
+         <option value="completed">Completed</option>
+         <option value="aborted_unsafe_gas">Aborted</option>
+       </select>
+       <select class="f-select" id="f-reentry" onchange="renderSubmissionsTable()">
+         <option value="">All Types</option>
+         <option value="standard">Standard</option>
+         <option value="irt">IRT (Immediate)</option>
+       </select>
+       <span class="filter-label">Date:</span>
+       <input class="f-input" type="date" id="f-date-from" onchange="loadSubmissions()" title="From date"/>
+       <input class="f-input" type="date" id="f-date-to" onchange="loadSubmissions()" title="To date" style="max-width:140px;"/>
+       <input class="f-input" type="text" id="f-search" oninput="renderSubmissionsTable()" placeholder="Search miner, badge, zone…" title="Search loaded records" style="min-width:170px;flex:1;"/>
+       <button class="btn-export" onclick="exportCSV('submissions')">Export CSV</button>
+     </div>
+     <div class="filters" style="padding-top:0.5rem;border-top:none;margin-top:-0.5rem;">
+       <span class="filter-label">Quick:</span>
+       <div class="preset-btns">
+         <button class="preset-btn" onclick="setDatePreset('today')">Today</button>
+         <button class="preset-btn" onclick="setDatePreset('yesterday')">Yesterday</button>
+         <button class="preset-btn" onclick="setDatePreset('7days')">Last 7 Days</button>
+         <button class="preset-btn" onclick="setDatePreset('month')">This Month</button>
+         <button class="preset-btn" onclick="setDatePreset('all')">All Time</button>
+       </div>
+     </div>
 
-      <div class="tbl-wrap" id="sub-table">
-        <div class="loading">Loading submissions...</div>
-      </div>
-    </div>
+     <div class="tbl-wrap" id="sub-table">
+       <div class="loading">Loading submissions...</div>
+     </div>
+   </div>
 
-    <!-- NEAR MISS PANEL -->
-    <div class="dash-panel" id="panel-nearmiss">
-      <div class="filters">
-        <span class="filter-label">Filter:</span>
-        <select class="f-select" id="f-nm-severity" onchange="loadNearMisses()">
-          <option value="">All Severities</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
-        <select class="f-select" id="f-nm-section" onchange="loadNearMisses()">
-          <option value="">All Sections</option>
-          <option value="14 South">14 South — Challengers</option>
-          <option value="16 North">16 North — Pioneers</option>
-        </select>
-        <button class="btn-export" onclick="exportCSV('near_misses')">Export CSV</button>
-      </div>
+   <!-- NEAR MISS PANEL -->
+   <div class="dash-panel" id="panel-nearmiss">
+     <div class="filters">
+       <span class="filter-label">Filter:</span>
+       <select class="f-select" id="f-nm-severity" onchange="loadNearMisses()">
+         <option value="">All Severities</option>
+         <option value="high">High</option>
+         <option value="medium">Medium</option>
+         <option value="low">Low</option>
+       </select>
+       <select class="f-select" id="f-nm-section" onchange="loadNearMisses()">
+         <option value="">All Sections</option>
+         <option value="14 South">14 South — Challengers</option>
+         <option value="16 North">16 North — Pioneers</option>
+       </select>
+       <button class="btn-export" onclick="exportCSV('near_misses')">Export CSV</button>
+     </div>
 
-      <div class="tbl-wrap" id="nm-table">
-        <div class="loading">Loading near misses...</div>
-      </div>
-    </div>
+     <div class="tbl-wrap" id="nm-table">
+       <div class="loading">Loading near misses...</div>
+     </div>
+   </div>
 
-    <!-- SOS PANEL -->
-    <div class="dash-panel" id="panel-sos">
-      <div class="tbl-wrap" id="sos-table">
-        <div class="loading">Loading SOS alerts...</div>
-      </div>
-    </div>
+   <!-- SOS PANEL -->
+   <div class="dash-panel" id="panel-sos">
+     <div class="tbl-wrap" id="sos-table">
+       <div class="loading">Loading SOS alerts...</div>
+     </div>
+   </div>
 
-    <!-- LIVE TRACKING PANEL -->
-    <div class="dash-panel" id="panel-live">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-        <div>
-          <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Active Procedures</div>
-          <div style="font-size:0.78rem;color:var(--muted);">Miners currently underground in progress — refreshes every 30 seconds</div>
-        </div>
-        <button class="btn-filter" onclick="loadLiveTracking()" style="white-space:nowrap;">↺ Refresh</button>
-      </div>
-      <div id="live-table">
-        <div class="loading">Loading active procedures...</div>
-      </div>
-    </div>
+   <!-- LIVE TRACKING PANEL -->
+   <div class="dash-panel" id="panel-live">
+     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+       <div>
+         <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Active Procedures</div>
+         <div style="font-size:0.9375rem;color:var(--muted);">Miners currently underground in progress — refreshes every 30 seconds</div>
+       </div>
+       <button class="btn-filter" onclick="loadLiveTracking()" style="white-space:nowrap;">Refresh</button>
+     </div>
+     <div id="live-table">
+       <div class="loading">Loading active procedures...</div>
+     </div>
+   </div>
 
-    <!-- GROUND ALERTS PANEL -->
-    <div class="dash-panel" id="panel-ground">
-      <div class="tbl-wrap" id="ground-table">
-        <div class="loading">Loading ground alerts...</div>
-      </div>
-    </div>
+   <!-- GROUND ALERTS PANEL -->
+   <div class="dash-panel" id="panel-ground">
+     <div class="tbl-wrap" id="ground-table">
+       <div class="loading">Loading ground alerts...</div>
+     </div>
+   </div>
 
-    <!-- ANALYTICS PANEL -->
-    <div class="dash-panel" id="panel-analytics">
-      <div class="chart-card">
-        <div class="chart-head">
-          <div>
-            <div class="chart-title">Gas Readings Trend — Last 30 Days</div>
-            <div class="chart-sub">Average readings per gas type across all sections. Dashed lines show legal limits.</div>
-          </div>
-          <select class="f-select" id="analytics-section" onchange="loadAnalytics()" style="max-width:160px;">
-            <option value="">All Sections</option>
-            <option value="14 South">14 South — Challengers</option>
-            <option value="16 North">16 North — Pioneers</option>
-          </select>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="gas-trend-chart"></canvas>
-        </div>
-      </div>
+   <!-- ANALYTICS PANEL -->
+   <div class="dash-panel" id="panel-analytics">
+     <div class="chart-card">
+       <div class="chart-head">
+         <div>
+           <div class="chart-title">Gas Readings Trend — Last 30 Days</div>
+           <div class="chart-sub">Average readings per gas type across all sections. Dashed lines show legal limits.</div>
+         </div>
+         <select class="f-select" id="analytics-section" onchange="loadAnalytics()" style="max-width:160px;">
+           <option value="">All Sections</option>
+           <option value="14 South">14 South — Challengers</option>
+           <option value="16 North">16 North — Pioneers</option>
+         </select>
+       </div>
+       <div class="chart-wrap">
+         <canvas id="gas-trend-chart"></canvas>
+       </div>
+     </div>
 
-      <div class="chart-card">
-        <div class="chart-head">
-          <div>
-            <div class="chart-title">Missed Re-Entry Records — Last 14 Days</div>
-            <div class="chart-sub">Days where blasts occurred but no SLAM procedure was submitted. Requires blast register data.</div>
-          </div>
-          <button class="btn-filter" onclick="loadMissedReentries()">↺ Refresh</button>
-        </div>
-        <div id="missed-reentry-table">
-          <div class="loading">Loading compliance data...</div>
-        </div>
-      </div>
+     <div class="chart-card">
+       <div class="chart-head">
+         <div>
+           <div class="chart-title">Missed Re-Entry Records — Last 14 Days</div>
+           <div class="chart-sub">Days where blasts occurred but no SLAM procedure was submitted. Requires blast register data.</div>
+         </div>
+         <button class="btn-filter" onclick="loadMissedReentries()">Refresh</button>
+       </div>
+       <div id="missed-reentry-table">
+         <div class="loading">Loading compliance data...</div>
+       </div>
+     </div>
 
-      <div class="chart-card">
-        <div class="chart-head">
-          <div>
-            <div class="chart-title">Submission Volume — Last 30 Days</div>
-            <div class="chart-sub">Daily count of completed vs aborted re-entry procedures.</div>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="volume-chart"></canvas>
-        </div>
-      </div>
-    </div>
+     <div class="chart-card">
+       <div class="chart-head">
+         <div>
+           <div class="chart-title">Submission Volume — Last 30 Days</div>
+           <div class="chart-sub">Daily count of completed vs aborted re-entry procedures.</div>
+         </div>
+       </div>
+       <div class="chart-wrap">
+         <canvas id="volume-chart"></canvas>
+       </div>
+     </div>
+   </div>
 
-    <!-- HANDOVERS PANEL -->
-    <div class="dash-panel" id="panel-handovers">
-      <div class="filters">
-        <span class="filter-label">Filter:</span>
-        <select class="f-select" id="f-ho-section" onchange="loadHandovers()">
-          <option value="">All Sections</option>
-          <option value="14 South">14 South — Challengers</option>
-          <option value="16 North">16 North — Pioneers</option>
-        </select>
-        <select class="f-select" id="f-ho-shift" onchange="loadHandovers()">
-          <option value="">All Shifts</option>
-          <option value="A">Shift A</option>
-          <option value="B">Shift B</option>
-          <option value="C">Shift C</option>
-          <option value="day">Day Shift (old)</option>
-          <option value="afternoon">Afternoon Shift (old)</option>
-          <option value="night">Night Shift (old)</option>
-        </select>
-        <input type="date" class="f-input" id="f-ho-date" onchange="loadHandovers()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
-        <button class="btn-filter" onclick="clearDateFilter('f-ho-date', loadHandovers)">Clear date</button>
-      </div>
-      <div id="handovers-list">
-        <div class="loading">Loading handovers...</div>
-      </div>
-    </div>
+   <!-- HANDOVERS PANEL -->
+   <div class="dash-panel" id="panel-handovers">
+     <div class="filters">
+       <span class="filter-label">Filter:</span>
+       <select class="f-select" id="f-ho-section" onchange="loadHandovers()">
+         <option value="">All Sections</option>
+         <option value="14 South">14 South — Challengers</option>
+         <option value="16 North">16 North — Pioneers</option>
+       </select>
+       <select class="f-select" id="f-ho-shift" onchange="loadHandovers()">
+         <option value="">All Shifts</option>
+         <option value="A">Shift A</option>
+         <option value="B">Shift B</option>
+         <option value="C">Shift C</option>
+         <option value="day">Day Shift (old)</option>
+         <option value="afternoon">Afternoon Shift (old)</option>
+         <option value="night">Night Shift (old)</option>
+       </select>
+       <input type="date" class="f-input" id="f-ho-date" onchange="loadHandovers()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+       <button class="btn-filter" onclick="clearDateFilter('f-ho-date', loadHandovers)">Clear date</button>
+     </div>
+     <div id="handovers-list">
+       <div class="loading">Loading handovers...</div>
+     </div>
+   </div>
 
-    <!-- BORD CYCLE TRACKER PANEL -->
-    <div class="dash-panel" id="panel-bord">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
-        <div>
-          <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Mining Cycle Board Status</div>
-          <div style="font-size:0.78rem;color:var(--muted);">Current cycle stage per bord — updated by miners at end of shift. Refreshes on tab open.</div>
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-          <select class="f-select" id="f-bord-section" onchange="loadBordTracker()" style="max-width:160px;">
-            <option value="">All Sections</option>
-            <option value="14 South">14 South — Challengers</option>
-            <option value="16 North">16 North — Pioneers</option>
-          </select>
-          <select class="f-select" id="f-bord-stage" onchange="loadBordTracker()" style="max-width:150px;">
-            <option value="">All Stages</option>
-            <option value="drilling">Drilling</option>
-            <option value="blasting">Blasting</option>
-            <option value="lashing">Lashing</option>
-            <option value="support">Support</option>
-          </select>
-          <input type="date" class="f-input" id="f-bord-date" onchange="loadBordTracker()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
-          <button class="btn-filter" onclick="clearDateFilter('f-bord-date', loadBordTracker)">Clear date</button>
-          <button class="btn-filter" onclick="loadBordTracker()">↺ Refresh</button>
-          <button class="btn-export" onclick="exportBordCSV()">Export CSV</button>
-        </div>
-      </div>
+   <!-- BORD CYCLE TRACKER PANEL -->
+   <div class="dash-panel" id="panel-bord">
+     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
+       <div>
+         <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Mining Cycle Board Status</div>
+         <div style="font-size:0.9375rem;color:var(--muted);">Current cycle stage per bord — updated by miners at end of shift. Refreshes on tab open.</div>
+       </div>
+       <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+         <select class="f-select" id="f-bord-section" onchange="loadBordTracker()" style="max-width:160px;">
+           <option value="">All Sections</option>
+           <option value="14 South">14 South — Challengers</option>
+           <option value="16 North">16 North — Pioneers</option>
+         </select>
+         <select class="f-select" id="f-bord-stage" onchange="loadBordTracker()" style="max-width:150px;">
+           <option value="">All Stages</option>
+           <option value="drilling">Drilling</option>
+           <option value="blasting">Blasting</option>
+           <option value="lashing">Lashing</option>
+           <option value="support">Support</option>
+         </select>
+         <input type="date" class="f-input" id="f-bord-date" onchange="loadBordTracker()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+         <button class="btn-filter" onclick="clearDateFilter('f-bord-date', loadBordTracker)">Clear date</button>
+         <button class="btn-filter" onclick="loadBordTracker()">Refresh</button>
+         <button class="btn-export" onclick="exportBordCSV()">Export CSV</button>
+       </div>
+     </div>
 
-      <!-- Stage legend -->
-      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;">
-        <span class="bct-legend-pill drilling">🔵 Drilling</span>
-        <span class="bct-legend-pill blasting">🔴 Blasting</span>
-        <span class="bct-legend-pill lashing">🟡 Lashing</span>
-        <span class="bct-legend-pill support">🟠 Support</span>
-      </div>
+     <!-- Stage legend -->
+     <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;">
+       <span class="bct-legend-pill drilling">Drilling</span>
+       <span class="bct-legend-pill blasting">Blasting</span>
+       <span class="bct-legend-pill lashing">Lashing</span>
+       <span class="bct-legend-pill support">Support</span>
+     </div>
 
-      <div id="bord-table">
-        <div class="loading">Loading bord status...</div>
-      </div>
-    </div>
+     <div id="bord-table">
+       <div class="loading">Loading bord status...</div>
+     </div>
+   </div>
 
-    <!-- PRODUCTION PERFORMANCE PANEL -->
-    <div class="dash-panel" id="panel-production">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
-        <div>
-          <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Production Shift Performance</div>
-          <div style="font-size:0.78rem;color:var(--muted);">Drilled/support metres vs plan, tonnage hoisted, charging/blasting status per bord.</div>
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-          <select class="f-select" id="f-prod-section" onchange="loadProduction()" style="max-width:160px;">
-            <option value="">All Sections</option>
-            <option value="14 South">14 South — Challengers</option>
-            <option value="16 North">16 North — Pioneers</option>
-          </select>
-          <select class="f-select" id="f-prod-period" onchange="loadProduction()" style="max-width:130px;">
-            <option value="">All Shifts</option>
-            <option value="day">☀ Day Shift</option>
-            <option value="night">🌙 Night Shift</option>
-          </select>
-          <input type="date" class="f-input" id="f-prod-date" onchange="loadProduction()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
-          <button class="btn-filter" onclick="clearDateFilter('f-prod-date', loadProduction)">Clear date</button>
-          <button class="btn-filter" onclick="loadProduction()">↺ Refresh</button>
-          <button class="btn-export" onclick="exportProductionCSV()">Export CSV</button>
-        </div>
-      </div>
+   <!-- PRODUCTION PERFORMANCE PANEL -->
+   <div class="dash-panel" id="panel-production">
+     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
+       <div>
+         <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Production Shift Performance</div>
+         <div style="font-size:0.9375rem;color:var(--muted);">Drilled/support metres vs plan, tonnage hoisted, charging/blasting status per bord.</div>
+       </div>
+       <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+         <select class="f-select" id="f-prod-section" onchange="loadProduction()" style="max-width:160px;">
+           <option value="">All Sections</option>
+           <option value="14 South">14 South — Challengers</option>
+           <option value="16 North">16 North — Pioneers</option>
+         </select>
+         <select class="f-select" id="f-prod-period" onchange="loadProduction()" style="max-width:130px;">
+           <option value="">All Shifts</option>
+           <option value="day">Day Shift</option>
+           <option value="night">Night Shift</option>
+         </select>
+         <input type="date" class="f-input" id="f-prod-date" onchange="loadProduction()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+         <button class="btn-filter" onclick="clearDateFilter('f-prod-date', loadProduction)">Clear date</button>
+         <button class="btn-filter" onclick="loadProduction()">Refresh</button>
+         <button class="btn-export" onclick="exportProductionCSV()">Export CSV</button>
+       </div>
+     </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Tonnage Hoisted</div>
-          <div class="stat-val" id="prod-stat-tonnage">—</div>
-          <div class="stat-sub">Selected range</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Drilled vs Plan</div>
-          <div class="stat-val" id="prod-stat-drilled">—</div>
-          <div class="stat-sub">Actual / expected metres</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Support vs Plan</div>
-          <div class="stat-val" id="prod-stat-support">—</div>
-          <div class="stat-sub">Actual / expected metres</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Bords Needing Charging/Blasting</div>
-          <div class="stat-val amber" id="prod-stat-ends">—</div>
-          <div class="stat-sub">Latest report per bord</div>
-        </div>
-      </div>
+     <div class="stats-grid">
+       <div class="stat-card">
+         <div class="stat-label">Total Tonnage Hoisted</div>
+         <div class="stat-val" id="prod-stat-tonnage">—</div>
+         <div class="stat-sub">Selected range</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Drilled vs Plan</div>
+         <div class="stat-val" id="prod-stat-drilled">—</div>
+         <div class="stat-sub">Actual / expected metres</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Support vs Plan</div>
+         <div class="stat-val" id="prod-stat-support">—</div>
+         <div class="stat-sub">Actual / expected metres</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Bords Needing Charging/Blasting</div>
+         <div class="stat-val amber" id="prod-stat-ends">—</div>
+         <div class="stat-sub">Latest report per bord</div>
+       </div>
+     </div>
 
-      <div class="chart-card">
-        <div class="chart-head">
-          <div>
-            <div class="chart-title">Daily Production Performance</div>
-            <div class="chart-sub">Day / Night / Total Actual / Total Expected, selected range.</div>
-          </div>
-          <select class="f-select" id="prod-metric" onchange="renderProductionChart()" style="max-width:130px;">
-            <option value="drilled">Drilling</option>
-            <option value="support">Support</option>
-          </select>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="prod-chart"></canvas>
-        </div>
-      </div>
+     <div class="chart-card">
+       <div class="chart-head">
+         <div>
+           <div class="chart-title">Daily Production Performance</div>
+           <div class="chart-sub">Day / Night / Total Actual / Total Expected, selected range.</div>
+         </div>
+         <select class="f-select" id="prod-metric" onchange="renderProductionChart()" style="max-width:130px;">
+           <option value="drilled">Drilling</option>
+           <option value="support">Support</option>
+         </select>
+       </div>
+       <div class="chart-wrap">
+         <canvas id="prod-chart"></canvas>
+       </div>
+     </div>
 
-      <div class="chart-card" style="margin-top:1.2rem;">
-        <div class="chart-head">
-          <div>
-            <div class="chart-title">Total Tonnage Hoisted</div>
-            <div class="chart-sub">Actual vs expected, selected range.</div>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="prod-tonnage-chart"></canvas>
-        </div>
-      </div>
+     <div class="chart-card" style="margin-top:1.2rem;">
+       <div class="chart-head">
+         <div>
+           <div class="chart-title">Total Tonnage Hoisted</div>
+           <div class="chart-sub">Actual vs expected, selected range.</div>
+         </div>
+       </div>
+       <div class="chart-wrap">
+         <canvas id="prod-tonnage-chart"></canvas>
+       </div>
+     </div>
 
-      <div class="slbl" style="margin-top:1.2rem;">Production Records</div>
-      <div class="tbl-wrap" id="prod-table">
-        <div class="loading">Loading production data...</div>
-      </div>
-    </div>
+     <div class="slbl" style="margin-top:1.2rem;">Production Records</div>
+     <div class="tbl-wrap" id="prod-table">
+       <div class="loading">Loading production data...</div>
+     </div>
+   </div>
 
-    <!-- MACHINERY PANEL -->
-    <div class="dash-panel" id="panel-machinery">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
-        <div>
-          <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Machinery Availability &amp; Utilization</div>
-          <div style="font-size:0.78rem;color:var(--muted);">Live machine status, startup/breakdown log, bord assignment.</div>
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-          <select class="f-select" id="f-mach-section" onchange="loadMachinery()" style="max-width:160px;">
-            <option value="">All Sections</option>
-            <option value="14 South">14 South — Challengers</option>
-            <option value="16 North">16 North — Pioneers</option>
-          </select>
-          <select class="f-select" id="f-mach-status" onchange="loadMachinery()" style="max-width:140px;">
-            <option value="">All Statuses</option>
-            <option value="running">Running</option>
-            <option value="breakdown">Breakdown</option>
-            <option value="idle">Idle</option>
-          </select>
-          <input type="date" class="f-input" id="f-mach-date" onchange="loadMachinery()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
-          <button class="btn-filter" onclick="clearDateFilter('f-mach-date', loadMachinery)">Clear date</button>
-          <button class="btn-filter" onclick="loadMachinery()">↺ Refresh</button>
-          <button class="btn-export" onclick="exportMachineryCSV()">Export CSV</button>
-        </div>
-      </div>
+   <!-- MACHINERY PANEL -->
+   <div class="dash-panel" id="panel-machinery">
+     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
+       <div>
+         <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Machinery Availability &amp; Utilization</div>
+         <div style="font-size:0.9375rem;color:var(--muted);">Live machine status, startup/breakdown log, bord assignment.</div>
+       </div>
+       <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+         <select class="f-select" id="f-mach-section" onchange="loadMachinery()" style="max-width:160px;">
+           <option value="">All Sections</option>
+           <option value="14 South">14 South — Challengers</option>
+           <option value="16 North">16 North — Pioneers</option>
+         </select>
+         <select class="f-select" id="f-mach-status" onchange="loadMachinery()" style="max-width:140px;">
+           <option value="">All Statuses</option>
+           <option value="running">Running</option>
+           <option value="breakdown">Breakdown</option>
+           <option value="idle">Idle</option>
+         </select>
+         <input type="date" class="f-input" id="f-mach-date" onchange="loadMachinery()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+         <button class="btn-filter" onclick="clearDateFilter('f-mach-date', loadMachinery)">Clear date</button>
+         <button class="btn-filter" onclick="loadMachinery()">Refresh</button>
+         <button class="btn-export" onclick="exportMachineryCSV()">Export CSV</button>
+       </div>
+     </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Currently Running</div>
-          <div class="stat-val green" id="mach-stat-running">—</div>
-          <div class="stat-sub">Latest status per machine</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Currently Breakdown</div>
-          <div class="stat-val red" id="mach-stat-breakdown">—</div>
-          <div class="stat-sub">Needs attention</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Currently Idle</div>
-          <div class="stat-val amber" id="mach-stat-idle">—</div>
-          <div class="stat-sub">Latest status per machine</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Downtime</div>
-          <div class="stat-val" id="mach-stat-downtime">—</div>
-          <div class="stat-sub">Selected range</div>
-        </div>
-      </div>
+     <div class="stats-grid">
+       <div class="stat-card">
+         <div class="stat-label">Currently Running</div>
+         <div class="stat-val green" id="mach-stat-running">—</div>
+         <div class="stat-sub">Latest status per machine</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Currently Breakdown</div>
+         <div class="stat-val red" id="mach-stat-breakdown">—</div>
+         <div class="stat-sub">Needs attention</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Currently Idle</div>
+         <div class="stat-val amber" id="mach-stat-idle">—</div>
+         <div class="stat-sub">Latest status per machine</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Total Downtime</div>
+         <div class="stat-val" id="mach-stat-downtime">—</div>
+         <div class="stat-sub">Selected range</div>
+       </div>
+     </div>
 
-      <div id="mach-board">
-        <div class="loading">Loading machinery status...</div>
-      </div>
+     <div id="mach-board">
+       <div class="loading">Loading machinery status...</div>
+     </div>
 
-      <div class="chart-card" style="margin-top:1.2rem;">
-        <div class="chart-head">
-          <div>
-            <div class="chart-title">Machinery Utilization</div>
-            <div class="chart-sub">Status across the day — 0% Breakdown · 50% Idle · 100% Running. Point shape = machine type (★ LHD · ▭ Rig · ▲ Bolter). Uses the date filter above, or today if none is set.</div>
-          </div>
-        </div>
-        <div class="chart-wrap" style="height:280px;">
-          <canvas id="mach-util-chart"></canvas>
-        </div>
-      </div>
-    </div>
+     <div class="chart-card" style="margin-top:1.2rem;">
+       <div class="chart-head">
+         <div>
+           <div class="chart-title">Machinery Utilization</div>
+           <div class="chart-sub">Status across the day — 0% Breakdown · 50% Idle · 100% Running. Point shape = machine type: LHD, rig, bolter. Uses the date filter above, or today if none is set.</div>
+         </div>
+       </div>
+       <div class="chart-wrap" style="height:280px;">
+         <canvas id="mach-util-chart"></canvas>
+       </div>
+     </div>
+   </div>
 
-    <!-- HOURLY TONNAGE PANEL -->
-    <div class="dash-panel" id="panel-hourly">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
-        <div>
-          <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Hourly Tonnage Tracker</div>
-          <div style="font-size:0.78rem;color:var(--muted);">Tonnage hoisted per bord, per hour.</div>
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-          <select class="f-select" id="f-ton-section" onchange="loadHourly()" style="max-width:160px;">
-            <option value="">All Sections</option>
-            <option value="14 South">14 South — Challengers</option>
-            <option value="16 North">16 North — Pioneers</option>
-          </select>
-          <select class="f-select" id="f-ton-period" onchange="loadHourly()" style="max-width:130px;">
-            <option value="">All Shifts</option>
-            <option value="day">☀ Day Shift</option>
-            <option value="night">🌙 Night Shift</option>
-          </select>
-          <input type="date" class="f-input" id="f-ton-date" onchange="loadHourly()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
-          <button class="btn-filter" onclick="clearDateFilter('f-ton-date', loadHourly)">Clear date</button>
-          <button class="btn-filter" onclick="loadHourly()">↺ Refresh</button>
-          <button class="btn-export" onclick="exportHourlyCSV()">Export CSV</button>
-        </div>
-      </div>
+   <!-- HOURLY TONNAGE PANEL -->
+   <div class="dash-panel" id="panel-hourly">
+     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem;">
+       <div>
+         <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.2rem;">Hourly Tonnage Tracker</div>
+         <div style="font-size:0.9375rem;color:var(--muted);">Tonnage hoisted per bord, per hour.</div>
+       </div>
+       <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+         <select class="f-select" id="f-ton-section" onchange="loadHourly()" style="max-width:160px;">
+           <option value="">All Sections</option>
+           <option value="14 South">14 South — Challengers</option>
+           <option value="16 North">16 North — Pioneers</option>
+         </select>
+         <select class="f-select" id="f-ton-period" onchange="loadHourly()" style="max-width:130px;">
+           <option value="">All Shifts</option>
+           <option value="day">Day Shift</option>
+           <option value="night">Night Shift</option>
+         </select>
+         <input type="date" class="f-input" id="f-ton-date" onchange="loadHourly()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+         <button class="btn-filter" onclick="clearDateFilter('f-ton-date', loadHourly)">Clear date</button>
+         <button class="btn-filter" onclick="loadHourly()">Refresh</button>
+         <button class="btn-export" onclick="exportHourlyCSV()">Export CSV</button>
+       </div>
+     </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Tonnage</div>
-          <div class="stat-val" id="ton-stat-total">—</div>
-          <div class="stat-sub">Selected range</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Avg Tonnage / Hour</div>
-          <div class="stat-val" id="ton-stat-avg">—</div>
-          <div class="stat-sub">Across reporting hours</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Peak Hour</div>
-          <div class="stat-val" id="ton-stat-peak" style="font-size:1.05rem;">—</div>
-          <div class="stat-sub">Bord · hour</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Bords Reporting</div>
-          <div class="stat-val" id="ton-stat-bords">—</div>
-          <div class="stat-sub">Distinct bords logged</div>
-        </div>
-      </div>
+     <div class="stats-grid">
+       <div class="stat-card">
+         <div class="stat-label">Total Tonnage</div>
+         <div class="stat-val" id="ton-stat-total">—</div>
+         <div class="stat-sub">Selected range</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Avg Tonnage / Hour</div>
+         <div class="stat-val" id="ton-stat-avg">—</div>
+         <div class="stat-sub">Across reporting hours</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Peak Hour</div>
+         <div class="stat-val" id="ton-stat-peak" style="font-size:1.05rem;">—</div>
+         <div class="stat-sub">Bord · hour</div>
+       </div>
+       <div class="stat-card">
+         <div class="stat-label">Bords Reporting</div>
+         <div class="stat-val" id="ton-stat-bords">—</div>
+         <div class="stat-sub">Distinct bords logged</div>
+       </div>
+     </div>
 
-      <div class="chart-card">
-        <div class="chart-head">
-          <div>
-            <div class="chart-title">Tonnage Heatmap</div>
-            <div class="chart-sub">Click a bord to see its hourly detail.</div>
-          </div>
-        </div>
-        <div id="ton-heatmap-wrap" style="overflow-x:auto;">
-          <div class="loading">Loading hourly tonnage...</div>
-        </div>
-      </div>
-    </div>
+     <div class="chart-card">
+       <div class="chart-head">
+         <div>
+           <div class="chart-title">Tonnage Heatmap</div>
+           <div class="chart-sub">Click a bord to see its hourly detail.</div>
+         </div>
+       </div>
+       <div id="ton-heatmap-wrap" style="overflow-x:auto;">
+         <div class="loading">Loading hourly tonnage...</div>
+       </div>
+     </div>
+   </div>
 
-    <!-- SHIFT NOTES PANEL -->
-    <div class="dash-panel" id="panel-notes">
-      <div class="filters">
-        <span class="filter-label">Filter:</span>
-        <select class="f-select" id="f-sn-section" onchange="loadShiftNotes()">
-          <option value="">All Sections</option>
-          <option value="14 South">14 South — Challengers</option>
-          <option value="16 North">16 North — Pioneers</option>
-        </select>
-        <input type="date" class="f-input" id="f-sn-date" onchange="loadShiftNotes()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
-        <button class="btn-filter" onclick="clearDateFilter('f-sn-date', loadShiftNotes)">Clear date</button>
-        <button class="btn-filter" onclick="loadShiftNotes()">↺ Refresh</button>
-      </div>
-      <div id="notes-list">
-        <div class="loading">Loading shift notes...</div>
-      </div>
-    </div>
+   <!-- SHIFT NOTES PANEL -->
+   <div class="dash-panel" id="panel-notes">
+     <div class="filters">
+       <span class="filter-label">Filter:</span>
+       <select class="f-select" id="f-sn-section" onchange="loadShiftNotes()">
+         <option value="">All Sections</option>
+         <option value="14 South">14 South — Challengers</option>
+         <option value="16 North">16 North — Pioneers</option>
+       </select>
+       <input type="date" class="f-input" id="f-sn-date" onchange="loadShiftNotes()" style="max-width:170px;flex:0 0 auto;" title="Filter by date">
+       <button class="btn-filter" onclick="clearDateFilter('f-sn-date', loadShiftNotes)">Clear date</button>
+       <button class="btn-filter" onclick="loadShiftNotes()">Refresh</button>
+     </div>
+     <div id="notes-list">
+       <div class="loading">Loading shift notes...</div>
+     </div>
+   </div>
 
-    <!-- RECENTLY CREATED ACCOUNTS PANEL -->
-    <div class="dash-panel" id="panel-accounts">
-      <div class="filters">
-        <span class="filter-label">Filter:</span>
-        <select class="f-select" id="f-acc-role" onchange="loadRecentAccounts()">
-          <option value="">All Roles</option>
-          <option value="officer">Officer</option>
-          <option value="supervisor">Supervisor</option>
-          <option value="she_manager">SHE Manager</option>
-          <option value="shift_boss">Shift Boss</option>
-          <option value="safety_officer">Safety Officer</option>
-          <option value="admin">Admin</option>
-        </select>
-        <select class="f-select" id="f-acc-section" onchange="loadRecentAccounts()">
-          <option value="">All Sections</option>
-          <option value="14 South">14 South — Challengers</option>
-          <option value="16 North">16 North — Pioneers</option>
-        </select>
-        <input type="date" class="f-input" id="f-acc-date" onchange="loadRecentAccounts()" style="max-width:170px;flex:0 0 auto;" title="Filter from date">
-        <button class="btn-filter" onclick="clearDateFilter('f-acc-date', loadRecentAccounts)">Clear date</button>
-        <button class="btn-filter" onclick="loadRecentAccounts()">↺ Refresh</button>
-        <button class="btn-export" onclick="exportCSV('accounts')">Export CSV</button>
-      </div>
-      <div class="tbl-wrap" id="accounts-table">
-        <div class="loading">Loading recently created accounts...</div>
-      </div>
-    </div>
+   <!-- RECENTLY CREATED ACCOUNTS PANEL -->
+   <div class="dash-panel" id="panel-accounts">
+     <div class="filters">
+       <span class="filter-label">Filter:</span>
+       <select class="f-select" id="f-acc-role" onchange="loadRecentAccounts()">
+         <option value="">All Roles</option>
+         <option value="officer">Officer</option>
+         <option value="supervisor">Supervisor</option>
+         <option value="she_manager">SHE Manager</option>
+         <option value="shift_boss">Shift Boss</option>
+         <option value="safety_officer">Safety Officer</option>
+         <option value="admin">Admin</option>
+       </select>
+       <select class="f-select" id="f-acc-section" onchange="loadRecentAccounts()">
+         <option value="">All Sections</option>
+         <option value="14 South">14 South — Challengers</option>
+         <option value="16 North">16 North — Pioneers</option>
+       </select>
+       <input type="date" class="f-input" id="f-acc-date" onchange="loadRecentAccounts()" style="max-width:170px;flex:0 0 auto;" title="Filter from date">
+       <button class="btn-filter" onclick="clearDateFilter('f-acc-date', loadRecentAccounts)">Clear date</button>
+       <button class="btn-filter" onclick="loadRecentAccounts()">Refresh</button>
+       <button class="btn-export" onclick="exportCSV('accounts')">Export CSV</button>
+     </div>
+     <div class="tbl-wrap" id="accounts-table">
+       <div class="loading">Loading recently created accounts...</div>
+     </div>
+   </div>
 
-  </div><!-- /dash-main -->
+ </div><!-- /dash-main -->
 </div><!-- /dashboard -->
 
 <!-- DETAIL MODAL -->
 <div class="detail-ov" id="detail-ov">
-  <div class="detail-card">
-    <div class="detail-head">
-      <div class="detail-title" id="detail-title">Submission Detail</div>
-      <button class="detail-close" onclick="closeDetail()">✕</button>
-    </div>
-    <div id="detail-body"></div>
-  </div>
+ <div class="detail-card">
+   <div class="detail-head">
+     <div class="detail-title" id="detail-title">Submission Detail</div>
+     <button class="detail-close" onclick="closeDetail()"></button>
+   </div>
+   <div id="detail-body"></div>
+ </div>
 </div>
 
 <script>
@@ -1342,11 +1342,11 @@ function irtReasonOf(sub){
 }
 function noGasTag(r){
   if(gasLinkageFailed){
-    return ' <span class="badge nogas-badge" style="background:#eee;color:var(--muted);" title="Could not verify gas readings — check connection and retry">⚠ Unverified</span>';
+    return ' <span class="badge nogas-badge" style="background:#eee;color:var(--muted);" title="Could not verify gas readings — check connection and retry">Unverified</span>';
   }
-  return (gasLinkageLoaded && !subHasGas(r)) ? ' <span class="badge nogas-badge" title="No gas readings recorded for this record">⚠ No gas</span>' : '';
+  return (gasLinkageLoaded && !subHasGas(r)) ? ' <span class="badge nogas-badge" title="No gas readings recorded for this record">No gas</span>' : '';
 }
-function approvedTag(r){ return r.supervisor_approved ? ' <span class="badge approved" title="Signed off by ' + (esc(r.approved_by)||'supervisor') + '">✓ Approved</span>' : ''; }
+function approvedTag(r){ return r.supervisor_approved ? ' <span class="badge approved" title="Signed off by ' + (esc(r.approved_by)||'supervisor') + '">Approved</span>' : ''; }
 
 // Supervisor sign-off: record management approval of a completed re-entry.
 async function approveSubmission(id){
@@ -1365,7 +1365,7 @@ async function approveSubmission(id){
       .eq('id', id);
     if(error){
       alert('Could not approve — ' + error.message);
-      if(btn){ btn.disabled = false; btn.textContent = '✓ Approve Record'; }
+      if(btn){ btn.disabled = false; btn.textContent = 'Approve Record'; }
       return;
     }
     const s = allSubmissions.find(x => x.id === id);
@@ -1374,7 +1374,7 @@ async function approveSubmission(id){
     openSubDetail(id);   // refresh the open modal to show approved state
   }catch(e){
     alert('Approve failed — ' + (e.message||e));
-    if(btn){ btn.disabled = false; btn.textContent = '✓ Approve Record'; }
+    if(btn){ btn.disabled = false; btn.textContent = 'Approve Record'; }
   }
 }
 let allNearMisses = [];
@@ -1417,7 +1417,7 @@ async function dashLogin(){
   const { data, error } = await db.auth.signInWithPassword({ email, password: pw });
 
   btn.disabled = false;
-  btn.textContent = 'Sign In →';
+  btn.textContent = 'Sign In';
 
   if(error){
     document.getElementById('loading-screen').style.display = 'none';
@@ -1490,7 +1490,7 @@ async function verifyAndLaunch(user){
   if(sectionScope){
     // Lock every section filter to the user's own section.
     ['f-section','f-nm-section','f-ho-section','f-bord-section','f-sn-section','f-acc-section','analytics-section',
-     'f-prod-section','f-mach-section','f-ton-section']
+    'f-prod-section','f-mach-section','f-ton-section']
       .forEach(id => {
         const el = document.getElementById(id);
         if(!el) return;
@@ -1603,15 +1603,15 @@ async function loadStats(){
   const aborted   = subs.filter(s => s.status === 'aborted_unsafe_gas');
   const activeGround = (groundRes.data||[]).filter(g => g.status === 'active');
 
-  document.getElementById('stat-total').textContent   = subRes.error ? '⚠' : subs.length;
-  document.getElementById('stat-today').textContent   = subRes.error ? '⚠' : todaySubs.filter(s=>s.status==='completed').length;
-  document.getElementById('stat-aborted').textContent = subRes.error ? '⚠' : aborted.length;
-  document.getElementById('stat-nm').textContent      = nmRes.error  ? '⚠' : (nmRes.data||[]).length;
+  document.getElementById('stat-total').textContent   = subRes.error ? '' : subs.length;
+  document.getElementById('stat-today').textContent   = subRes.error ? '' : todaySubs.filter(s=>s.status==='completed').length;
+  document.getElementById('stat-aborted').textContent = subRes.error ? '' : aborted.length;
+  document.getElementById('stat-nm').textContent      = nmRes.error  ? '' : (nmRes.data||[]).length;
 
   document.getElementById('cnt-sub').textContent    = subRes.error    ? '!' : subs.length;
   document.getElementById('cnt-nm').textContent     = nmRes.error     ? '!' : (nmRes.data||[]).length;
   document.getElementById('cnt-sos').textContent    = sosRes.error    ? '!' : (sosRes.data||[]).length;
-  document.getElementById('cnt-live').textContent   = '●';
+  document.getElementById('cnt-live').textContent   = '—';
   document.getElementById('cnt-ground').textContent = groundRes.error ? '!' : (activeGround.length > 0 ? activeGround.length : '0');
 }
 
@@ -1715,7 +1715,7 @@ async function loadSOS(){
   if(!isFirstLoad){
     const newOnes = active.filter(s => !previousActiveSOSIds.has(s.id));
     if(newOnes.length > 0){
-      notifyNewAlert('🆘 New SOS Alert', newOnes.map(s => (s.officer_name||'Unknown') + ' — ' + (s.zone||s.section||'')).join(', '));
+      notifyNewAlert('New SOS Alert', newOnes.map(s => (s.officer_name||'Unknown') + ' — ' + (s.zone||s.section||'')).join(', '));
     }
   }
   previousActiveSOSIds = activeIds;
@@ -1798,41 +1798,41 @@ function renderOverview(){
   // Recent 5 submissions
   const recent5 = allSubmissions.slice(0,5);
   const subHtml = loadFailed.submissions
-    ? '<div class="empty">⚠ Failed to load submissions — check your connection and retry</div>'
+    ? '<div class="empty">Failed to load submissions — check your connection and retry</div>'
     : (recent5.length === 0
-        ? '<div class="empty"><div class="empty-icon">📋</div>No submissions yet</div>'
+        ? '<div class="empty">No submissions yet</div>'
         : subTableHtml(recent5));
   document.getElementById('overview-recent').innerHTML = subHtml;
 
   // Recent 5 near misses
   const nm5 = allNearMisses.slice(0,5);
   const nmHtml = loadFailed.nearMiss
-    ? '<div class="empty">⚠ Failed to load near misses — check your connection and retry</div>'
+    ? '<div class="empty">Failed to load near misses — check your connection and retry</div>'
     : (nm5.length === 0
-        ? '<div class="empty"><div class="empty-icon">✅</div>No near misses reported</div>'
+        ? '<div class="empty">No near misses reported</div>'
         : nmTableHtml(nm5));
   document.getElementById('overview-nm').innerHTML = nmHtml;
 }
 
 function subTableHtml(rows){
   const head = `<div class="tbl-head sub-grid">
-    <div class="th">Miner</div>
-    <div class="th">Section</div>
-    <div class="th">Date / Time</div>
-    <div class="th">Status</div>
-    <div class="th">Retakes</div>
-    <div class="th">Zone</div>
-  </div>`;
+   <div class="th">Miner</div>
+   <div class="th">Section</div>
+   <div class="th">Date / Time</div>
+   <div class="th">Status</div>
+   <div class="th">Retakes</div>
+   <div class="th">Zone</div>
+ </div>`;
 
   const body = rows.map(r => `
-    <div class="tbl-row sub-grid" onclick="openSubDetail('${r.id}')">
-      <div class="td bold" data-label="Miner">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${r.officer_id||''}</span></div>
-      <div class="td" data-label="Section">${r.section||'—'}</div>
-      <div class="td" data-label="Date/Time">${fmtDate(r.created_at)}</div>
-      <div class="td" data-label="Status">${statusBadge(r.status, r.fog_light_status)}${irtTag(r.reentry_type)}${noGasTag(r)}${approvedTag(r)}</div>
-      <div class="td" data-label="Retakes">${r.retake_count > 0 ? '<span style="color:var(--amber);font-weight:700;">'+r.retake_count+'</span>' : '0'}</div>
-      <div class="td" data-label="Zone">${r.zone||'—'}</div>
-    </div>
+   <div class="tbl-row sub-grid" onclick="openSubDetail('${r.id}')">
+     <div class="td bold" data-label="Miner">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.8125rem;">${r.officer_id||''}</span></div>
+     <div class="td" data-label="Section">${r.section||'—'}</div>
+     <div class="td" data-label="Date/Time">${fmtDate(r.created_at)}</div>
+     <div class="td" data-label="Status">${statusBadge(r.status, r.fog_light_status)}${irtTag(r.reentry_type)}${noGasTag(r)}${approvedTag(r)}</div>
+     <div class="td" data-label="Retakes">${r.retake_count > 0 ? '<span style="color:var(--amber);font-weight:700;">'+r.retake_count+'</span>' : '0'}</div>
+     <div class="td" data-label="Zone">${r.zone||'—'}</div>
+   </div>
   `).join('');
 
   return head + body;
@@ -1840,21 +1840,21 @@ function subTableHtml(rows){
 
 function nmTableHtml(rows){
   const head = `<div class="tbl-head nm-grid">
-    <div class="th">Miner</div>
-    <div class="th">Incident Type</div>
-    <div class="th">Severity</div>
-    <div class="th">Zone</div>
-    <div class="th">Date / Time</div>
-  </div>`;
+   <div class="th">Miner</div>
+   <div class="th">Incident Type</div>
+   <div class="th">Severity</div>
+   <div class="th">Zone</div>
+   <div class="th">Date / Time</div>
+ </div>`;
 
   const body = rows.map(r => `
-    <div class="tbl-row nm-grid" onclick="openNMDetail('${r.id}')">
-      <div class="td bold">${r.officer_name||'—'}</div>
-      <div class="td">${r.incident_type||'—'}</div>
-      <div class="td nm-severity-cell">${sevBadge(r.severity)}${r.reviewed_by ? ' <span class="badge completed">✓ Reviewed</span>' : ''}</div>
-      <div class="td">${r.zone||'—'}</div>
-      <div class="td">${fmtDate(r.created_at)}</div>
-    </div>
+   <div class="tbl-row nm-grid" onclick="openNMDetail('${r.id}')">
+     <div class="td bold">${r.officer_name||'—'}</div>
+     <div class="td">${r.incident_type||'—'}</div>
+     <div class="td nm-severity-cell">${sevBadge(r.severity)}${r.reviewed_by ? ' <span class="badge completed">Reviewed</span>' : ''}</div>
+     <div class="td">${r.zone||'—'}</div>
+     <div class="td">${fmtDate(r.created_at)}</div>
+   </div>
   `).join('');
 
   return head + body;
@@ -1863,7 +1863,7 @@ function nmTableHtml(rows){
 function renderSubmissionsTable(){
   const el = document.getElementById('sub-table');
   if(loadFailed.submissions){
-    el.innerHTML = '<div class="empty">⚠ Failed to load submissions — check your connection and retry</div>';
+    el.innerHTML = '<div class="empty">Failed to load submissions — check your connection and retry</div>';
     return;
   }
   const term = (document.getElementById('f-search')?.value || '').trim().toLowerCase();
@@ -1884,8 +1884,8 @@ function renderSubmissionsTable(){
   }
   if(rows.length === 0){
     el.innerHTML = (term || rtype)
-      ? '<div class="empty"><div class="empty-icon">🔍</div>No records match the current filters</div>'
-      : '<div class="empty"><div class="empty-icon">📋</div>No submissions found</div>';
+      ? '<div class="empty">No records match the current filters</div>'
+      : '<div class="empty">No submissions found</div>';
     return;
   }
   el.innerHTML = subTableHtml(rows);
@@ -1894,11 +1894,11 @@ function renderSubmissionsTable(){
 function renderNearMissTable(){
   const el = document.getElementById('nm-table');
   if(loadFailed.nearMiss){
-    el.innerHTML = '<div class="empty">⚠ Failed to load near misses — check your connection and retry</div>';
+    el.innerHTML = '<div class="empty">Failed to load near misses — check your connection and retry</div>';
     return;
   }
   if(allNearMisses.length === 0){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>No near misses found</div>';
+    el.innerHTML = '<div class="empty">No near misses found</div>';
     return;
   }
   el.innerHTML = nmTableHtml(allNearMisses);
@@ -1907,35 +1907,35 @@ function renderNearMissTable(){
 function renderSOSTable(){
   const el = document.getElementById('sos-table');
   if(loadFailed.sos){
-    el.innerHTML = '<div class="empty">⚠ Failed to load SOS alerts — check your connection and retry. An active alert may exist even if none are shown here.</div>';
+    el.innerHTML = '<div class="empty">Failed to load SOS alerts — check your connection and retry. An active alert may exist even if none are shown here.</div>';
     return;
   }
   if(allSOS.length === 0){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">🆘</div>No SOS alerts recorded</div>';
+    el.innerHTML = '<div class="empty">No SOS alerts recorded</div>';
     return;
   }
 
   const head = `<div class="tbl-head sos-grid">
-    <div class="th">Miner</div>
-    <div class="th">Badge ID</div>
-    <div class="th">Zone</div>
-    <div class="th">Section</div>
-    <div class="th">Time</div>
-  </div>`;
+   <div class="th">Miner</div>
+   <div class="th">Badge ID</div>
+   <div class="th">Zone</div>
+   <div class="th">Section</div>
+   <div class="th">Time</div>
+ </div>`;
 
   const body = allSOS.map(r => `
-    <div class="tbl-row sos-grid" onclick="openSOSDetail('${r.id}')" style="cursor:pointer;">
-      <div class="td bold">${r.officer_name||'—'}</div>
-      <div class="td">${r.officer_id||'—'}</div>
-      <div class="td">${r.zone||'—'}</div>
-      <div class="td">${r.section||'—'}</div>
-      <div class="td">
+   <div class="tbl-row sos-grid" onclick="openSOSDetail('${r.id}')" style="cursor:pointer;">
+     <div class="td bold">${r.officer_name||'—'}</div>
+     <div class="td">${r.officer_id||'—'}</div>
+     <div class="td">${r.zone||'—'}</div>
+     <div class="td">${r.section||'—'}</div>
+     <div class="td">
         ${r.status === 'resolved'
           ? '<span class="badge completed">Resolved</span>'
           : '<span class="badge sent badge-pulse">Active</span>'}
         &nbsp;${fmtDate(r.created_at)}
-      </div>
-    </div>
+     </div>
+   </div>
   `).join('');
 
   el.innerHTML = head + body;
@@ -1957,23 +1957,23 @@ async function openIncompleteDetail(id){
     if(readings.length){
       gasHtml = '<div class="slbl" style="margin-top:1rem;">Gas captured before the session ended</div>'
         + readings.map(r => `<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
-            <span class="gas-chip ${r.co_safe?'safe':'danger'}">CO ${r.co_ppm??'—'}</span>
-            <span class="gas-chip ${r.no2_safe?'safe':'danger'}">NO₂ ${r.no2_ppm??'—'}</span>
-            <span class="gas-chip ${r.o2_safe?'safe':'danger'}">O₂ ${r.o2_percent??'—'}</span>
-            <span class="gas-chip ${r.ch4_safe?'safe':'danger'}">CompX ${r.ch4_percent??'—'}</span></div>`).join('');
+           <span class="gas-chip ${r.co_safe?'safe':'danger'}">CO ${r.co_ppm??'—'}</span>
+           <span class="gas-chip ${r.no2_safe?'safe':'danger'}">NO₂ ${r.no2_ppm??'—'}</span>
+           <span class="gas-chip ${r.o2_safe?'safe':'danger'}">O₂ ${r.o2_percent??'—'}</span>
+           <span class="gas-chip ${r.ch4_safe?'safe':'danger'}">CompX ${r.ch4_percent??'—'}</span></div>`).join('');
     }
   } catch(e){ /* non-fatal */ }
   document.getElementById('detail-body').innerHTML = `
-    <div class="incomplete-note">⚠ This re-entry was started but never completed — the miner did not reach sign-off. Recorded as Incomplete for review.</div>
-    <div class="detail-grid">
-      <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${s.officer_name||'—'} <span style="color:var(--muted);font-size:0.78rem;">${s.officer_id||''}</span></div></div>
-      <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${s.section||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Zone</div><div class="detail-v">${s.zone||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Re-Entry Type</div><div class="detail-v">${s.reentry_type==='irt'?'🚨 IRT — Lapse Bypassed':'⛏ Standard'}</div></div>
-      <div class="detail-item"><div class="detail-k">Reached</div><div class="detail-v">Phase ${s._phaseReached||'—'}${s._phaseName?(' — '+s._phaseName):''}</div></div>
-      <div class="detail-item"><div class="detail-k">Status</div><div class="detail-v"><span class="badge incomplete">Incomplete</span></div></div>
-      <div class="detail-item detail-full"><div class="detail-k">Last Activity</div><div class="detail-v" style="font-weight:500;">${fmtDate(s.created_at)}</div></div>
-    </div>
+   <div class="incomplete-note">This re-entry was started but never completed — the miner did not reach sign-off. Recorded as Incomplete for review.</div>
+   <div class="detail-grid">
+     <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${s.officer_name||'—'} <span style="color:var(--muted);font-size:0.9375rem;">${s.officer_id||''}</span></div></div>
+     <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${s.section||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Zone</div><div class="detail-v">${s.zone||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Re-Entry Type</div><div class="detail-v">${s.reentry_type==='irt'?'IRT — Lapse Bypassed':'Standard'}</div></div>
+     <div class="detail-item"><div class="detail-k">Reached</div><div class="detail-v">Phase ${s._phaseReached||'—'}${s._phaseName?(' — '+s._phaseName):''}</div></div>
+     <div class="detail-item"><div class="detail-k">Status</div><div class="detail-v"><span class="badge incomplete">Incomplete</span></div></div>
+     <div class="detail-item detail-full"><div class="detail-k">Last Activity</div><div class="detail-v" style="font-weight:500;">${fmtDate(s.created_at)}</div></div>
+   </div>
     ${gasHtml}`;
   document.getElementById('detail-ov').classList.add('show');
 }
@@ -2016,28 +2016,28 @@ async function openSubDetail(id){
   document.getElementById('detail-title').textContent = 'Submission — ' + (sub.officer_name||'Unknown');
 
   const gasCardHtml = (r) => `
-    <div class="gas-row">
-      <div class="gas-cell ${r.co_safe?'safe':'danger'}">
-        <div class="gas-name">CO</div>
-        <div class="gas-val">${r.co_ppm??'—'}</div>
-        <div class="gas-lim">Limit: 80 ppm</div>
-      </div>
-      <div class="gas-cell ${r.no2_safe?'safe':'danger'}">
-        <div class="gas-name">NO₂</div>
-        <div class="gas-val">${r.no2_ppm??'—'}</div>
-        <div class="gas-lim">Limit: 2.5 ppm</div>
-      </div>
-      <div class="gas-cell ${r.o2_safe?'safe':'danger'}">
-        <div class="gas-name">O₂</div>
-        <div class="gas-val">${r.o2_percent??'—'}</div>
-        <div class="gas-lim">Min: 19%</div>
-      </div>
-      <div class="gas-cell ${r.ch4_safe?'safe':'danger'}">
-        <div class="gas-name">CompX</div>
-        <div class="gas-val">${r.ch4_percent??'—'}</div>
-        <div class="gas-lim">Limit: 0.10%</div>
-      </div>
-    </div>`;
+   <div class="gas-row">
+     <div class="gas-cell ${r.co_safe?'safe':'danger'}">
+       <div class="gas-name">CO</div>
+       <div class="gas-val">${r.co_ppm??'—'}</div>
+       <div class="gas-lim">Limit: 80 ppm</div>
+     </div>
+     <div class="gas-cell ${r.no2_safe?'safe':'danger'}">
+       <div class="gas-name">NO₂</div>
+       <div class="gas-val">${r.no2_ppm??'—'}</div>
+       <div class="gas-lim">Limit: 2.5 ppm</div>
+     </div>
+     <div class="gas-cell ${r.o2_safe?'safe':'danger'}">
+       <div class="gas-name">O₂</div>
+       <div class="gas-val">${r.o2_percent??'—'}</div>
+       <div class="gas-lim">Min: 19%</div>
+     </div>
+     <div class="gas-cell ${r.ch4_safe?'safe':'danger'}">
+       <div class="gas-name">CompX</div>
+       <div class="gas-val">${r.ch4_percent??'—'}</div>
+       <div class="gas-lim">Limit: 0.10%</div>
+     </div>
+   </div>`;
 
   // Failed readings captured during the procedure (live saves that breached limits).
   // Shown for full transparency — the cleared/final readings alone would hide the failures.
@@ -2049,8 +2049,8 @@ async function openSubDetail(id){
         .order('created_at',{ascending:true}).limit(20);
       const fr = scrub(fails || []);
       if(fr.length){
-        failedHtml = '<div class="slbl" style="margin-top:1.2rem;color:var(--red);">⚠ Failed readings before clearance — ' + fr.length + ' recorded</div>'
-          + fr.map(r => `<div style="font-size:0.72rem;color:var(--muted);margin:0.3rem 0 0.1rem;">${new Date(r.created_at).toLocaleTimeString()}</div>` + gasCardHtml(r)).join('');
+        failedHtml = '<div class="slbl" style="margin-top:1.2rem;color:var(--red);">Failed readings before clearance — ' + fr.length + ' recorded</div>'
+          + fr.map(r => `<div style="font-size:0.8125rem;color:var(--muted);margin:0.3rem 0 0.1rem;">${new Date(r.created_at).toLocaleTimeString()}</div>` + gasCardHtml(r)).join('');
       }
     }
   }catch(e){ /* non-fatal */ }
@@ -2062,72 +2062,72 @@ async function openSubDetail(id){
        : (finalGas.co_safe && finalGas.no2_safe && finalGas.o2_safe && finalGas.ch4_safe))
     : null;
   const gasVerdict = !readings.length ? '' : (gasAllSafe
-    ? '<div class="gas-verdict safe">✓ Gas cleared — final reading within all limits</div>'
-    : '<div class="gas-verdict danger">✗ Gas exceeded — final reading out of limits</div>');
+    ? '<div class="gas-verdict safe">Gas cleared — final reading within all limits</div>'
+    : '<div class="gas-verdict danger">Gas exceeded — final reading out of limits</div>');
 
   const gasHtml = gasVerdict + (readings.length ? readings.map((r, i) => `
-    <div class="slbl" style="margin-top:1rem;">
+   <div class="slbl" style="margin-top:1rem;">
       ${i === 0 ? 'Initial Gas Readings' : `Retake ${r.retake_number ?? i} Gas Readings`}
       ${new Date(r.created_at).toLocaleTimeString()}
-    </div>
+   </div>
     ${gasCardHtml(r)}
-  `).join('') : '<div style="margin-top:1rem;font-size:0.78rem;color:var(--muted);font-style:italic;">No gas readings recorded for this submission.</div>') + failedHtml;
+  `).join('') : '<div style="margin-top:1rem;font-size:0.9375rem;color:var(--muted);font-style:italic;">No gas readings recorded for this submission.</div>') + failedHtml;
 
   document.getElementById('detail-body').innerHTML = `
-    <div class="detail-grid">
-      <div class="detail-item">
-        <div class="detail-k">Miner</div>
-        <div class="detail-v">${sub.officer_name||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Badge ID</div>
-        <div class="detail-v">${sub.officer_id||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Section</div>
-        <div class="detail-v">${sub.section||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Zone</div>
-        <div class="detail-v">${sub.zone||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Blast Time</div>
-        <div class="detail-v">${dateAtTime(sub.created_at, sub.blast_time)}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Re-Entry Time</div>
-        <div class="detail-v">${dateAtTime(sub.created_at, sub.reentry_time)}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Status</div>
-        <div class="detail-v">${statusBadge(sub.status, sub.fog_light_status)}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Supervisor</div>
-        <div class="detail-v">${sub.supervisor_name||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Re-Entry Type</div>
-        <div class="detail-v ${sub.reentry_type==='irt'?'bad':''}">
-          ${sub.reentry_type === 'irt' ? '🚨 IRT — Lapse Bypassed' : '⛏ Standard'}
-        </div>
-      </div>
+   <div class="detail-grid">
+     <div class="detail-item">
+       <div class="detail-k">Miner</div>
+       <div class="detail-v">${sub.officer_name||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Badge ID</div>
+       <div class="detail-v">${sub.officer_id||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Section</div>
+       <div class="detail-v">${sub.section||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Zone</div>
+       <div class="detail-v">${sub.zone||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Blast Time</div>
+       <div class="detail-v">${dateAtTime(sub.created_at, sub.blast_time)}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Re-Entry Time</div>
+       <div class="detail-v">${dateAtTime(sub.created_at, sub.reentry_time)}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Status</div>
+       <div class="detail-v">${statusBadge(sub.status, sub.fog_light_status)}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Supervisor</div>
+       <div class="detail-v">${sub.supervisor_name||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Re-Entry Type</div>
+       <div class="detail-v ${sub.reentry_type==='irt'?'bad':''}">
+          ${sub.reentry_type === 'irt' ? 'IRT — Lapse Bypassed' : 'Standard'}
+       </div>
+     </div>
       ${sub.reentry_type === 'irt' ? `
-      <div class="detail-item detail-full">
-        <div class="detail-k">IRT Reason</div>
-        <div class="detail-v" style="font-weight:500;">${esc(irtReasonOf(sub)) || '—'}</div>
-      </div>` : ''}
-      <div class="detail-item">
-        <div class="detail-k">FOG Light</div>
-        <div class="detail-v ${sub.fog_light_status==='red'?'bad':'ok'}">
-          ${sub.fog_light_status === 'green' ? '🟢 Green — Safe' : sub.fog_light_status === 'red' ? '🔴 Red — Unsafe' : '—'}
-        </div>
-      </div>
-      <div class="detail-item detail-full">
-        <div class="detail-k">Safety Talk Topics</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.82rem;">${sub.safety_topics||'—'}</div>
-      </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">IRT Reason</div>
+       <div class="detail-v" style="font-weight:500;">${esc(irtReasonOf(sub)) || '—'}</div>
+     </div>` : ''}
+     <div class="detail-item">
+       <div class="detail-k">FOG Light</div>
+       <div class="detail-v ${sub.fog_light_status==='red'?'bad':'ok'}">
+          ${sub.fog_light_status === 'green' ? 'Green — Safe' : sub.fog_light_status === 'red' ? 'Red — Unsafe' : '—'}
+       </div>
+     </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">Safety Talk Topics</div>
+       <div class="detail-v" style="font-weight:500;font-size:0.9375rem;">${sub.safety_topics||'—'}</div>
+     </div>
       ${(() => {
         let crew = [];
         try{ crew = sub.crew_members ? JSON.parse(sub.crew_members) : []; }catch(e){}
@@ -2136,28 +2136,28 @@ async function openSubDetail(id){
           + crew.map(c => '<span class="crew-tag">'+esc(c.name)+(c.badge?' #'+esc(c.badge):'')+' ('+esc(c.role)+')</span>').join('')
           + '</div></div>';
       })()}
-      <div class="detail-item">
-        <div class="detail-k">Re-Entry Duration</div>
-        <div class="detail-v ${sub.reentry_duration_seconds > 1800 ? 'bad' : 'ok'}">
+     <div class="detail-item">
+       <div class="detail-k">Re-Entry Duration</div>
+       <div class="detail-v ${sub.reentry_duration_seconds > 1800 ? 'bad' : 'ok'}">
           ${sub.reentry_duration_seconds
             ? Math.floor(sub.reentry_duration_seconds/60) + ' min ' + (sub.reentry_duration_seconds%60) + ' sec'
-              + (sub.reentry_duration_seconds > 1800 ? ' ⚠ EXCEEDED 30 MIN' : ' ✓')
+              + (sub.reentry_duration_seconds > 1800 ? ' EXCEEDED 30 MIN' : ' ')
             : 'Timer not started'}
-        </div>
-      </div>
-      <div class="detail-item detail-full">
-        <div class="detail-k">Submitted</div>
-        <div class="detail-v" style="font-weight:500;">${fmtDate(sub.created_at)}</div>
-      </div>
-      <div class="detail-item detail-full" style="border-top:1px solid var(--border);padding-top:0.7rem;margin-top:0.3rem;">
-        <div class="detail-k">Supervisor Sign-Off</div>
-        <div class="detail-v">
+       </div>
+     </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">Submitted</div>
+       <div class="detail-v" style="font-weight:500;">${fmtDate(sub.created_at)}</div>
+     </div>
+     <div class="detail-item detail-full" style="border-top:1px solid var(--border);padding-top:0.7rem;margin-top:0.3rem;">
+       <div class="detail-k">Supervisor Sign-Off</div>
+       <div class="detail-v">
           ${sub.supervisor_approved
-            ? '<span class="badge approved">✓ Approved</span> <span style="color:var(--muted);font-size:0.8rem;">by ' + (esc(sub.approved_by)||'—') + ' · ' + fmtDate(sub.approved_at) + '</span>'
-            : '<button class="btn-approve" onclick="approveSubmission(\'' + sub.id + '\')">✓ Approve Record</button> <span style="color:var(--muted);font-size:0.78rem;margin-left:0.5rem;">Not yet reviewed</span>'}
-        </div>
-      </div>
-    </div>
+            ? '<span class="badge approved">Approved</span> <span style="color:var(--muted);font-size:0.9375rem;">by ' + (esc(sub.approved_by)||'—') + ' · ' + fmtDate(sub.approved_at) + '</span>'
+            : '<button class="btn-approve" onclick="approveSubmission(\'' + sub.id + '\')">Approve Record</button> <span style="color:var(--muted);font-size:0.9375rem;margin-left:0.5rem;">Not yet reviewed</span>'}
+       </div>
+     </div>
+   </div>
     ${gasHtml}
   `;
 
@@ -2166,7 +2166,7 @@ async function openSubDetail(id){
   if(body && id){
     const pdfBtn = document.createElement('button');
     pdfBtn.className = 'btn-pdf';
-    pdfBtn.textContent = '🖨 Export as PDF / Print';
+    pdfBtn.textContent = 'Export as PDF / Print';
     pdfBtn.onclick = () => exportSubPDF(id);
     body.appendChild(pdfBtn);
   }
@@ -2195,54 +2195,54 @@ async function openNMDetail(id){
 
   document.getElementById('detail-title').textContent = 'Near Miss — ' + nm.incident_type;
   document.getElementById('detail-body').innerHTML = `
-    <div class="detail-grid">
-      <div class="detail-item">
-        <div class="detail-k">Miner</div>
-        <div class="detail-v">${nm.officer_name||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Severity</div>
-        <div class="detail-v">${sevBadge(nm.severity)}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Zone</div>
-        <div class="detail-v">${nm.zone||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Section</div>
-        <div class="detail-v">${nm.section||'—'}</div>
-      </div>
-      <div class="detail-item detail-full">
-        <div class="detail-k">What Happened</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${nm.description||'—'}</div>
-      </div>
-      <div class="detail-item detail-full">
-        <div class="detail-k">Corrective Action Taken</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${nm.action_taken||'—'}</div>
-      </div>
-      <div class="detail-item detail-full">
-        <div class="detail-k">Reported At</div>
-        <div class="detail-v" style="font-weight:500;">${fmtDate(nm.created_at)}</div>
-      </div>
+   <div class="detail-grid">
+     <div class="detail-item">
+       <div class="detail-k">Miner</div>
+       <div class="detail-v">${nm.officer_name||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Severity</div>
+       <div class="detail-v">${sevBadge(nm.severity)}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Zone</div>
+       <div class="detail-v">${nm.zone||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Section</div>
+       <div class="detail-v">${nm.section||'—'}</div>
+     </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">What Happened</div>
+       <div class="detail-v" style="font-weight:500;font-size:0.9375rem;white-space:pre-wrap;">${nm.description||'—'}</div>
+     </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">Corrective Action Taken</div>
+       <div class="detail-v" style="font-weight:500;font-size:0.9375rem;white-space:pre-wrap;">${nm.action_taken||'—'}</div>
+     </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">Reported At</div>
+       <div class="detail-v" style="font-weight:500;">${fmtDate(nm.created_at)}</div>
+     </div>
       ${nm.reviewed_by ? `
-      <div class="detail-item detail-full">
-        <div class="detail-k">Review Notes</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${nm.review_notes||'—'}</div>
-      </div>` : ''}
-    </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">Review Notes</div>
+       <div class="detail-v" style="font-weight:500;font-size:0.9375rem;white-space:pre-wrap;">${nm.review_notes||'—'}</div>
+     </div>` : ''}
+   </div>
 
     ${nm.reviewed_by ? `
-    <div class="resolved-badge">✓ Reviewed by ${nm.reviewed_by} — ${fmtDate(nm.reviewed_at)}</div>` : `
-    <div class="resolve-section">
-      <div class="slbl" style="margin-top:1rem;">Mark as Reviewed</div>
-      <div class="lg" style="margin-bottom:0.6rem;">
-        <label style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;display:block;">Review Notes (optional)</label>
-        <textarea id="nm-review-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.875rem;border-radius:3px;outline:none;min-height:70px;resize:vertical;" placeholder="Follow-up actions, coaching given, anything closing this out..."></textarea>
-      </div>
-      <button class="btn-resolve" onclick="reviewNearMiss('${nm.id}')">
-        ✓ Mark Reviewed
-      </button>
-    </div>`}
+   <div class="resolved-badge">Reviewed by ${nm.reviewed_by} — ${fmtDate(nm.reviewed_at)}</div>` : `
+   <div class="resolve-section">
+     <div class="slbl" style="margin-top:1rem;">Mark as Reviewed</div>
+     <div class="lg" style="margin-bottom:0.6rem;">
+       <label style="font-size:0.8125rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;display:block;">Review Notes (optional)</label>
+       <textarea id="nm-review-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.9375rem;border-radius:3px;outline:none;min-height:70px;resize:vertical;" placeholder="Follow-up actions, coaching given, anything closing this out..."></textarea>
+     </div>
+     <button class="btn-resolve" onclick="reviewNearMiss('${nm.id}')">
+        Mark Reviewed
+     </button>
+   </div>`}
   `;
 
   document.getElementById('detail-ov').classList.add('show');
@@ -2260,7 +2260,7 @@ async function reviewNearMiss(id){
 
   if(error){
     alert('Could not save review — ' + error.message);
-    if(btn){ btn.disabled = false; btn.textContent = '✓ Mark Reviewed'; }
+    if(btn){ btn.disabled = false; btn.textContent = 'Mark Reviewed'; }
     return;
   }
 
@@ -2279,54 +2279,54 @@ async function openSOSDetail(id){
   document.getElementById('detail-title').textContent = 'SOS Alert — ' + (sos.officer_name||'Unknown');
 
   document.getElementById('detail-body').innerHTML = `
-    <div class="detail-grid">
-      <div class="detail-item">
-        <div class="detail-k">Miner</div>
-        <div class="detail-v">${sos.officer_name||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Badge ID</div>
-        <div class="detail-v">${sos.officer_id||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Zone</div>
-        <div class="detail-v ${sos.zone?'':'bad'}">${sos.zone||'Not recorded'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Section</div>
-        <div class="detail-v">${sos.section||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Triggered At</div>
-        <div class="detail-v">${fmtDate(sos.created_at)}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Status</div>
-        <div class="detail-v">${isResolved ? '<span class="badge completed">Resolved</span>' : '<span class="badge sent">Active — Unresolved</span>'}</div>
-      </div>
+   <div class="detail-grid">
+     <div class="detail-item">
+       <div class="detail-k">Miner</div>
+       <div class="detail-v">${sos.officer_name||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Badge ID</div>
+       <div class="detail-v">${sos.officer_id||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Zone</div>
+       <div class="detail-v ${sos.zone?'':'bad'}">${sos.zone||'Not recorded'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Section</div>
+       <div class="detail-v">${sos.section||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Triggered At</div>
+       <div class="detail-v">${fmtDate(sos.created_at)}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Status</div>
+       <div class="detail-v">${isResolved ? '<span class="badge completed">Resolved</span>' : '<span class="badge sent">Active — Unresolved</span>'}</div>
+     </div>
       ${isResolved ? `
-      <div class="detail-item detail-full">
-        <div class="detail-k">Resolution Notes</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${esc(sos.notes)||'—'}</div>
-      </div>
-      <div class="detail-item detail-full">
-        <div class="detail-k">Resolved At</div>
-        <div class="detail-v" style="font-weight:500;">${fmtDate(sos.resolved_at)}</div>
-      </div>` : ''}
-    </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">Resolution Notes</div>
+       <div class="detail-v" style="font-weight:500;font-size:0.9375rem;white-space:pre-wrap;">${esc(sos.notes)||'—'}</div>
+     </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">Resolved At</div>
+       <div class="detail-v" style="font-weight:500;">${fmtDate(sos.resolved_at)}</div>
+     </div>` : ''}
+   </div>
 
     ${!isResolved ? `
-    <div class="resolve-section">
-      <div class="slbl" style="margin-top:1rem;">Resolve This Alert</div>
-      <div class="lg" style="margin-bottom:0.6rem;">
-        <label style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;display:block;">Resolution Notes</label>
-        <textarea id="resolve-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.875rem;border-radius:3px;outline:none;min-height:80px;resize:vertical;" placeholder="Describe what happened and what action was taken..."></textarea>
-      </div>
-      <button class="btn-resolve" onclick="resolveSOSAlert('${sos.id}')">
-        ✓ Mark as Resolved
-      </button>
-    </div>` : `
-    <div class="resolved-badge">✓ This alert has been resolved</div>`}
+   <div class="resolve-section">
+     <div class="slbl" style="margin-top:1rem;">Resolve This Alert</div>
+     <div class="lg" style="margin-bottom:0.6rem;">
+       <label style="font-size:0.8125rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.38rem;display:block;">Resolution Notes</label>
+       <textarea id="resolve-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.9375rem;border-radius:3px;outline:none;min-height:80px;resize:vertical;" placeholder="Describe what happened and what action was taken..."></textarea>
+     </div>
+     <button class="btn-resolve" onclick="resolveSOSAlert('${sos.id}')">
+        Mark as Resolved
+     </button>
+   </div>` : `
+   <div class="resolved-badge">This alert has been resolved</div>`}
   `;
 
   document.getElementById('detail-ov').classList.add('show');
@@ -2348,7 +2348,7 @@ async function resolveSOSAlert(id){
   const { error } = await db
     .from('sos_alerts')
     .update({
-      status:      'resolved',
+      status:     'resolved',
       resolved_at: new Date().toISOString(),
       notes:       resolutionNote,
     })
@@ -2356,7 +2356,7 @@ async function resolveSOSAlert(id){
 
   if(error){
     alert('Failed to resolve alert: ' + error.message);
-    if(btn){ btn.disabled = false; btn.textContent = '✓ Mark as Resolved'; }
+    if(btn){ btn.disabled = false; btn.textContent = 'Mark as Resolved'; }
     return;
   }
 
@@ -2383,7 +2383,7 @@ function closeDetail(){
 // ══════════════════════════════════════════
 function switchPanel(name){
   ['overview','submissions','nearmiss','sos','live','ground','analytics','handovers','notes','bord',
-   'production','machinery','hourly'].forEach(p => {
+  'production','machinery','hourly'].forEach(p => {
     document.getElementById('panel-'+p)?.classList.toggle('active', p===name);
     document.getElementById('dnav-'+p)?.classList.toggle('active', p===name);
   });
@@ -2532,21 +2532,21 @@ async function exportSubPDF(id){
 
   const duration = sub.reentry_duration_seconds
     ? Math.floor(sub.reentry_duration_seconds/60) + 'm ' + (sub.reentry_duration_seconds%60) + 's'
-      + (sub.reentry_duration_seconds > 1800 ? ' ⚠ EXCEEDED 30 MIN' : ' ✓')
+      + (sub.reentry_duration_seconds > 1800 ? ' EXCEEDED 30 MIN' : ' ')
     : 'Not recorded';
 
   const gasRows = g ? [
-    ['CO',    (g.co_ppm??'—')+' ppm',    '80 ppm',    g.co_safe ?'SAFE':'EXCEEDED', g.co_safe],
-    ['NO₂',   (g.no2_ppm??'—')+' ppm',   '2.5 ppm',   g.no2_safe?'SAFE':'EXCEEDED', g.no2_safe],
-    ['O₂',    (g.o2_percent??'—')+'%',   'Min 19%',   g.o2_safe ?'SAFE':'LOW',       g.o2_safe],
-    ['CompX', (g.ch4_percent??'—')+'%',  'Max 0.10%', g.ch4_safe?'SAFE':'EXCEEDED', g.ch4_safe],
+    ['CO',    (g.co_ppm??'—')+' ppm',   '80 ppm',    g.co_safe ?'SAFE':'EXCEEDED', g.co_safe],
+    ['NO₂',   (g.no2_ppm??'—')+' ppm',  '2.5 ppm',   g.no2_safe?'SAFE':'EXCEEDED', g.no2_safe],
+    ['O₂',    (g.o2_percent??'—')+'%',  'Min 19%',   g.o2_safe ?'SAFE':'LOW',       g.o2_safe],
+    ['CompX', (g.ch4_percent??'—')+'%', 'Max 0.10%', g.ch4_safe?'SAFE':'EXCEEDED', g.ch4_safe],
   ] : [];
 
   const gasHtml = g
     ? '<table class="ptbl"><tr><th>Gas</th><th>Reading</th><th>Limit</th><th>Status</th></tr>'
       + gasRows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[4]?'safe':'danger'}">${r[3]}</td></tr>`).join('')
       + '</table>'
-      + (g.retake_number > 0 ? `<p class="warn">⚠ Gas readings retaken ${g.retake_number} time(s)</p>` : '')
+      + (g.retake_number > 0 ? `<p class="warn">Gas readings retaken ${g.retake_number} time(s)</p>` : '')
     : '<p>No gas readings recorded</p>';
 
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
@@ -2554,40 +2554,40 @@ async function exportSubPDF(id){
 <style>
   body{font-family:Arial,sans-serif;font-size:10pt;color:#1a1a1a;margin:2cm;}
   .hdr{display:flex;justify-content:space-between;border-bottom:3px solid #007179;padding-bottom:0.8rem;margin-bottom:1rem;}
-  .co{font-size:1.1rem;font-weight:bold;color:#007179;}.ref{font-size:0.8rem;color:#666;text-align:right;line-height:1.6;}
-  .status-bar{background:#007179;color:#B8CC00;padding:0.4rem 0.8rem;font-weight:bold;font-size:0.875rem;letter-spacing:0.1em;text-align:center;margin-bottom:1rem;}
+  .co{font-size:1.1rem;font-weight:bold;color:#007179;}.ref{font-size:0.9375rem;color:#666;text-align:right;line-height:1.6;}
+  .status-bar{background:#007179;color:#B8CC00;padding:0.4rem 0.8rem;font-weight:bold;font-size:0.9375rem;letter-spacing:0.1em;text-align:center;margin-bottom:1rem;}
   h2{font-size:0.95rem;font-weight:bold;color:#007179;border-bottom:1px solid #C8DEDB;padding-bottom:0.25rem;margin:1rem 0 0.5rem;}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:0.35rem 1.5rem;}
-  .k{font-size:0.74rem;font-weight:bold;text-transform:uppercase;letter-spacing:0.1em;color:#666;}
-  .v{font-size:0.88rem;font-weight:bold;margin-bottom:0.4rem;}
+  .k{font-size:0.8125rem;font-weight:bold;letter-spacing:0;color:#666;}
+  .v{font-size:0.9375rem;font-weight:bold;margin-bottom:0.4rem;}
   .ptbl{width:100%;border-collapse:collapse;margin:0.4rem 0;}
-  .ptbl th,.ptbl td{border:1px solid #C8DEDB;padding:0.3rem 0.5rem;font-size:0.88rem;}
+  .ptbl th,.ptbl td{border:1px solid #C8DEDB;padding:0.3rem 0.5rem;font-size:0.9375rem;}
   .ptbl th{background:#007179;color:#fff;}
-  .safe{color:#27AE60;font-weight:bold;}.danger{color:#E74C3C;font-weight:bold;}.warn{color:#F39C12;font-weight:bold;font-size:0.85rem;}
+  .safe{color:#27AE60;font-weight:bold;}.danger{color:#E74C3C;font-weight:bold;}.warn{color:#F39C12;font-weight:bold;font-size:0.9375rem;}
   ul{margin:0.2rem 0 0.5rem 1.2rem;line-height:1.7;font-size:0.9rem;}
-  .nm{background:#FFF4E0;border-left:4px solid #F39C12;padding:0.35rem 0.6rem;margin:0.25rem 0;font-size:0.875rem;}
-  .foot{margin-top:1.5rem;border-top:1px solid #C8DEDB;padding-top:0.5rem;font-size:0.74rem;color:#999;display:flex;justify-content:space-between;}
-  .ok{background:#E8F8EE;color:#27AE60;padding:0.1rem 0.4rem;border-radius:2px;font-size:0.8rem;font-weight:bold;}
-  .ab{background:#FEF0EE;color:#E74C3C;padding:0.1rem 0.4rem;border-radius:2px;font-size:0.8rem;font-weight:bold;}
+  .nm{background:#FFF4E0;border-left:4px solid #F39C12;padding:0.35rem 0.6rem;margin:0.25rem 0;font-size:0.9375rem;}
+  .foot{margin-top:1.5rem;border-top:1px solid #C8DEDB;padding-top:0.5rem;font-size:0.8125rem;color:#999;display:flex;justify-content:space-between;}
+  .ok{background:#E8F8EE;color:#27AE60;padding:0.1rem 0.4rem;border-radius:2px;font-size:0.9375rem;font-weight:bold;}
+  .ab{background:#FEF0EE;color:#E74C3C;padding:0.1rem 0.4rem;border-radius:2px;font-size:0.9375rem;font-weight:bold;}
   @media print{body{margin:1cm;}}
 </style></head><body>
 <div class="hdr">
-  <div><div class="co">VALTERRA PLATINUM</div><div style="font-size:0.8rem;color:#666;">Unki Mine · Mining Department</div></div>
-  <div class="ref">Ref: UNK-MIN-MIN-PRO-0002 · V6.0<br>ID: ${sub.id?.substring(0,8).toUpperCase()||'—'}<br>${new Date().toLocaleString('en-GB')}</div>
+ <div><div class="co">VALTERRA PLATINUM</div><div style="font-size:0.8rem;color:#666;">Unki Mine · Mining Department</div></div>
+ <div class="ref">Ref: UNK-MIN-MIN-PRO-0002 · V6.0<br>ID: ${sub.id?.substring(0,8).toUpperCase()||'—'}<br>${new Date().toLocaleString('en-GB')}</div>
 </div>
 <div class="status-bar">SLAM RE-ENTRY RECORD — ${sub.status === 'completed' ? 'COMPLETED' : (sub.fog_light_status === 'red' ? 'ABORTED — UNSAFE GROUND CONDITIONS' : 'ABORTED — UNSAFE GAS LEVELS')}</div>
 <h2>Miner &amp; Session</h2>
 <div class="grid">
-  <div><div class="k">Miner</div><div class="v">${sub.officer_name||'—'}</div></div>
-  <div><div class="k">Badge ID</div><div class="v">${sub.officer_id||'—'}</div></div>
-  <div><div class="k">Section</div><div class="v">${sub.section||'—'}</div></div>
-  <div><div class="k">Zone</div><div class="v">${sub.zone||'—'}</div></div>
-  <div><div class="k">Blast Time</div><div class="v">${sub.blast_time||'—'}</div></div>
-  <div><div class="k">Re-Entry Time</div><div class="v">${sub.reentry_time||'—'}</div></div>
-  <div><div class="k">Duration</div><div class="v">${duration}</div></div>
-  <div><div class="k">Supervisor</div><div class="v">${sub.supervisor_name||'—'}</div></div>
-  <div><div class="k">Status</div><div class="v"><span class="${sub.status === 'completed' ? 'ok' : 'ab'}">${sub.status === 'completed' ? 'COMPLETED' : 'ABORTED'}</span></div></div>
-  <div><div class="k">Submitted</div><div class="v">${fmtDate(sub.created_at)}</div></div>
+ <div><div class="k">Miner</div><div class="v">${sub.officer_name||'—'}</div></div>
+ <div><div class="k">Badge ID</div><div class="v">${sub.officer_id||'—'}</div></div>
+ <div><div class="k">Section</div><div class="v">${sub.section||'—'}</div></div>
+ <div><div class="k">Zone</div><div class="v">${sub.zone||'—'}</div></div>
+ <div><div class="k">Blast Time</div><div class="v">${sub.blast_time||'—'}</div></div>
+ <div><div class="k">Re-Entry Time</div><div class="v">${sub.reentry_time||'—'}</div></div>
+ <div><div class="k">Duration</div><div class="v">${duration}</div></div>
+ <div><div class="k">Supervisor</div><div class="v">${sub.supervisor_name||'—'}</div></div>
+ <div><div class="k">Status</div><div class="v"><span class="${sub.status === 'completed' ? 'ok' : 'ab'}">${sub.status === 'completed' ? 'COMPLETED' : 'ABORTED'}</span></div></div>
+ <div><div class="k">Submitted</div><div class="v">${fmtDate(sub.created_at)}</div></div>
 </div>
 <h2>Safety Talk Topics</h2><p style="font-size:0.9rem;">${sub.safety_topics||'Not recorded'}</p>
 <h2>Gas Readings (MGDI)</h2>${gasHtml}
@@ -2665,14 +2665,14 @@ async function loadLiveTracking(){
       }
     });
 
-    const cnt = document.getElementById('cnt-live'); if(cnt) cnt.textContent = active.length || '●';
+    const cnt = document.getElementById('cnt-live'); if(cnt) cnt.textContent = active.length || '0';
 
     // If the set of abandoned sessions changed, refresh the records list so they appear.
     const key = incompleteRows.map(r => r.session_id).sort().join(',');
     if(key !== lastIncompleteKey){ lastIncompleteKey = key; if(typeof renderSubmissionsTable === 'function') renderSubmissionsTable(); }
 
     if(active.length === 0){
-      el.innerHTML = '<div class="empty"><div class="empty-icon">📡</div>No active procedures right now</div>';
+      el.innerHTML = '<div class="empty">No active procedures right now</div>';
       return;
     }
 
@@ -2686,30 +2686,30 @@ async function loadLiveTracking(){
     } catch(e){ console.warn('Gas fetch:', e); }
 
     const head = `<div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 0.8fr;gap:0.5rem;padding:0.6rem 1rem;background:var(--teal);">
-      <div class="th">Miner</div><div class="th">Phase</div>
-      <div class="th">Gas</div><div class="th">Zone</div><div class="th">Updated</div></div>`;
+     <div class="th">Miner</div><div class="th">Phase</div>
+     <div class="th">Gas</div><div class="th">Zone</div><div class="th">Updated</div></div>`;
 
     const body = active.map(s => {
       const gas = gasMap[s.session_id];
       const gasTxt = gas
         ? `<div class="gas-mini">
-            <span class="gas-chip ${gas.co_safe?'safe':'danger'}">CO:${gas.co_ppm??'—'}</span>
-            <span class="gas-chip ${gas.no2_safe?'safe':'danger'}">NO₂:${gas.no2_ppm??'—'}</span>
-            <span class="gas-chip ${gas.o2_safe?'safe':'danger'}">O₂:${gas.o2_percent??'—'}</span>
-            <span class="gas-chip ${gas.ch4_safe?'safe':'danger'}">CompX:${gas.ch4_percent??'—'}</span></div>`
+           <span class="gas-chip ${gas.co_safe?'safe':'danger'}">CO:${gas.co_ppm??'—'}</span>
+           <span class="gas-chip ${gas.no2_safe?'safe':'danger'}">NO₂:${gas.no2_ppm??'—'}</span>
+           <span class="gas-chip ${gas.o2_safe?'safe':'danger'}">O₂:${gas.o2_percent??'—'}</span>
+           <span class="gas-chip ${gas.ch4_safe?'safe':'danger'}">CompX:${gas.ch4_percent??'—'}</span></div>`
         : '<span class="gas-chip empty">Pending</span>';
       return `<div class="active-card">
-        <div><div style="font-size:0.85rem;font-weight:700;">${s.officer_name||'—'}</div>
-        <div style="font-size:0.72rem;color:var(--muted);">${s.officer_id||''} · ${s.section||'—'}</div></div>
-        <div><span class="active-phase">Phase ${(s.phase_number||0)+1} — ${s.phase_name||'—'}</span></div>
-        <div>${gasTxt}</div>
-        <div style="font-size:0.82rem;font-weight:600;">${s.zone||'—'}</div>
-        <div class="active-time">${fmtDate(s.completed_at || s.created_at)}</div></div>`;
+       <div><div style="font-size:0.85rem;font-weight:700;">${s.officer_name||'—'}</div>
+       <div style="font-size:0.72rem;color:var(--muted);">${s.officer_id||''} · ${s.section||'—'}</div></div>
+       <div><span class="active-phase">Phase ${(s.phase_number||0)+1} — ${s.phase_name||'—'}</span></div>
+       <div>${gasTxt}</div>
+       <div style="font-size:0.82rem;font-weight:600;">${s.zone||'—'}</div>
+       <div class="active-time">${fmtDate(s.completed_at || s.created_at)}</div></div>`;
     }).join('');
     el.innerHTML = '<div class="tbl-wrap">' + head + body + '</div>';
   } catch(e){
     console.error('Live tracking exception:', e);
-    el.innerHTML = '<div class="empty">⚠ Failed to load live data</div>';
+    el.innerHTML = '<div class="empty">Failed to load live data</div>';
   }
 }
 
@@ -2733,7 +2733,7 @@ async function loadGroundAlerts(){
   if(!isFirstLoad){
     const newOnes = active.filter(g => !previousActiveGroundIds.has(g.id));
     if(newOnes.length > 0){
-      notifyNewAlert('🪨 New Ground Condition Alert', newOnes.map(g => (g.officer_name||'Unknown') + ' — ' + (g.zone||g.section||'')).join(', '));
+      notifyNewAlert('New Ground Condition Alert', newOnes.map(g => (g.officer_name||'Unknown') + ' — ' + (g.zone||g.section||'')).join(', '));
     }
   }
   previousActiveGroundIds = activeIds;
@@ -2749,26 +2749,26 @@ function renderGroundTable(){
   const el = document.getElementById('ground-table');
   if(!el) return;
   if(loadFailed.ground){
-    el.innerHTML = '<div class="empty">⚠ Failed to load ground alerts — check your connection and retry. An active alert may exist even if none are shown here.</div>';
+    el.innerHTML = '<div class="empty">Failed to load ground alerts — check your connection and retry. An active alert may exist even if none are shown here.</div>';
     return;
   }
   if(allGroundAlerts.length === 0){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>No ground condition alerts recorded</div>';
+    el.innerHTML = '<div class="empty">No ground condition alerts recorded</div>';
     return;
   }
   const head = `<div class="tbl-head ground-grid">
-    <div class="th">Miner</div><div class="th">Zone / Section</div>
-    <div class="th">FOG Light</div><div class="th">Status</div><div class="th">Time</div></div>`;
+   <div class="th">Miner</div><div class="th">Zone / Section</div>
+   <div class="th">FOG Light</div><div class="th">Status</div><div class="th">Time</div></div>`;
   const body = allGroundAlerts.map(r => `
-    <div class="tbl-row ground-grid" onclick="openGroundDetail('${r.id}')" style="cursor:pointer;user-select:none;">
-      <div class="td bold">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${r.officer_id||''}</span></div>
-      <div class="td">${r.zone||'—'} · ${r.section||'—'}</div>
-      <div class="td" style="color:var(--red);font-weight:700;">🔴 RED — Unsafe</div>
-      <div class="td">${r.status==='active'
+   <div class="tbl-row ground-grid" onclick="openGroundDetail('${r.id}')" style="cursor:pointer;user-select:none;">
+     <div class="td bold">${r.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${r.officer_id||''}</span></div>
+     <div class="td">${r.zone||'—'} · ${r.section||'—'}</div>
+     <div class="td" style="color:var(--red);font-weight:700;">RED — Unsafe</div>
+     <div class="td">${r.status==='active'
         ? '<span class="badge ground-active badge-pulse">ACTIVE</span>'
         : '<span class="badge ground-resolved">Resolved</span>'}</div>
-      <div class="td">${fmtDate(r.created_at)}</div>
-    </div>`).join('');
+     <div class="td">${fmtDate(r.created_at)}</div>
+   </div>`).join('');
   el.innerHTML = '<div class="tbl-wrap">' + head + body + '</div>';
 }
 
@@ -2778,31 +2778,31 @@ async function openGroundDetail(id){
   const isResolved = g.status === 'resolved';
   document.getElementById('detail-title').textContent = 'Ground Alert — ' + (g.officer_name||'Unknown');
   document.getElementById('detail-body').innerHTML = `
-    <div class="detail-grid">
-      <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${g.officer_name||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Badge ID</div><div class="detail-v">${g.officer_id||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Zone</div><div class="detail-v bad">${g.zone||'Not recorded'}</div></div>
-      <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${g.section||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">FOG Light</div><div class="detail-v bad">🔴 RED — Unsafe Ground</div></div>
-      <div class="detail-item"><div class="detail-k">Status</div><div class="detail-v">${isResolved
+   <div class="detail-grid">
+     <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${g.officer_name||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Badge ID</div><div class="detail-v">${g.officer_id||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Zone</div><div class="detail-v bad">${g.zone||'Not recorded'}</div></div>
+     <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${g.section||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">FOG Light</div><div class="detail-v bad">RED — Unsafe Ground</div></div>
+     <div class="detail-item"><div class="detail-k">Status</div><div class="detail-v">${isResolved
         ? '<span class="badge ground-resolved">Resolved</span>'
         : '<span class="badge ground-active">ACTIVE</span>'}</div></div>
-      <div class="detail-item"><div class="detail-k">Triggered At</div><div class="detail-v">${fmtDate(g.created_at)}</div></div>
+     <div class="detail-item"><div class="detail-k">Triggered At</div><div class="detail-v">${fmtDate(g.created_at)}</div></div>
       ${isResolved ? `
-      <div class="detail-item detail-full"><div class="detail-k">Resolution Notes</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${esc(g.notes)||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Resolved By</div><div class="detail-v">${esc(g.resolved_by)||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Resolved At</div><div class="detail-v">${fmtDate(g.resolved_at)}</div></div>` : ''}
-    </div>
+     <div class="detail-item detail-full"><div class="detail-k">Resolution Notes</div>
+       <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${esc(g.notes)||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Resolved By</div><div class="detail-v">${esc(g.resolved_by)||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Resolved At</div><div class="detail-v">${fmtDate(g.resolved_at)}</div></div>` : ''}
+   </div>
     ${!isResolved ? `
-    <div class="resolve-section">
-      <div class="slbl" style="margin-top:1rem;">Clear This Alert</div>
-      <div style="background:#FEF0EE;border:1px solid var(--red);border-radius:3px;padding:0.65rem;margin-bottom:0.7rem;font-size:0.78rem;color:var(--red);font-weight:600;">
-        ⚠ Only resolve after Rock Engineering has confirmed the area is safe.
-      </div>
-      <textarea id="ground-resolve-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.875rem;border-radius:3px;outline:none;min-height:80px;resize:vertical;margin-bottom:0.7rem;" placeholder="Describe what Rock Engineering found and what action was taken..."></textarea>
-      <button class="btn-resolve" onclick="resolveGroundAlert('${g.id}')">✓ Cleared by Rock Engineering</button>
-    </div>` : '<div class="resolved-badge">✓ Ground condition cleared by Rock Engineering</div>'}
+   <div class="resolve-section">
+     <div class="slbl" style="margin-top:1rem;">Clear This Alert</div>
+     <div style="background:#FEF0EE;border:1px solid var(--red);border-radius:3px;padding:0.65rem;margin-bottom:0.7rem;font-size:0.78rem;color:var(--red);font-weight:600;">
+        Only resolve after Rock Engineering has confirmed the area is safe.
+     </div>
+     <textarea id="ground-resolve-notes" style="width:100%;background:var(--offwhite);border:1.5px solid var(--border);color:var(--text);padding:0.65rem 0.82rem;font-family:Montserrat,sans-serif;font-size:0.875rem;border-radius:3px;outline:none;min-height:80px;resize:vertical;margin-bottom:0.7rem;" placeholder="Describe what Rock Engineering found and what action was taken..."></textarea>
+     <button class="btn-resolve" onclick="resolveGroundAlert('${g.id}')">Cleared by Rock Engineering</button>
+   </div>` : '<div class="resolved-badge">Ground condition cleared by Rock Engineering</div>'}
   `;
   document.getElementById('detail-ov').classList.add('show');
 }
@@ -2816,7 +2816,7 @@ async function resolveGroundAlert(id){
     status:'resolved', resolved_at:new Date().toISOString(),
     resolved_by:currentUser.full_name, notes,
   }).eq('id',id);
-  if(error){ alert('Failed: '+error.message); if(btn){btn.disabled=false;btn.textContent='✓ Cleared by Rock Engineering';} return; }
+  if(error){ alert('Failed: '+error.message); if(btn){btn.disabled=false;btn.textContent='Cleared by Rock Engineering';} return; }
   // Escape here too, same as every other field in allGroundAlerts — this bypasses
   // the scrub()-at-fetch pipeline since it mutates the in-memory array directly.
   const idx = allGroundAlerts.findIndex(g => g.id===id);
@@ -2989,7 +2989,7 @@ async function loadMissedReentries(){
     .gte('created_at', cutoff.toISOString())
     .order('created_at', { ascending: false });
 
-  if(error){ el.innerHTML = '<div class="empty">⚠ Failed to load compliance data</div>'; return; }
+  if(error){ el.innerHTML = '<div class="empty">Failed to load compliance data</div>'; return; }
 
   // Group submissions by date and section
   const daySection = {};
@@ -3027,7 +3027,7 @@ async function loadMissedReentries(){
   );
 
   if(relevantRows.length === 0){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>No submission data for this period</div>';
+    el.innerHTML = '<div class="empty">No submission data for this period</div>';
     return;
   }
 
@@ -3044,21 +3044,21 @@ async function loadMissedReentries(){
       const total = day.sections.reduce((s,r) => s + r.count, 0);
       const hasGap = day.sections.some(r => r.count === 0);
       return `
-        <div class="missed-item ${hasGap ? 'has-gap' : 'ok'}">
-          <div>
-            <div style="font-size:0.875rem;font-weight:800;color:var(--text);">${day.dayLabel}</div>
-            <div style="font-size:0.74rem;color:var(--muted);margin-top:0.15rem;">
+       <div class="missed-item ${hasGap ? 'has-gap' : 'ok'}">
+         <div>
+           <div style="font-size:0.875rem;font-weight:800;color:var(--text);">${day.dayLabel}</div>
+           <div style="font-size:0.74rem;color:var(--muted);margin-top:0.15rem;">
               ${day.sections.map(r =>
-                '<span style="color:' + (r.count > 0 ? 'var(--green)' : 'var(--amber)') + ';font-weight:700;">'
+               '<span style="color:' + (r.count > 0 ? 'var(--green)' : 'var(--amber)') + ';font-weight:700;">'
                 + r.section.replace(' Section','') + ': ' + r.count + '</span>'
               ).join(' · ')}
-            </div>
-          </div>
-          <div style="text-align:right;">
-            <span class="missed-count-badge ${total > 0 ? 'ok' : ''}">${total} record${total===1?'':'s'}</span>
-            ${hasGap ? '<div style="font-size:0.7rem;color:var(--amber);font-weight:700;margin-top:0.2rem;">⚠ Gap detected</div>' : ''}
-          </div>
-        </div>`;
+           </div>
+         </div>
+         <div style="text-align:right;">
+           <span class="missed-count-badge ${total > 0 ? 'ok' : ''}">${total} record${total===1?'':'s'}</span>
+            ${hasGap ? '<div style="font-size:0.7rem;color:var(--amber);font-weight:700;margin-top:0.2rem;">Gap detected</div>' : ''}
+         </div>
+       </div>`;
     }).join('');
 }
 
@@ -3091,28 +3091,28 @@ function renderHandovers(){
   if(!el) return;
 
   if(loadFailed.handovers){
-    el.innerHTML = '<div class="empty">⚠ Failed to load handovers — check your connection and retry</div>';
+    el.innerHTML = '<div class="empty">Failed to load handovers — check your connection and retry</div>';
     return;
   }
   if(allHandovers.length === 0){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>No handovers recorded yet</div>';
+    el.innerHTML = '<div class="empty">No handovers recorded yet</div>';
     return;
   }
 
   el.innerHTML = allHandovers.map(h => `
-    <div class="handover-item" onclick="openHandoverDetail('${h.id}')">
-      <div class="handover-item-head">
-        <div class="handover-item-name">${h.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${h.officer_id||''} · ${h.section||'—'} · ${shiftLabel(h.shift_type)}</span>
-        ${h.acknowledged_by ? ' <span class="badge completed">✓ Acknowledged</span>' : ''}</div>
-        <div class="handover-item-time">${fmtDate(h.created_at)}</div>
-      </div>
-      <div class="handover-item-body">
+   <div class="handover-item" onclick="openHandoverDetail('${h.id}')">
+     <div class="handover-item-head">
+       <div class="handover-item-name">${h.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${h.officer_id||''} · ${h.section||'—'} · ${shiftLabel(h.shift_type)}</span>
+        ${h.acknowledged_by ? ' <span class="badge completed">Acknowledged</span>' : ''}</div>
+       <div class="handover-item-time">${fmtDate(h.created_at)}</div>
+     </div>
+     <div class="handover-item-body">
         ${h.outstanding_hazards ? '<strong>Hazards:</strong> ' + h.outstanding_hazards.substring(0,120) + (h.outstanding_hazards.length>120?'...':'') + '<br>' : ''}
         ${h.gas_concerns        ? '<strong>Gas:</strong> '     + h.gas_concerns.substring(0,80)         + (h.gas_concerns.length>80?'...':'') + '<br>' : ''}
         ${h.panels_avoid        ? '<strong>Avoid:</strong> '   + h.panels_avoid.substring(0,80)         + (h.panels_avoid.length>80?'...':'')        : ''}
         ${!h.outstanding_hazards && !h.gas_concerns && !h.panels_avoid ? h.general_notes?.substring(0,120)||'—' : ''}
-      </div>
-    </div>
+     </div>
+   </div>
   `).join('');
 }
 
@@ -3121,31 +3121,31 @@ function openHandoverDetail(id){
   if(!h) return;
   document.getElementById('detail-title').textContent = 'Handover — ' + (h.officer_name||'Unknown');
   document.getElementById('detail-body').innerHTML = `
-    <div class="detail-grid">
-      <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${h.officer_name||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Badge ID</div><div class="detail-v">${h.officer_id||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${h.section||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Shift</div><div class="detail-v">${shiftLabel(h.shift_type)||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Date</div><div class="detail-v">${h.shift_date||'—'}</div></div>
-      <div class="detail-item"><div class="detail-k">Incoming Miner</div><div class="detail-v">${h.incoming_officer||'Not specified'}</div></div>
+   <div class="detail-grid">
+     <div class="detail-item"><div class="detail-k">Miner</div><div class="detail-v">${h.officer_name||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Badge ID</div><div class="detail-v">${h.officer_id||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Section</div><div class="detail-v">${h.section||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Shift</div><div class="detail-v">${shiftLabel(h.shift_type)||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Date</div><div class="detail-v">${h.shift_date||'—'}</div></div>
+     <div class="detail-item"><div class="detail-k">Incoming Miner</div><div class="detail-v">${h.incoming_officer||'Not specified'}</div></div>
       ${h.outstanding_hazards ? '<div class="detail-item detail-full"><div class="detail-k">Outstanding Hazards</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.outstanding_hazards+'</div></div>' : ''}
       ${h.gas_concerns        ? '<div class="detail-item detail-full"><div class="detail-k">Gas / Ventilation Concerns</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.gas_concerns+'</div></div>' : ''}
       ${h.panels_avoid        ? '<div class="detail-item detail-full"><div class="detail-k">Panels / Areas to Avoid</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.panels_avoid+'</div></div>' : ''}
       ${h.equipment_status    ? '<div class="detail-item detail-full"><div class="detail-k">Equipment Status</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.equipment_status+'</div></div>' : ''}
       ${h.general_notes       ? '<div class="detail-item detail-full"><div class="detail-k">General Notes</div><div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">'+h.general_notes+'</div></div>' : ''}
-    </div>
+   </div>
 
     ${h.acknowledged_by ? `
-    <div class="resolved-badge">✓ Acknowledged by ${h.acknowledged_by} — ${fmtDate(h.acknowledged_at)}</div>` : `
-    <div class="resolve-section">
-      <div class="slbl" style="margin-top:1rem;">Acknowledge This Handover</div>
-      <div class="lg" style="margin-bottom:0.6rem;font-size:0.78rem;color:var(--muted);">
+   <div class="resolved-badge">Acknowledged by ${h.acknowledged_by} — ${fmtDate(h.acknowledged_at)}</div>` : `
+   <div class="resolve-section">
+     <div class="slbl" style="margin-top:1rem;">Acknowledge This Handover</div>
+     <div class="lg" style="margin-bottom:0.6rem;font-size:0.78rem;color:var(--muted);">
         Confirms you've read and understood the hazards/notes above before entering the section.
-      </div>
-      <button class="btn-resolve" onclick="acknowledgeHandover('${h.id}')">
-        ✓ Acknowledge Handover
-      </button>
-    </div>`}
+     </div>
+     <button class="btn-resolve" onclick="acknowledgeHandover('${h.id}')">
+        Acknowledge Handover
+     </button>
+   </div>`}
   `;
   document.getElementById('detail-ov').classList.add('show');
 }
@@ -3161,7 +3161,7 @@ async function acknowledgeHandover(id){
 
   if(error){
     alert('Could not acknowledge — ' + error.message);
-    if(btn){ btn.disabled = false; btn.textContent = '✓ Acknowledge Handover'; }
+    if(btn){ btn.disabled = false; btn.textContent = 'Acknowledge Handover'; }
     return;
   }
 
@@ -3202,23 +3202,23 @@ function renderShiftNotes(){
   if(!el) return;
 
   if(loadFailed.notes){
-    el.innerHTML = '<div class="empty">⚠ Failed to load shift notes — check your connection and retry</div>';
+    el.innerHTML = '<div class="empty">Failed to load shift notes — check your connection and retry</div>';
     return;
   }
   if(allShiftNotes.length === 0){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📝</div>No shift notes recorded</div>';
+    el.innerHTML = '<div class="empty">No shift notes recorded</div>';
     return;
   }
 
   // Fields are already escaped by scrub(); note_text kept as pre-wrap free text.
   el.innerHTML = allShiftNotes.map(n => `
-    <div class="handover-item" style="cursor:default;">
-      <div class="handover-item-head">
-        <div class="handover-item-name">${n.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${n.officer_id||''} · ${n.section||'—'}</span></div>
-        <div class="handover-item-time">${fmtDate(n.created_at)}</div>
-      </div>
-      <div class="handover-item-body" style="white-space:pre-wrap;">${n.note_text||'—'}</div>
-    </div>
+   <div class="handover-item" style="cursor:default;">
+     <div class="handover-item-head">
+       <div class="handover-item-name">${n.officer_name||'—'} <span style="font-weight:500;color:var(--muted);font-size:0.74rem;">${n.officer_id||''} · ${n.section||'—'}</span></div>
+       <div class="handover-item-time">${fmtDate(n.created_at)}</div>
+     </div>
+     <div class="handover-item-body" style="white-space:pre-wrap;">${n.note_text||'—'}</div>
+   </div>
   `).join('');
 }
 
@@ -3253,33 +3253,33 @@ function renderAccountsTable(){
   if(!el) return;
 
   if(loadFailed.accounts){
-    el.innerHTML = '<div class="empty">⚠ Failed to load accounts — check your connection and retry</div>';
+    el.innerHTML = '<div class="empty">Failed to load accounts — check your connection and retry</div>';
     return;
   }
   if(allAccounts.length === 0){
-    el.innerHTML = '<div class="empty"><div class="empty-icon">👤</div>No accounts found</div>';
+    el.innerHTML = '<div class="empty">No accounts found</div>';
     return;
   }
 
   const acctGrid = 'grid-template-columns:1.2fr 1fr 0.8fr 0.9fr 0.8fr 1fr;';
   let html = `<div class="tbl-head" style="${acctGrid}">
-    <div class="th">Name</div>
-    <div class="th">Badge</div>
-    <div class="th">Role</div>
-    <div class="th">Section</div>
-    <div class="th">Status</div>
-    <div class="th">Created</div>
-  </div>`;
+   <div class="th">Name</div>
+   <div class="th">Badge</div>
+   <div class="th">Role</div>
+   <div class="th">Section</div>
+   <div class="th">Status</div>
+   <div class="th">Created</div>
+ </div>`;
 
   html += allAccounts.map(a => `
-    <div class="tbl-row" style="${acctGrid}">
-      <div class="td bold">${a.full_name || '—'}</div>
-      <div class="td">${a.badge_id || '—'}</div>
-      <div class="td">${(a.role || '').replace(/_/g, ' ').toUpperCase()}</div>
-      <div class="td">${a.section || '—'}</div>
-      <div class="td">${a.is_active ? '<span class="badge">Active</span>' : '<span class="badge incomplete">Inactive</span>'}</div>
-      <div class="td">${fmtDate(a.created_at)}</div>
-    </div>
+   <div class="tbl-row" style="${acctGrid}">
+     <div class="td bold">${a.full_name || '—'}</div>
+     <div class="td">${a.badge_id || '—'}</div>
+     <div class="td">${(a.role || '').replace(/_/g, ' ').toUpperCase()}</div>
+     <div class="td">${a.section || '—'}</div>
+     <div class="td">${a.is_active ? '<span class="badge">Active</span>' : '<span class="badge incomplete">Inactive</span>'}</div>
+     <div class="td">${fmtDate(a.created_at)}</div>
+   </div>
   `).join('');
 
   el.innerHTML = `<div class="tbl-wrap" style="background:var(--white);border:1.5px solid var(--border);border-radius:4px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.04);">${html}</div>`;
@@ -3289,15 +3289,15 @@ function renderAccountsTable(){
 //  BORD CYCLE TRACKER
 // ══════════════════════════════════════════
 const BORD_STAGE_LABELS = {
-  drilling: '🔵 Drilling',
-  blasting: '🔴 Charging and Blasting',
-  lashing:  '🟡 Lashing',
-  support:  '🟠 Support',
+  drilling: 'Drilling',
+  blasting: 'Charging and Blasting',
+  lashing: 'Lashing',
+  support: 'Support',
   // Legacy stages — retired from the miner picker AND removed from the tracker
   // legend + stage filter. Kept here only so any historical record still renders
   // a readable label instead of a raw id; they are not part of the active cycle.
-  complete: '🟢 Complete',
-  repeat:   '🔄 Repeat',
+  complete: 'Complete',
+  repeat:  'Repeat',
 };
 
 let allBordUpdates = [];
@@ -3359,7 +3359,7 @@ async function loadBordTracker(){
     if(filteredBords.length === 0){
       const when = range ? 'on the selected date' : 'in the last 30 days';
       const stageNote = stageFilter ? (' at stage “' + (BORD_STAGE_LABELS[stageFilter] || stageFilter) + '”') : '';
-      el.innerHTML = '<div class="empty"><div class="empty-icon">⛏</div>No bord updates ' + when + stageNote + '</div>';
+      el.innerHTML = '<div class="empty">No bord updates ' + when + stageNote + '</div>';
       return;
     }
 
@@ -3388,21 +3388,21 @@ async function loadBordTracker(){
         const stale     = ageHours !== null && ageHours > 24;
 
         html += `
-          <div class="bord-card ${stage}" onclick="openBordDetail('${r.bord}')">
-            <div class="bord-card-head">
-              <div class="bord-name">${r.bord}</div>
-              <span class="bord-stage-badge ${stage}">${stageLabel}</span>
-            </div>
-            <div class="bord-progress-bar">
-              <div class="bord-progress-fill" style="width:${progress}%;background:${stage==='complete'?'var(--green)':stage==='blasting'?'var(--red)':'var(--teal)'}"></div>
-            </div>
-            <div class="bord-meta">
+         <div class="bord-card ${stage}" onclick="openBordDetail('${r.bord}')">
+           <div class="bord-card-head">
+             <div class="bord-name">${r.bord}</div>
+             <span class="bord-stage-badge ${stage}">${stageLabel}</span>
+           </div>
+           <div class="bord-progress-bar">
+             <div class="bord-progress-fill" style="width:${progress}%;background:${stage==='complete'?'var(--green)':stage==='blasting'?'var(--red)':'var(--teal)'}"></div>
+           </div>
+           <div class="bord-meta">
               ${progress}% complete
-              · <span style="color:${stale?'var(--amber)':'var(--muted)'};">${stale?'⚠ ':''}${ageStr}</span>
-            </div>
-            <div class="bord-meta" style="margin-top:0.15rem;">By: ${r.officer_name||'—'} · ${r.section||'—'}</div>
+              · <span style="color:${stale?'var(--amber)':'var(--muted)'};">${stale?'':''}${ageStr}</span>
+           </div>
+           <div class="bord-meta" style="margin-top:0.15rem;">By: ${r.officer_name||'—'} · ${r.section||'—'}</div>
             ${r.shift_notes ? `<div class="bord-notes">${r.shift_notes.substring(0,80)}${r.shift_notes.length>80?'…':''}</div>` : ''}
-          </div>`;
+         </div>`;
       });
       html += '</div>';
     });
@@ -3410,7 +3410,7 @@ async function loadBordTracker(){
     el.innerHTML = html;
   } catch(e) {
     console.error('Bord tracker error:', e);
-    el.innerHTML = '<div class="empty">⚠ Failed to load bord data: ' + e.message + '</div>';
+    el.innerHTML = '<div class="empty">Failed to load bord data: ' + e.message + '</div>';
   }
 }
 
@@ -3429,56 +3429,56 @@ function openBordDetail(bordValue){
 
   document.getElementById('detail-title').textContent = 'Bord — ' + bordValue;
   document.getElementById('detail-body').innerHTML = `
-    <div class="detail-grid">
-      <div class="detail-item">
-        <div class="detail-k">Bord</div>
-        <div class="detail-v">${bordValue}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Current Stage</div>
-        <div class="detail-v"><span class="bord-stage-badge ${stage}" style="font-size:0.8rem;">${stageLabel}</span></div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Progress</div>
-        <div class="detail-v">
-          <div class="bord-progress-bar" style="margin:0.3rem 0 0.2rem;">
-            <div class="bord-progress-fill" style="width:${latest.progress_pct??0}%"></div>
-          </div>
+   <div class="detail-grid">
+     <div class="detail-item">
+       <div class="detail-k">Bord</div>
+       <div class="detail-v">${bordValue}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Current Stage</div>
+       <div class="detail-v"><span class="bord-stage-badge ${stage}" style="font-size:0.8rem;">${stageLabel}</span></div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Progress</div>
+       <div class="detail-v">
+         <div class="bord-progress-bar" style="margin:0.3rem 0 0.2rem;">
+           <div class="bord-progress-fill" style="width:${latest.progress_pct??0}%"></div>
+         </div>
           ${latest.progress_pct??0}%
-        </div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Last Updated By</div>
-        <div class="detail-v">${latest.officer_name||'—'} (${latest.officer_id||'—'})</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Section</div>
-        <div class="detail-v">${latest.section||'—'}</div>
-      </div>
-      <div class="detail-item">
-        <div class="detail-k">Recorded At</div>
-        <div class="detail-v">${fmtDate(latest.recorded_at)}</div>
-      </div>
+       </div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Last Updated By</div>
+       <div class="detail-v">${latest.officer_name||'—'} (${latest.officer_id||'—'})</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Section</div>
+       <div class="detail-v">${latest.section||'—'}</div>
+     </div>
+     <div class="detail-item">
+       <div class="detail-k">Recorded At</div>
+       <div class="detail-v">${fmtDate(latest.recorded_at)}</div>
+     </div>
       ${latest.shift_notes ? `
-      <div class="detail-item detail-full">
-        <div class="detail-k">Shift Notes</div>
-        <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${latest.shift_notes}</div>
-      </div>` : ''}
-    </div>
+     <div class="detail-item detail-full">
+       <div class="detail-k">Shift Notes</div>
+       <div class="detail-v" style="font-weight:500;font-size:0.82rem;white-space:pre-wrap;">${latest.shift_notes}</div>
+     </div>` : ''}
+   </div>
 
     ${history.length > 1 ? `
-    <div class="slbl" style="margin-top:1rem;">Update History (last ${history.length})</div>
-    <div style="display:flex;flex-direction:column;gap:0.35rem;">
+   <div class="slbl" style="margin-top:1rem;">Update History (last ${history.length})</div>
+   <div style="display:flex;flex-direction:column;gap:0.35rem;">
       ${history.slice(1).map(r => `
-        <div style="background:var(--offwhite);border:1px solid var(--border);border-radius:3px;padding:0.5rem 0.75rem;font-size:0.78rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="bord-stage-badge ${r.cycle_stage||'no-data'}" style="font-size:0.7rem;">${BORD_STAGE_LABELS[r.cycle_stage]||r.cycle_stage||'—'}</span>
-            <span style="color:var(--muted);">${fmtDate(r.recorded_at)}</span>
-          </div>
-          <div style="color:var(--mid);margin-top:0.2rem;">${r.officer_name||'—'} · ${r.progress_pct??0}% progress</div>
+       <div style="background:var(--offwhite);border:1px solid var(--border);border-radius:3px;padding:0.5rem 0.75rem;font-size:0.78rem;">
+         <div style="display:flex;justify-content:space-between;align-items:center;">
+           <span class="bord-stage-badge ${r.cycle_stage||'no-data'}" style="font-size:0.7rem;">${BORD_STAGE_LABELS[r.cycle_stage]||r.cycle_stage||'—'}</span>
+           <span style="color:var(--muted);">${fmtDate(r.recorded_at)}</span>
+         </div>
+         <div style="color:var(--mid);margin-top:0.2rem;">${r.officer_name||'—'} · ${r.progress_pct??0}% progress</div>
           ${r.shift_notes ? '<div style="color:var(--mid);font-style:italic;margin-top:0.15rem;">'+r.shift_notes.substring(0,60)+(r.shift_notes.length>60?'…':'')+'</div>' : ''}
-        </div>`).join('')}
-    </div>` : ''}
+       </div>`).join('')}
+   </div>` : ''}
   `;
   document.getElementById('detail-ov').classList.add('show');
 }
@@ -3542,10 +3542,10 @@ async function loadProduction(){
     renderTonnageChart();
     tableEl.innerHTML = allProductionRows.length
       ? `<div class="tbl-wrap">${prodTableHtml(allProductionRows)}</div>`
-      : '<div class="empty"><div class="empty-icon">📈</div>No production records for this filter.</div>';
+      : '<div class="empty">No production records for this filter.</div>';
   } catch(e){
     console.error('Production load error:', e);
-    tableEl.innerHTML = '<div class="empty">⚠ Failed to load production data: ' + e.message + '</div>';
+    tableEl.innerHTML = '<div class="empty">Failed to load production data: ' + e.message + '</div>';
   }
 }
 
@@ -3646,31 +3646,31 @@ function renderTonnageChart(){
 
 function prodTableHtml(rows){
   const head = `<div class="tbl-head prod-grid">
-    <div class="th">Bord</div>
-    <div class="th">Shift</div>
-    <div class="th">Drilled Act/Exp (m)</div>
-    <div class="th">Support Act/Exp (m)</div>
-    <div class="th">Tonnage</div>
-    <div class="th">Ends Available</div>
-    <div class="th">Blast Notes</div>
-    <div class="th">Officer</div>
-    <div class="th">Date</div>
-  </div>`;
+   <div class="th">Bord</div>
+   <div class="th">Shift</div>
+   <div class="th">Drilled Act/Exp (m)</div>
+   <div class="th">Support Act/Exp (m)</div>
+   <div class="th">Tonnage</div>
+   <div class="th">Ends Available</div>
+   <div class="th">Blast Notes</div>
+   <div class="th">Officer</div>
+   <div class="th">Date</div>
+ </div>`;
 
   const body = rows.map(r => {
     const endsLabel = r.shift_period === 'night' ? 'Blasting' : 'Charging';
     return `
-    <div class="tbl-row prod-grid">
-      <div class="td bold">${r.bord||'—'}</div>
-      <div class="td">${r.shift_period==='night' ? '🌙 Night' : '☀ Day'}</div>
-      <div class="td">${r.drilled_actual_m ?? '—'} / ${r.drilled_expected_m ?? '—'}</div>
-      <div class="td">${r.support_actual_m ?? '—'} / ${r.support_expected_m ?? '—'}</div>
-      <div class="td">${r.tonnage_hoisted ?? '—'}</div>
-      <div class="td">${r.ends_available_bords ? (endsLabel + ': ' + r.ends_available_bords) : '—'}</div>
-      <div class="td" title="${r.blast_plan_notes||''}">${r.blast_plan_notes||'—'}</div>
-      <div class="td">${r.officer_name||'—'}</div>
-      <div class="td">${fmtDate(r.created_at)}</div>
-    </div>`;
+   <div class="tbl-row prod-grid">
+     <div class="td bold">${r.bord||'—'}</div>
+     <div class="td">${r.shift_period==='night' ? 'Night' : 'Day'}</div>
+     <div class="td">${r.drilled_actual_m ?? '—'} / ${r.drilled_expected_m ?? '—'}</div>
+     <div class="td">${r.support_actual_m ?? '—'} / ${r.support_expected_m ?? '—'}</div>
+     <div class="td">${r.tonnage_hoisted ?? '—'}</div>
+     <div class="td">${r.ends_available_bords ? (endsLabel + ': ' + r.ends_available_bords) : '—'}</div>
+     <div class="td" title="${r.blast_plan_notes||''}">${r.blast_plan_notes||'—'}</div>
+     <div class="td">${r.officer_name||'—'}</div>
+     <div class="td">${fmtDate(r.created_at)}</div>
+   </div>`;
   }).join('');
 
   return head + body;
@@ -3705,7 +3705,7 @@ let allMachineryRows = [];
 let machUtilChart = null;
 const MACH_TYPE_SHAPE = { LHD:'star', Rig:'rect', Bolter:'triangle' };
 const MACH_STATUS_Y = { breakdown:0, idle:50, running:100 };
-const MACH_STATUS_LABELS = { running:'🟢 Running', breakdown:'🔴 Breakdown', idle:'🟡 Idle' };
+const MACH_STATUS_LABELS = { running:'Running', breakdown:'Breakdown', idle:'Idle' };
 
 function hhmmToMinutes(t){
   if(!t) return null;
@@ -3775,11 +3775,11 @@ async function loadMachinery(){
 
     boardEl.innerHTML = machines.length
       ? machBoardHtml(machines)
-      : '<div class="empty"><div class="empty-icon">🚜</div>No machinery logged for this filter.</div>';
+      : '<div class="empty">No machinery logged for this filter.</div>';
     renderMachUtilChart();
   } catch(e){
     console.error('Machinery load error:', e);
-    boardEl.innerHTML = '<div class="empty">⚠ Failed to load machinery data: ' + e.message + '</div>';
+    boardEl.innerHTML = '<div class="empty">Failed to load machinery data: ' + e.message + '</div>';
   }
 }
 
@@ -3801,16 +3801,16 @@ function machBoardHtml(machines){
       const status = r.status || 'idle';
       const label  = MACH_STATUS_LABELS[status] || status;
       html += `
-        <div class="mach-card ${status}">
-          <div class="mach-card-head">
-            <div class="mach-name">${r.machine_type||'—'} ${r.machine_number||''}</div>
-            <span class="mach-status-badge ${status}">${label}</span>
-          </div>
-          <div class="mach-meta">Startup: ${r.startup_time||'—'}${status==='breakdown' ? (' · Breakdown: '+(r.breakdown_start||'—')+'–'+(r.breakdown_end||'ongoing')) : ''}</div>
-          <div class="mach-meta">Assigned: ${r.assigned_bords||'—'} · Location: ${r.location||'—'}</div>
-          <div class="mach-meta" style="margin-top:0.15rem;">By: ${r.officer_name||'—'} · ${r.section||'—'} · ${fmtDate(r.created_at)}</div>
+       <div class="mach-card ${status}">
+         <div class="mach-card-head">
+           <div class="mach-name">${r.machine_type||'—'} ${r.machine_number||''}</div>
+           <span class="mach-status-badge ${status}">${label}</span>
+         </div>
+         <div class="mach-meta">Startup: ${r.startup_time||'—'}${status==='breakdown' ? (' · Breakdown: '+(r.breakdown_start||'—')+'–'+(r.breakdown_end||'ongoing')) : ''}</div>
+         <div class="mach-meta">Assigned: ${r.assigned_bords||'—'} · Location: ${r.location||'—'}</div>
+         <div class="mach-meta" style="margin-top:0.15rem;">By: ${r.officer_name||'—'} · ${r.section||'—'} · ${fmtDate(r.created_at)}</div>
           ${r.comments ? `<div class="mach-notes">${r.comments.substring(0,80)}${r.comments.length>80?'…':''}</div>` : ''}
-        </div>`;
+       </div>`;
     });
     html += '</div>';
   });
@@ -3972,10 +3972,10 @@ async function loadHourly(){
     renderHourlyStats(allHourlyRows);
     wrapEl.innerHTML = allHourlyRows.length
       ? hourlyHeatmapHtml(allHourlyRows)
-      : '<div class="empty"><div class="empty-icon">⚖</div>No hourly tonnage logged for this filter.</div>';
+      : '<div class="empty">No hourly tonnage logged for this filter.</div>';
   } catch(e){
     console.error('Hourly tonnage load error:', e);
-    wrapEl.innerHTML = '<div class="empty">⚠ Failed to load hourly tonnage: ' + e.message + '</div>';
+    wrapEl.innerHTML = '<div class="empty">Failed to load hourly tonnage: ' + e.message + '</div>';
   }
 }
 
@@ -4038,17 +4038,17 @@ function openTonBordDetail(bordValue){
 
   document.getElementById('detail-title').textContent = 'Hourly Tonnage — ' + bordValue;
   document.getElementById('detail-body').innerHTML = `
-    <div class="chart-wrap" style="height:200px;">
-      <canvas id="ton-detail-chart"></canvas>
-    </div>
-    <div class="slbl" style="margin-top:1rem;">Logged Hours</div>
-    <div style="display:flex;flex-direction:column;gap:0.35rem;">
+   <div class="chart-wrap" style="height:200px;">
+     <canvas id="ton-detail-chart"></canvas>
+   </div>
+   <div class="slbl" style="margin-top:1rem;">Logged Hours</div>
+   <div style="display:flex;flex-direction:column;gap:0.35rem;">
       ${history.map(r => `
-        <div style="background:var(--offwhite);border:1px solid var(--border);border-radius:3px;padding:0.5rem 0.75rem;font-size:0.78rem;display:flex;justify-content:space-between;">
-          <span>${r.hour_slot} · ${r.shift_period==='night'?'🌙':'☀'} · ${r.officer_name||'—'}</span>
-          <span style="font-weight:700;">${r.tonnage_actual ?? '—'} t</span>
-        </div>`).join('')}
-    </div>
+       <div style="background:var(--offwhite);border:1px solid var(--border);border-radius:3px;padding:0.5rem 0.75rem;font-size:0.78rem;display:flex;justify-content:space-between;">
+         <span>${r.hour_slot} · ${r.shift_period==='night'?'':''} · ${r.officer_name||'—'}</span>
+         <span style="font-weight:700;">${r.tonnage_actual ?? '—'} t</span>
+       </div>`).join('')}
+   </div>
   `;
   document.getElementById('detail-ov').classList.add('show');
 
@@ -4091,14 +4091,14 @@ function exportHourlyCSV(){
 </script>
 <!-- DASHBOARD SESSION EXPIRED MODAL -->
 <div class="dash-session-ov" id="dash-session-ov">
-  <div class="dash-session-card">
-    <div class="dash-session-icon">🔒</div>
-    <div class="dash-session-title">Session Expired</div>
-    <div class="dash-session-desc">Your dashboard session has expired. Enter your password to continue.</div>
-    <input type="password" class="dash-session-pw" id="dash-session-pw" placeholder="Enter your password"/>
-    <button class="btn-dash-reauth" onclick="dashReAuthenticate()">Continue →</button>
-    <div class="dash-session-err" id="dash-session-err">Incorrect password. Please try again.</div>
-  </div>
+ <div class="dash-session-card">
+   <div class="dash-session-icon"></div>
+   <div class="dash-session-title">Session Expired</div>
+   <div class="dash-session-desc">Your dashboard session has expired. Enter your password to continue.</div>
+   <input type="password" class="dash-session-pw" id="dash-session-pw" placeholder="Enter your password"/>
+   <button class="btn-dash-reauth" onclick="dashReAuthenticate()">Continue</button>
+   <div class="dash-session-err" id="dash-session-err">Incorrect password. Please try again.</div>
+ </div>
 </div>
 </body>
 </html>
